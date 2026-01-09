@@ -1,0 +1,237 @@
+@import 'variables';
+@import 'mixins';
+
+.header {
+  @include glass-effect;
+  padding: $spacing-md $spacing-xl;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-bottom: $spacing-xl;
+  border-bottom: 1px solid var(--glass-border);
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    @include flex-between;
+    position: relative;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    &:hover {
+      text-decoration: none;
+      color: $accent-color;
+    }
+  }
+
+  .search-container {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    margin: 0 $spacing-lg;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        color: $text-secondary;
+        font-size: 1.1rem;
+        pointer-events: none;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 0.7rem 1rem 0.7rem 2.5rem;
+        background: color-mix(in srgb, var(--bg-primary), transparent 60%);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        color: $text-primary;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        
+        &:focus {
+          outline: none;
+          background: color-mix(in srgb, var(--bg-primary), transparent 20%);
+          border-color: color-mix(in srgb, var(--accent-color), transparent 50%);
+          box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-color), transparent 90%);
+        }
+
+        &::placeholder {
+          color: color-mix(in srgb, var(--text-secondary), transparent 30%);
+        }
+      }
+    }
+
+    .search-results-panel {
+      position: absolute;
+      top: 120%;
+      left: 0;
+      width: 100%;
+      @include glass-effect;
+      background: color-mix(in srgb, var(--bg-tertiary), transparent 15%); // Slightly darker for better contrast
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px var(--glass-shadow);
+      animation: fadeIn 0.2s ease-out;
+      z-index: 1000;
+      padding: 0.5rem;
+
+      .search-result-item {
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--glass-border);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: color-mix(in srgb, var(--accent-color), transparent 90%);
+          transform: translateX(4px);
+        }
+
+        .result-content {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          width: 100%;
+
+          .result-title {
+            color: $text-primary;
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .result-category {
+            color: $accent-color;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+
+      .no-results {
+        padding: 1.5rem;
+        text-align: center;
+        color: $text-secondary;
+        font-style: italic;
+      }
+    }
+  }
+
+  .theme-toggle {
+    background: none;
+    border: none;
+    color: $text-primary;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-right: $spacing-md;
+
+    &:hover {
+      background: color-mix(in srgb, var(--text-primary), transparent 90%);
+      color: $accent-color;
+      transform: rotate(15deg);
+    }
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: $text-primary;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 101;
+
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: $spacing-lg;
+    align-items: center;
+
+    a {
+      color: $text-primary;
+      font-weight: 600;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: $accent-color;
+      }
+
+      &.active {
+        color: $accent-color;
+      }
+    }
+
+    .user-welcome {
+        color: $text-secondary;
+        font-size: 0.9rem;
+    }
+
+    .logout-btn {
+      @include secondary-button;
+      padding: $spacing-xs $spacing-md;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      height: 100vh;
+      width: 70%;
+      background: color-mix(in srgb, var(--bg-primary), transparent 5%);
+      backdrop-filter: blur(10px);
+      flex-direction: column;
+      justify-content: center;
+      transition: right 0.3s ease-in-out;
+      border-left: 1px solid var(--glass-border);
+      box-shadow: -5px 0 15px var(--glass-shadow);
+      padding: 2rem;
+      gap: 2rem;
+
+      &.active {
+        right: 0;
+      }
+
+      .user-welcome {
+          display: block;
+          text-align: center;
+          margin-bottom: 1rem;
+      }
+    }
+  }
+}

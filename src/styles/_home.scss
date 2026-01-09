@@ -1,0 +1,180 @@
+@import 'variables';
+@import 'mixins';
+
+.home-container {
+  .hero {
+    text-align: center;
+    padding: 6rem 2rem;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    
+    // Background effect
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent-color), transparent 85%) 0%, transparent 70%);
+      filter: blur(60px);
+      z-index: -1;
+    }
+
+    @media (max-width: 768px) {
+      padding: 4rem 1rem;
+    }
+
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-shadow: 0 10px 30px var(--glass-shadow);
+
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+    }
+
+    p {
+      font-size: 1.25rem;
+      color: $text-secondary;
+      margin-bottom: 3rem;
+      max-width: 600px;
+      margin: 0 auto 3rem auto;
+      line-height: 1.6;
+
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+      }
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+
+      @media (max-width: 480px) {
+        flex-direction: column;
+        align-items: center;
+        
+        a {
+          width: 100%;
+        }
+      }
+
+      .primary-btn {
+        @include primary-button;
+        font-size: 1.1rem;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+      }
+
+      .secondary-btn {
+        @include secondary-button;
+        font-size: 1.1rem;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+      }
+    }
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: $text-primary;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    &::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 30px;
+      border-radius: 2px;
+      background: $accent-color;
+    }
+
+    &.new::before { background: $accent-color; }
+    &.featured::before { background: $success-color; }
+  }
+
+  .blogs-section {
+    @include page-padding;
+    margin-bottom: 4rem;
+  }
+
+  .blogs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .load-more-container {
+    text-align: center;
+    margin-top: 3rem;
+
+    button {
+      @include secondary-button;
+      border-radius: 50px;
+      padding: 0.8rem 2.5rem;
+    }
+  }
+
+  .cta {
+    text-align: center;
+    padding: 6rem 2rem;
+    margin-top: 4rem;
+    position: relative;
+    overflow: hidden;
+    @include page-padding;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--success-color), transparent 90%) 100%);
+        z-index: -1;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: $text-primary;
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: $text-secondary;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btn {
+      @include primary-button;
+      font-size: 1.1rem;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+    }
+  }
+}

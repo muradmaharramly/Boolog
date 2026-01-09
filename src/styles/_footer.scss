@@ -1,0 +1,66 @@
+@import 'variables';
+@import 'mixins';
+
+.footer {
+  @include glass-effect;
+  padding: $spacing-xl;
+  margin-top: $spacing-xl;
+  border-top: 1px solid var(--glass-border);
+  text-align: center;
+  color: $text-secondary;
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    align-items: center;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: $spacing-lg;
+    
+    a {
+      color: $text-secondary;
+      transition: color $transition-speed;
+
+      &:hover {
+        color: $accent-color;
+      }
+    }
+  }
+
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+    
+    a {
+      color: $accent-color;
+      text-decoration: none;
+      font-weight: 600;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .heart-icon {
+    color: $danger-color;
+    display: inline-block;
+    margin: 0 4px;
+    animation: bounce 1s infinite alternate;
+    vertical-align: middle;
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.3);
+  }
+}

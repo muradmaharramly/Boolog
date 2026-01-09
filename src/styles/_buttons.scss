@@ -1,0 +1,32 @@
+@import 'variables';
+@import 'mixins';
+
+.btn {
+  @include button-base;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  
+  // Variants
+  &.btn-primary {
+    @include primary-button;
+  }
+
+  &.btn-secondary {
+    @include secondary-button;
+  }
+
+  &.btn-danger {
+    @include danger-button;
+  }
+
+  &.btn-warning {
+    @include warning-button;
+  }
+
+  &.btn-info {
+    @include info-button;
+  }
+}

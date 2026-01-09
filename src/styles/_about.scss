@@ -1,0 +1,301 @@
+@import 'variables';
+@import 'mixins';
+
+.about-page {
+  // Hero Section
+  .about-hero {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent-color), transparent 90%) 0%, color-mix(in srgb, var(--bg-primary), transparent 100%) 100%);
+    margin-bottom: $spacing-xl;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent-color), transparent 90%) 0%, transparent 70%);
+      filter: blur(60px);
+      z-index: -1;
+    }
+    
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: $spacing-md;
+      background: linear-gradient(45deg, var(--text-primary), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      text-shadow: 0 10px 30px var(--glass-shadow);
+      
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+    }
+    
+    p {
+      font-size: 1.4rem;
+      color: $text-secondary;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+      
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+      }
+    }
+  }
+  
+  .about-content {
+    @include page-padding;
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+  }
+  
+  // Mission Section
+  .mission-section {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: $spacing-xl;
+    align-items: center;
+    
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .mission-card {
+      @include card-style;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      
+      .icon-box {
+        width: 60px;
+        height: 60px;
+        background: color-mix(in srgb, var(--accent-color), transparent 90%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: $spacing-lg;
+        
+        svg {
+          font-size: 2rem;
+          color: $accent-color;
+        }
+      }
+      
+      h2 {
+        font-size: 2rem;
+        margin-bottom: $spacing-md;
+      }
+      
+      p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: $text-secondary;
+        margin-bottom: $spacing-lg;
+      }
+    }
+    
+    .mission-visual {
+      position: relative;
+      height: 400px;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, color-mix(in srgb, var(--success-color), transparent 85%) 0%, transparent 70%);
+        filter: blur(40px);
+        z-index: -1;
+      }
+      
+      .stat-card {
+        @include glass-effect;
+        position: absolute;
+        padding: 1.5rem;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        animation: float 6s infinite ease-in-out;
+        
+        strong {
+          font-size: 2rem;
+          color: $accent-color;
+          font-weight: 800;
+        }
+        
+        span {
+          font-size: 0.9rem;
+          color: $text-secondary;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        
+        &:nth-child(1) {
+          top: 10%;
+          left: 10%;
+          animation-delay: 0s;
+        }
+        
+        &:nth-child(2) {
+          top: 40%;
+          right: 10%;
+          animation-delay: -2s;
+        }
+        
+        &:nth-child(3) {
+          bottom: 10%;
+          left: 20%;
+          animation-delay: -4s;
+        }
+      }
+    }
+  }
+
+  // Values Section
+  .values-section {
+    text-align: center;
+    
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      
+      span {
+        color: $accent-color;
+      }
+    }
+    
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      
+      .value-card {
+        @include card-style;
+        text-align: left;
+        padding: 2.5rem 2rem;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-10px);
+          background: color-mix(in srgb, var(--bg-tertiary), transparent 20%);
+          border-color: $accent-color;
+        }
+        
+        .icon {
+          font-size: 2.5rem;
+          color: $accent-color;
+          margin-bottom: 1.5rem;
+        }
+        
+        h3 {
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        
+        p {
+          color: $text-secondary;
+          line-height: 1.6;
+        }
+      }
+    }
+  }
+  
+  // Team Section
+  .team-section {
+    text-align: center;
+    margin-bottom: 4rem;
+    
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .subtitle {
+      color: $text-secondary;
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+    }
+    
+    .team-grid {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      
+      .team-member {
+        @include glass-effect;
+        padding: 2rem;
+        border-radius: 20px;
+        width: 280px;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-10px);
+          
+          .member-img {
+            transform: scale(1.05);
+            border-color: $accent-color;
+          }
+        }
+        
+        .member-img {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          background: color-mix(in srgb, var(--bg-tertiary), transparent 20%);
+          margin: 0 auto 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 3px solid transparent;
+          transition: all 0.3s ease;
+          overflow: hidden;
+          
+          svg {
+            font-size: 3rem;
+            color: $text-secondary;
+          }
+        }
+        
+        h3 {
+          font-size: 1.3rem;
+          margin-bottom: 0.5rem;
+        }
+        
+        .role {
+          color: $accent-color;
+          font-size: 0.9rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-bottom: 1rem;
+          display: block;
+        }
+        
+        p {
+          color: $text-secondary;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}

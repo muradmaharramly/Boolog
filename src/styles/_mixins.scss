@@ -1,0 +1,183 @@
+@import 'variables';
+
+@mixin glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin button-base {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(color-mix(in srgb, var(--text-primary), transparent 90%), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+@mixin primary-button {
+  @include button-base;
+  background: linear-gradient(135deg, var(--success-color), color-mix(in srgb, var(--success-color), black 10%));
+  color: #ffffff;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--success-color), transparent 70%);
+  border: 1px solid var(--glass-border);
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--success-color), transparent 60%);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+}
+
+@mixin secondary-button {
+  @include button-base;
+  background: color-mix(in srgb, var(--bg-tertiary), transparent 40%);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(4px);
+  
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--bg-tertiary), transparent 10%);
+    border-color: color-mix(in srgb, var(--text-primary), transparent 70%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--glass-shadow);
+  }
+}
+
+@mixin info-button {
+  @include button-base;
+  background: linear-gradient(135deg, var(--info-color), color-mix(in srgb, var(--info-color), black 10%));
+  color: #ffffff;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--info-color), transparent 70%);
+  border: 1px solid var(--glass-border);
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--info-color), transparent 60%);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+}
+
+@mixin warning-button {
+  @include button-base;
+  background: linear-gradient(135deg, var(--warning-color), color-mix(in srgb, var(--warning-color), black 10%));
+  color: #ffffff;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--warning-color), transparent 70%);
+  border: 1px solid var(--glass-border);
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--warning-color), transparent 60%);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+}
+
+@mixin danger-button {
+  @include button-base;
+  background: linear-gradient(135deg, var(--danger-color), color-mix(in srgb, var(--danger-color), black 10%));
+  color: #ffffff;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--danger-color), transparent 70%);
+  border: 1px solid var(--glass-border);
+  
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--danger-color), transparent 60%);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+}
+
+@mixin input-style {
+  width: 90%;
+  padding: 0.9rem 1.1rem;
+  background: color-mix(in srgb, var(--bg-secondary), transparent 60%);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  
+  &:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color), transparent 85%);
+    background: color-mix(in srgb, var(--bg-secondary), transparent 20%);
+  }
+
+  &::placeholder {
+    color: color-mix(in srgb, var(--text-secondary), transparent 40%);
+  }
+  
+  &:hover {
+    border-color: color-mix(in srgb, var(--text-primary), transparent 80%);
+  }
+}
+
+@mixin card-style {
+  @include glass-effect;
+  border-radius: 16px;
+  padding: $spacing-xl;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--bg-secondary), transparent 20%) 0%, color-mix(in srgb, var(--bg-secondary), transparent 40%) 100%);
+
+  &:hover {
+    box-shadow: 0 15px 40px 0 var(--glass-shadow);
+    border-color: color-mix(in srgb, var(--text-primary), transparent 85%);
+    transform: translateY(-2px);
+  }
+}
+
+@mixin page-padding {
+  padding: $spacing-xl $spacing-lg;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    padding: $spacing-lg $spacing-md;
+  }
+}

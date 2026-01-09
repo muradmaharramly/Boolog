@@ -1,0 +1,67 @@
+@import 'themes';
+@import 'global';
+
+:root {
+  font-family: $font-stack;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: $text-primary;
+  background-color: $bg-primary;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: $bg-primary;
+  background-image: 
+    radial-gradient(at 0% 0%, color-mix(in srgb, var(--accent-color), transparent 85%) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, color-mix(in srgb, var(--success-color), transparent 85%) 0px, transparent 50%);
+  transition: background-color 0.3s ease;
+}
+
+a {
+  font-weight: 500;
+  color: $accent-color;
+  text-decoration: none;
+  transition: color $transition-speed;
+
+  &:hover {
+    color: color-mix(in srgb, var(--accent-color), white 10%);
+    text-decoration: underline;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $text-primary;
+  margin-top: 0;
+}
+
+button {
+  @include button-base;
+}
+
+// Global scrollbar styling
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-primary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $bg-tertiary;
+  border-radius: 5px;
+  
+  &:hover {
+    background: color-mix(in srgb, var(--bg-tertiary), white 10%);
+  }
+}
