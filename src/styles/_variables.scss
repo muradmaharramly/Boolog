@@ -1,32 +1,50 @@
-// Colors - Themed
-$bg-primary: var(--bg-primary);
-$bg-secondary: var(--bg-secondary);
-$bg-tertiary: var(--bg-tertiary);
-$text-primary: var(--text-primary);
-$text-secondary: var(--text-secondary);
-$accent-color: var(--accent-color);
-$success-color: var(--success-color);
-$danger-color: var(--danger-color);
-$warning-color: var(--warning-color);
-$info-color: var(--info-color);
-$border-color: var(--border-color);
+// =========================================
+// 🎨 MASTER DESIGN TOKENS
+// =========================================
 
-// Liquid Glass
-$glass-bg: var(--glass-bg);
-$glass-border: 1px solid var(--glass-border);
-$glass-shadow: 0 4px 30px var(--glass-shadow);
-$backdrop-blur: 10px;
+// 🌑 Color Palette (Strict & Minimalist)
+$color-bg-dark: #05050A;       // Deep Void
+$color-bg-card: #0F0F16;       // Glass Base
+$color-bg-light: #F5F5FA;      // Light Mode Base
 
-// Fonts
-$font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+$color-text-primary: #ECECF0;
+$color-text-secondary: #9494A8;
+$color-text-muted: #5E5E70;
 
-// Spacing
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 2rem;
+$color-accent: #6366F1;        // Indigo/Violet Primary
+$color-accent-glow: rgba(99, 102, 241, 0.5);
+$color-accent-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
 
-// Transitions
-$transition-speed: 0.3s;
-$transition-ease: ease-in-out;
+$color-border: rgba(255, 255, 255, 0.06);
+$color-glass: rgba(20, 20, 25, 0.7);
+
+$color-danger: #EF4444;
+$color-success: #10B981;
+
+// 📐 Spacing System (8pt Grid)
+$space-xs: 0.5rem;   // 8px
+$space-sm: 1rem;     // 16px
+$space-md: 1.5rem;   // 24px
+$space-lg: 2.5rem;   // 40px
+$space-xl: 4rem;     // 64px
+
+// 📏 Layout
+$max-width: 1200px;
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 24px;
+$radius-full: 9999px;
+
+// 🪄 Liquid Glass Tokens
+$glass-bg: rgba(255, 255, 255, 0.03);
+$glass-border: 1px solid rgba(255, 255, 255, 0.05);
+$glass-blur: blur(20px);
+$glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+// 🔤 Typography
+$font-main: 'Inter', sans-serif;
+$font-mono: 'JetBrains Mono', monospace;
+
+// CSS Variables for Runtime Theme Switching
+// Moved to _themes.scss
+

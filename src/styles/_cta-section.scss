@@ -1,0 +1,100 @@
+@import 'variables';
+@import 'mixins';
+
+.cta-section {
+    padding: $space-xl 0;
+    
+    .cta-card {
+        position: relative;
+        background: radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-app) 100%);
+        border-radius: $radius-lg;
+        padding: 40px $space-lg;
+        overflow: hidden;
+        text-align: center;
+        border: 1px solid var(--border);
+        box-shadow: var(--glass-shadow);
+
+        @include mobile {
+            padding: $space-xl $space-md;
+        }
+
+        // Glow Shapes
+        .glow-shape {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 1;
+            opacity: 0.5;
+            
+            &.left {
+                top: 50%;
+                left: -150px;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, var(--accent), transparent);
+            }
+
+            &.right {
+                top: 50%;
+                right: -150px;
+                transform: translateY(-50%);
+                background: linear-gradient(-135deg, var(--accent), transparent);
+            }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+
+            .cta-badge {
+                display: inline-block;
+                padding: 0.5rem 1rem;
+                background: color-mix(in srgb, var(--accent), transparent 90%);
+                border: 1px solid color-mix(in srgb, var(--accent), transparent 70%);
+                border-radius: $radius-full;
+                color: var(--accent);
+                font-size: 0.9rem;
+                font-weight: 600;
+                margin-bottom: $space-md;
+                backdrop-filter: blur(4px);
+            }
+
+            h2 {
+                font-size: 3.5rem;
+                font-weight: 800;
+                margin-bottom: $space-sm;
+                color: var(--text-main);
+                letter-spacing: -0.02em;
+                line-height: 1.1;
+
+                @include mobile {
+                    font-size: 2.2rem;
+                }
+            }
+
+            p {
+                font-size: 1.1rem;
+                color: var(--text-sub);
+                margin-bottom: $space-lg;
+                line-height: 1.6;
+            }
+
+            .cta-btn {
+                @include btn-primary;
+                font-size: 1.1rem;
+                padding: 1rem 1.5rem;
+                box-shadow: 0 0 20px var(--accent-glow);
+                
+                &:hover {
+                    box-shadow: 0 0 30px var(--accent-glow);
+                }
+            }
+        }
+    }
+}

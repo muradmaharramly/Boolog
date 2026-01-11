@@ -3,11 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogs, fetchComments, addComment, deleteComment, toggleLike } from '../features/blogs/blogsSlice';
 import { BeatLoader } from 'react-spinners';
-import { FiHeart, FiCalendar, FiUser, FiTag, FiSend, FiTrash2, FiAward, FiShare2, FiBookmark } from 'react-icons/fi';
+import { FiHeart, FiCalendar, FiUser, FiTag, FiSend, FiTrash2, FiAward, FiShare2, FiMessageSquare } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import BlogCard from '../components/BlogCard';
 import ShareModal from '../components/ShareModal';
 import ConfirmModal from '../components/ConfirmModal';
+import CommentModal from '../components/CommentModal';
 import '../styles/_blog-details.scss';
 import Avatar from '../components/Avatar';
 
@@ -17,10 +18,11 @@ const BlogDetails = () => {
   const { items: blogs, loading } = useSelector((state) => state.blogs);
   const { user } = useSelector((state) => state.auth);
   
-  const [commentText, setCommentText] = useState('');
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
+  const [sidebarTab, setSidebarTab] = useState('recent'); // 'recent' | 'popular'
 
   useEffect(() => {
     if (blogs.length === 0) {
@@ -38,17 +40,17 @@ const BlogDetails = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem' }}>
-        <BeatLoader color="#58a6ff" />
+      <div className="loading-container">
+        <BeatLoader color="#6366F1" />
       </div>
     );
   }
 
   if (!blog) {
     return (
-      <div className="blog-details-container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+      <div className="not-found-container">
         <h2>Blog not found</h2>
-        <Link to="/" style={{ color: '#58a6ff', marginTop: '1rem', display: 'inline-block' }}>Back to Home</Link>
+        <Link to="/" className="back-link">Back to Home</Link>
       </div>
     );
   }
@@ -64,17 +66,15 @@ const BlogDetails = () => {
     dispatch(toggleLike({ blogId: blog.id, userId: user.id }));
   };
 
-  const handleAddComment = async (e) => {
-    e.preventDefault();
+  const handleAddComment = async (content) => {
     if (!user) {
         toast.info('Please login to comment');
         return;
     }
-    if (!commentText.trim()) return;
+    if (!content.trim()) return;
 
-    const result = await dispatch(addComment({ blogId: blog.id, userId: user.id, content: commentText }));
+    const result = await dispatch(addComment({ blogId: blog.id, userId: user.id, content }));
     if (!result.error) {
-        setCommentText('');
         toast.success('Comment added');
     } else {
         toast.error(result.payload);
@@ -101,30 +101,22 @@ const BlogDetails = () => {
   // Sort comments by date ascending to find the "First"
   const sortedComments = blog.comments ? [...blog.comments].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)) : [];
 
-  const otherBlogs = blogs.filter(b => b.id !== blog.id).slice(0, 3);
+  const otherBlogs = blogs
+    .filter(b => b.id !== blog.id)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 4);
+
+  const popularBlogs = blogs
+    .filter(b => b.id !== blog.id)
+    .sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
+    .slice(0, 4);
+
+  const sidebarBlogs = sidebarTab === 'recent' ? otherBlogs : popularBlogs;
 
   return (
     <div className="blog-details-container">
       
       <div className="blog-layout">
-        <aside className="floating-actions">
-            <button 
-                onClick={handleLike} 
-                className={`action-btn ${isLiked ? 'liked' : ''}`}
-                title="Like"
-            >
-                <FiHeart style={{ fill: isLiked ? 'currentColor' : 'none' }} />
-                <span className="count">{likesCount}</span>
-            </button>
-            <button 
-                onClick={() => setIsShareModalOpen(true)}
-                className="action-btn" 
-                title="Share"
-            >
-                <FiShare2 />
-            </button>
-        </aside>
-
         <article className="blog-main-content">
           <div className="blog-details-card">
             {blog.image_url && (
@@ -160,7 +152,32 @@ const BlogDetails = () => {
                     ))}
                 </div>
 
-                {/* Author Bio Section - Defaults to Admin since only admins post */}
+                {/* Interaction Actions Bar */}
+                <div className="blog-actions-bar">
+                    <button 
+                        onClick={handleLike} 
+                        className={`action-btn ${isLiked ? 'liked' : ''}`}
+                    >
+                        <FiHeart className={isLiked ? 'fill-current' : ''} /> 
+                        <span>{isLiked ? 'Liked' : 'Like'} ({likesCount})</span>
+                    </button>
+                    <button 
+                        onClick={() => setIsCommentModalOpen(true)}
+                        className="action-btn"
+                    >
+                        <FiMessageSquare /> 
+                        <span>Comment ({blog.comments?.length || 0})</span>
+                    </button>
+                    <button 
+                        onClick={() => setIsShareModalOpen(true)}
+                        className="action-btn"
+                    >
+                        <FiShare2 /> 
+                        <span>Share</span>
+                    </button>
+                </div>
+
+                {/* Author Bio Section */}
                 <div className="author-bio-section">
                     <div className="bio-avatar">
                         <Avatar 
@@ -176,74 +193,59 @@ const BlogDetails = () => {
                 </div>
 
 
-                <div className="comments-section">
+                <div className="comments-preview-section" onClick={() => setIsCommentModalOpen(true)}>
                     <h3>Comments ({blog.comments?.length || 0})</h3>
-                    
-                    <form onSubmit={handleAddComment} className="comment-form">
-                        <textarea 
-                            placeholder="Write a comment..." 
-                            value={commentText}
-                            onChange={(e) => setCommentText(e.target.value)}
-                        />
-                        <div className="form-actions">
-                            <button type="submit">
-                                <FiSend /> Post Comment
-                            </button>
-                        </div>
-                    </form>
-
-                    <div className="comments-list">
-                        {sortedComments.map((comment, index) => (
-                            comment.content ? (
-                                <div key={comment.id} className={`comment-item ${index === 0 ? 'first' : ''}`}>
-                                    {index === 0 && (
-                                        <div className="first-badge">
-                                            <FiAward /> First!
-                                        </div>
-                                    )}
-                                    <div className="comment-header">
-                                        <div className="user-info">
-                                            {comment.profiles?.avatar_url ? (
-                                                <img src={comment.profiles.avatar_url} alt="avatar" className="avatar" />
-                                            ) : (
-                                                <div className="avatar" />
-                                            )}
-                                            <div>
-                                                <div className="username">{comment.profiles?.username || 'Unknown'}</div>
-                                                <div className="date">{new Date(comment.created_at).toLocaleDateString()}</div>
-                                            </div>
-                                        </div>
-                                        {user?.id === comment.user_id && (
-                                            <button onClick={() => handleDeleteClick(comment.id)} className="delete-btn">
-                                                <FiTrash2 />
-                                            </button>
-                                        )}
-                                    </div>
-                                    <p>{comment.content}</p>
-                                </div>
-                            ) : null
-                        ))}
-                        {sortedComments.length === 0 && (
-                            <p style={{ textAlign: 'center', color: '#8b949e' }}>No comments yet. Be the first!</p>
-                        )}
-                    </div>
+                    <p>Tap to view and add comments...</p>
                 </div>
             </div>
           </div>
         </article>
+
+        <aside className="blog-sidebar">
+            <div className="sidebar-section">
+                <div className="sidebar-tabs">
+                    <button 
+                        className={`tab-btn ${sidebarTab === 'recent' ? 'active' : ''}`}
+                        onClick={() => setSidebarTab('recent')}
+                    >
+                        Recent
+                    </button>
+                    <button 
+                        className={`tab-btn ${sidebarTab === 'popular' ? 'active' : ''}`}
+                        onClick={() => setSidebarTab('popular')}
+                    >
+                        Popular
+                    </button>
+                </div>
+
+                <div className="sidebar-blogs-list">
+                    {sidebarBlogs.map(b => (
+                        <Link to={`/blog/${b.id}`} key={b.id} className="sidebar-blog-card">
+                            <div className="sidebar-blog-image">
+                                <img src={b.image_url || 'https://via.placeholder.com/150'} alt={b.title} />
+                                {b.categories && <span className="category-tag">{b.categories.name}</span>}
+                            </div>
+                            <div className="sidebar-blog-info">
+                                <h4>{b.title}</h4>
+                                <div className="blog-meta-mini">
+                                    <span className="date">{new Date(b.created_at).toLocaleDateString()}</span>
+                                    <span className="dot">•</span>
+                                    <span className="read-time">5 min read</span>
+                                </div>
+                                <div className="blog-stats-mini">
+                                    <span><FiHeart size={12}/> {b.likes?.length || 0}</span>
+                                    <span><FiMessageSquare size={12}/> {b.comments?.length || 0}</span>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+        </aside>
     </div>
 
       <div className="back-link">
         <Link to="/">Back to Blogs</Link>
-      </div>
-
-      <div className="other-blogs">
-        <h2>Other Blogs You Might Like</h2>
-        <div className="blogs-grid">
-            {otherBlogs.map(b => (
-                <BlogCard key={b.id} blog={b} />
-            ))}
-        </div>
       </div>
 
       <ShareModal 
@@ -251,6 +253,16 @@ const BlogDetails = () => {
         onClose={() => setIsShareModalOpen(false)} 
         url={window.location.href}
         title={blog.title}
+      />
+
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={() => setIsCommentModalOpen(false)}
+        comments={sortedComments}
+        onAddComment={handleAddComment}
+        onDeleteComment={handleDeleteClick}
+        currentUser={user}
+        loading={loading}
       />
 
       <ConfirmModal 

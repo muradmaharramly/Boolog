@@ -1,14 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { QRCodeCanvas } from 'qrcode.react';
-import { FiX, FiCopy, FiCheck } from 'react-icons/fi';
+import { FiCopy, FiCheck } from 'react-icons/fi';
+import { FaTwitter, FaFacebook, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import './Modal.scss';
+import Modal from './Modal';
 
 const ShareModal = ({ isOpen, onClose, url, title }) => {
   const [copied, setCopied] = React.useState(false);
-
-  if (!isOpen) return null;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(url);
@@ -17,42 +15,35 @@ const ShareModal = ({ isOpen, onClose, url, title }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  return ReactDOM.createPortal(
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="close-btn" onClick={onClose}>
-          <FiX />
-        </button>
-        
-        <h2>Share Blog</h2>
-        <p>Scan the QR code or copy the link below to share "{title}"</p>
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Share Blog">
+      <p>Scan the QR code or copy the link below to share "{title}"</p>
 
-        <div className="share-content">
-          <div className="qr-code-wrapper">
-            <QRCodeCanvas 
-              value={url} 
-              size={200}
-              level={"H"}
-              includeMargin={true}
-            />
-          </div>
+      <div className="share-content">
+        <div className="qr-code-wrapper">
+          <QRCodeCanvas 
+            value={url} 
+            size={200}
+            level={"H"}
+            includeMargin={true}
+          />
+        </div>
 
-          <div className="url-container">
-            <input type="text" value={url} readOnly />
-            <button onClick={handleCopy} title="Copy Link">
-              {copied ? <FiCheck /> : <FiCopy />}
-            </button>
-          </div>
+        <div className="copy-link-wrapper">
+          <input type="text" value={url} readOnly />
+          <button onClick={handleCopy} title="Copy Link">
+            {copied ? <FiCheck /> : <FiCopy />}
+          </button>
+        </div>
 
-          <div className="modal-actions">
-            <button className="cancel-btn" onClick={onClose} style={{ width: '100%' }}>
-              Close
-            </button>
-          </div>
+        <div className="social-share-buttons">
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`} target="_blank" rel="noopener noreferrer" className="social-btn twitter" title="Share on Twitter"><FaTwitter /></a>
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`} target="_blank" rel="noopener noreferrer" className="social-btn facebook" title="Share on Facebook"><FaFacebook /></a>
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`} target="_blank" rel="noopener noreferrer" className="social-btn linkedin" title="Share on LinkedIn"><FaLinkedin /></a>
+            <a href={`https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`} target="_blank" rel="noopener noreferrer" className="social-btn whatsapp" title="Share on WhatsApp"><FaWhatsapp /></a>
         </div>
       </div>
-    </div>,
-    document.body
+    </Modal>
   );
 };
 

@@ -2,165 +2,159 @@
 @import 'mixins';
 
 .auth-container {
-  @include flex-center;
-  min-height: 90vh;
-  padding: $spacing-md;
-  background: 
-    radial-gradient(circle at 10% 20%, color-mix(in srgb, var(--accent-color), transparent 85%) 0%, transparent 20%),
-    radial-gradient(circle at 90% 80%, color-mix(in srgb, var(--success-color), transparent 90%) 0%, transparent 20%),
-    radial-gradient(circle at 50% 50%, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  min-height: calc(100vh - 80px); // Adjust for header
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-lg;
   position: relative;
   overflow: hidden;
-  
-  // Animated background shapes
-  &::before, &::after {
+
+  // Background glow
+  &::before {
     content: '';
     position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 600px;
     height: 600px;
-    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
     filter: blur(80px);
-    z-index: 0;
-    opacity: 0.4;
-    animation: float 20s infinite ease-in-out;
+    z-index: -1;
   }
-  
-  &::before {
-    background: radial-gradient(circle, color-mix(in srgb, var(--accent-color), transparent 70%), transparent 70%);
-    top: -200px;
-    left: -200px;
-  }
-  
-  &::after {
-    background: radial-gradient(circle, color-mix(in srgb, var(--success-color), transparent 80%), transparent 70%);
-    bottom: -200px;
-    right: -200px;
-    animation-delay: -10s;
+}
+
+.auth-card {
+  @include glass-panel;
+  width: 100%;
+  max-width: 450px;
+  padding: $space-xl;
+  position: relative;
+  animation: fadeIn 0.5s ease-out;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: $space-xs;
+    @include text-gradient;
   }
 
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(50px, 50px); }
+  p {
+    color: var(--text-sub);
+    text-align: center;
+    margin-bottom: $space-lg;
+    font-size: 0.95rem;
+
+    a {
+      color: var(--accent);
+      font-weight: 600;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 
-  .auth-card {
-    @include card-style;
-    width: 100%;
-    max-width: 500px;
+  // Admin Specific
+  .admin-badge {
+    display: flex;
+    justify-content: center;
+    margin-bottom: $space-md;
+  
+    .badge-icon {
+      background: color-mix(in srgb, var(--danger), transparent 90%);
+      padding: $space-sm;
+      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--danger), transparent 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      svg {
+        color: var(--danger);
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+
+  .admin-subtitle {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+
+  form {
     display: flex;
     flex-direction: column;
-    gap: $spacing-lg;
-    position: relative;
-    z-index: 1;
-    backdrop-filter: blur(20px);
-    background: var(--glass-bg); // Lighter glass for the card itself
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 20px 50px var(--glass-shadow);
+    gap: $space-md;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-      opacity: 0.8;
-    }
-
-    // Admin Login Variant
-    &.admin-login-card {
-      &::before {
-        background: linear-gradient(90deg, transparent, var(--danger-color), transparent);
-      }
-
-      h2 {
-        background: linear-gradient(135deg, var(--danger-color), var(--warning-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      form button {
-        @include danger-button;
-        width: 100%;
-        margin-top: $spacing-sm;
-      }
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: $spacing-sm;
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent-color), var(--success-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
-    }
-
-    form {
+    .form-group {
       display: flex;
       flex-direction: column;
-      gap: $spacing-lg;
+      gap: 0.5rem;
 
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: $spacing-xs;
+      label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-main);
+        margin-left: 0.2rem;
+      }
 
-        label {
-          font-weight: 600;
-          color: $text-secondary;
-          font-size: 0.9rem;
-          margin-left: 4px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          font-size: 0.75rem;
+      .input-wrapper {
+        position: relative;
+        
+        .input-icon {
+          position: absolute;
+          left: 1rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--text-sub);
+          pointer-events: none;
+          transition: color 0.2s;
+          z-index: 1;
         }
 
         input {
-          @include input-style;
-          background: color-mix(in srgb, var(--bg-primary), transparent 80%);
-          
+          @include input-base;
+          padding-left: 2.8rem;
+          background: rgba(0, 0, 0, 0.2);
+          color: var(--text-main);
+
           &:focus {
-            background: color-mix(in srgb, var(--bg-primary), transparent 70%);
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+          }
+
+          &::placeholder {
+            color: var(--text-muted);
           }
         }
-      }
-
-      button {
-        @include primary-button;
-        margin-top: $spacing-sm;
-        width: 100%;
-        padding: 1rem;
-        font-size: 1rem;
-        letter-spacing: 0.5px;
-        box-shadow: 0 4px 20px color-mix(in srgb, var(--success-color), transparent 75%);
         
-        &:disabled {
-          opacity: 0.7;
-          cursor: wait;
+        // Highlight icon when input is focused
+        &:focus-within .input-icon {
+          color: var(--accent);
         }
       }
     }
 
-    p {
-      text-align: center;
-      margin-top: $spacing-sm;
-      color: $text-secondary;
-      font-size: 0.95rem;
+    button {
+      @include btn-primary;
+      width: 100%;
+      margin-top: $space-sm;
+      
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
 
-      a {
-        color: $accent-color;
-        text-decoration: none;
-        font-weight: 600;
-        margin-left: 0.3rem;
-        transition: color 0.2s;
-        
-        &:hover {
-          color: color-mix(in srgb, var(--accent-color), white 20%);
-          text-decoration: underline;
-        }
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
       }
     }
   }

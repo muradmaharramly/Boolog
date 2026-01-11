@@ -1,183 +1,146 @@
 @import 'variables';
 
-@mixin glass-effect {
+// =========================================
+// 🛠️ MIXINS
+// =========================================
+
+// 🧊 Liquid Glass Effect
+@mixin glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  box-shadow: var(--glass-shadow);
+  border-radius: $radius-md;
 }
 
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@mixin flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@mixin button-base {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid transparent;
-  font-family: inherit;
-  font-size: 0.95rem;
-  position: relative;
+// 📦 Bento Grid Item
+@mixin bento-card {
+  @include glass-panel;
   overflow: hidden;
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+}
+
+// ⌨️ Responsive Inputs
+@mixin input-base {
+  width: 100%;
+  padding: $space-sm;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: $radius-sm;
+  color: var(--text-main);
+  font-family: $font-main;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: var(--bg-card);
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+// 🎨 Text Gradient
+@mixin text-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// 🔘 Modern Buttons
+@mixin btn-primary {
+  background: var(--accent-gradient);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: $radius-full;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px var(--accent-glow);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--accent-glow);
   }
 
   &:active {
     transform: scale(0.98);
   }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(color-mix(in srgb, var(--text-primary), transparent 90%), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  &:hover::after {
-    opacity: 1;
-  }
 }
 
-@mixin primary-button {
-  @include button-base;
-  background: linear-gradient(135deg, var(--success-color), color-mix(in srgb, var(--success-color), black 10%));
-  color: #ffffff;
-  box-shadow: 0 4px 15px color-mix(in srgb, var(--success-color), transparent 70%);
-  border: 1px solid var(--glass-border);
-  
-  &:hover:not(:disabled) {
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--success-color), transparent 60%);
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-  }
-}
-
-@mixin secondary-button {
-  @include button-base;
-  background: color-mix(in srgb, var(--bg-tertiary), transparent 40%);
-  color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(4px);
-  
-  &:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--bg-tertiary), transparent 10%);
-    border-color: color-mix(in srgb, var(--text-primary), transparent 70%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--glass-shadow);
-  }
-}
-
-@mixin info-button {
-  @include button-base;
-  background: linear-gradient(135deg, var(--info-color), color-mix(in srgb, var(--info-color), black 10%));
-  color: #ffffff;
-  box-shadow: 0 4px 15px color-mix(in srgb, var(--info-color), transparent 70%);
-  border: 1px solid var(--glass-border);
-  
-  &:hover:not(:disabled) {
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--info-color), transparent 60%);
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-  }
-}
-
-@mixin warning-button {
-  @include button-base;
-  background: linear-gradient(135deg, var(--warning-color), color-mix(in srgb, var(--warning-color), black 10%));
-  color: #ffffff;
-  box-shadow: 0 4px 15px color-mix(in srgb, var(--warning-color), transparent 70%);
-  border: 1px solid var(--glass-border);
-  
-  &:hover:not(:disabled) {
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--warning-color), transparent 60%);
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-  }
-}
-
-@mixin danger-button {
-  @include button-base;
-  background: linear-gradient(135deg, var(--danger-color), color-mix(in srgb, var(--danger-color), black 10%));
-  color: #ffffff;
-  box-shadow: 0 4px 15px color-mix(in srgb, var(--danger-color), transparent 70%);
-  border: 1px solid var(--glass-border);
-  
-  &:hover:not(:disabled) {
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--danger-color), transparent 60%);
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-  }
-}
-
-@mixin input-style {
-  width: 90%;
-  padding: 0.9rem 1.1rem;
-  background: color-mix(in srgb, var(--bg-secondary), transparent 60%);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-  
-  &:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color), transparent 85%);
-    background: color-mix(in srgb, var(--bg-secondary), transparent 20%);
-  }
-
-  &::placeholder {
-    color: color-mix(in srgb, var(--text-secondary), transparent 40%);
-  }
-  
-  &:hover {
-    border-color: color-mix(in srgb, var(--text-primary), transparent 80%);
-  }
-}
-
-@mixin card-style {
-  @include glass-effect;
-  border-radius: 16px;
-  padding: $spacing-xl;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--bg-secondary), transparent 20%) 0%, color-mix(in srgb, var(--bg-secondary), transparent 40%) 100%);
+@mixin btn-ghost {
+  background: transparent;
+  color: var(--text-sub);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: $radius-full;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:hover {
-    box-shadow: 0 15px 40px 0 var(--glass-shadow);
-    border-color: color-mix(in srgb, var(--text-primary), transparent 85%);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 }
 
-@mixin page-padding {
-  padding: $spacing-xl $spacing-lg;
-  max-width: 1280px;
-  margin: 0 auto;
-  width: 100%;
-  
-  @media (max-width: 768px) {
-    padding: $spacing-lg $spacing-md;
+@mixin btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: $radius-full;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--text-sub);
+    transform: translateY(-2px);
   }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// 📱 Breakpoints
+@mixin mobile {
+  @media (max-width: 768px) { @content; }
+}
+
+@mixin tablet {
+  @media (max-width: 1024px) { @content; }
+}
+
+// ✨ Text Gradients
+@mixin text-gradient {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

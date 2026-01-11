@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogs, fetchCategories } from '../features/blogs/blogsSlice';
 import BlogCard from '../components/BlogCard';
-import { BeatLoader } from 'react-spinners';
-import { FiSearch } from 'react-icons/fi';
+import LoadingScreen from '../components/LoadingScreen';
+import EmptyState from '../components/EmptyState';
+import ErrorState from '../components/ErrorState';
+import { FiSearch, FiFilter } from 'react-icons/fi'; // Added FiFilter
 import '../styles/_blogs.scss';
+import { BsStars } from 'react-icons/bs';
 
 const Blogs = () => {
   const dispatch = useDispatch();
@@ -26,11 +29,19 @@ const Blogs = () => {
     return matchCategory && matchSearch;
   });
 
+  const handleRetry = () => {
+    dispatch(fetchBlogs());
+    dispatch(fetchCategories());
+  };
+
   return (
     <div className="blogs-container">
       <div className="header-section">
-        <h1>All Blogs</h1>
-        <p>Explore our collection of articles, tutorials, and insights.</p>
+      <span className="blogs-badge"><BsStars />Our blogs page</span>
+        <h1>
+            Look at our <span className="highlight">Blogs</span> <br />
+          </h1>
+        <p>Discover articles, tutorials, and insights from the developer community.</p>
       </div>
 
       <div className="filters">
@@ -38,35 +49,41 @@ const Blogs = () => {
             <FiSearch />
             <input 
                 type="text" 
-                placeholder="Search blogs..." 
+                placeholder="Search articles, topics..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
         </div>
         
-        <select 
-            value={selectedCategory} 
-            onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-            <option value="all">All Categories</option>
-            {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-        </select>
+        <div className="select-wrapper">
+            <FiFilter className="select-icon" />
+            <select 
+                value={selectedCategory} 
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                aria-label="Filter by category"
+            >
+                <option value="all">All Categories</option>
+                {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+            </select>
+        </div>
       </div>
 
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-          <BeatLoader color="#58a6ff" />
-        </div>
+        <LoadingScreen message="Loading articles..." />
+      ) : error ? (
+        <ErrorState message={`Error loading blogs: ${error}`} onRetry={handleRetry} />
+      ) : filteredBlogs.length === 0 ? (
+        <EmptyState 
+            title="No articles found" 
+            message="Try adjusting your search or category filter." 
+        />
       ) : (
         <div className="blogs-grid">
           {filteredBlogs.map(blog => (
             <BlogCard key={blog.id} blog={blog} />
           ))}
-          {filteredBlogs.length === 0 && (
-             <p className="no-blogs">No blogs found.</p>
-          )}
         </div>
       )}
     </div>

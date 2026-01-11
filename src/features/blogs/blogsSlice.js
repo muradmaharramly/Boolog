@@ -2,9 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { supabase } from '../../supabaseClient';
 
 export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async (_, { rejectWithValue }) => {
-  // Removed profiles:author_id join as we decoupled it. 
-  // Admin posts might not have a corresponding profile in the public profiles table.
-  const { data, error } = await supabase
+  // 1. Fetch blogs
+  const { data: blogs, error } = await supabase
     .from('blogs')
     .select(`
       *,
@@ -15,18 +14,57 @@ export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async (_, { rejec
     .order('created_at', { ascending: false });
 
   if (error) return rejectWithValue(error.message);
-  return data;
+
+  if (!blogs || blogs.length === 0) return [];
+
+  // 2. Fetch profiles for authors
+  const authorIds = [...new Set(blogs.map(b => b.author_id).filter(Boolean))];
+  
+  const { data: profiles, error: profilesError } = await supabase
+    .from('profiles')
+    .select('id, username, avatar_url')
+    .in('id', authorIds);
+
+  if (profilesError) {
+    console.error('Error fetching profiles:', profilesError);
+    // Return blogs without profiles if profile fetch fails
+    return blogs;
+  }
+
+  // 3. Map profiles to blogs
+  const blogsWithProfiles = blogs.map(blog => {
+    const profile = profiles?.find(p => p.id === blog.author_id);
+    return {
+      ...blog,
+      profiles: profile || { username: 'Admin', avatar_url: null }
+    };
+  });
+
+  return blogsWithProfiles;
 });
 
 export const addBlog = createAsyncThunk('blogs/addBlog', async (blogData, { rejectWithValue }) => {
-  const { data, error } = await supabase
+  // 1. Insert Blog
+  const { data: newBlog, error } = await supabase
     .from('blogs')
     .insert([blogData])
     .select()
     .single();
 
   if (error) return rejectWithValue(error.message);
-  return data;
+
+  // 2. Fetch Author Profile (to display immediately without refresh)
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('username, avatar_url')
+    .eq('id', blogData.author_id)
+    .single();
+
+  // 3. Attach profile to blog object
+  return {
+    ...newBlog,
+    profiles: profile || { username: 'Admin', avatar_url: null }
+  };
 });
 
 export const toggleLike = createAsyncThunk('blogs/toggleLike', async ({ blogId, userId }, { rejectWithValue }) => {

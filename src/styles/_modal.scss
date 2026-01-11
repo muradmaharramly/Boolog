@@ -1,0 +1,469 @@
+@import 'variables';
+@import 'mixins';
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+  padding: $space-sm; // Prevent touching edges on mobile
+
+  .modal-content {
+    @include glass-panel;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 500px; // Slightly wider for better form layout
+    position: relative;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: var(--text-main);
+    background: var(--bg-card);
+
+    // Scrollbar for modal content
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: $radius-full;
+    }
+
+    // Close Button
+    .close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--danger);
+        transform: rotate(90deg);
+      }
+    }
+
+    .modal-title {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      @include text-gradient;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .modal-body {
+      width: 100%;
+      flex-grow: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem; // Space for scrollbar
+      
+      > p {
+        color: var(--text-sub);
+        margin-bottom: 2rem;
+        text-align: center;
+        line-height: 1.6;
+        font-size: 1rem;
+      }
+    }
+
+    // Modal Actions
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+
+      button {
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        border: none;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &.cancel-btn {
+          background-color: transparent;
+          border: 1px solid var(--border);
+          color: var(--text-sub);
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.2);
+          }
+        }
+
+        &.confirm-btn {
+          background: linear-gradient(135deg, var(--danger), #991b1b);
+          color: white;
+          box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+          border: 1px solid rgba(255,255,255,0.1);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            filter: brightness(1.1);
+          }
+          
+          &:disabled {
+             opacity: 0.7;
+             cursor: not-allowed;
+             transform: none;
+          }
+        }
+        
+        &.primary-btn {
+            @include btn-primary;
+            justify-content: center;
+            border-radius: 12px;
+            
+             &:disabled {
+                 opacity: 0.7;
+                 cursor: not-allowed;
+                 transform: none;
+                 box-shadow: none;
+             }
+        }
+      }
+    }
+
+    // Share Modal Specific Styles
+    .share-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+
+      .qr-code-wrapper {
+        padding: 1.5rem;
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      }
+
+      .copy-link-wrapper {
+        display: flex;
+        width: 100%;
+        gap: 0.5rem;
+        position: relative;
+
+        input {
+          @include input-base;
+          padding-right: 3rem;
+          text-overflow: ellipsis;
+        }
+
+        button {
+          position: absolute;
+          right: 0.5rem;
+          top: 50%;
+          transform: translateY(-50%);
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          color: var(--text-main);
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: $radius-sm;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+          }
+        }
+      }
+
+      .social-share-buttons {
+          display: flex;
+          gap: 1rem;
+          margin-top: 0.5rem;
+          
+          .social-btn {
+              width: 3rem;
+              height: 3rem;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.2rem;
+              color: white;
+              transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+              
+              &:hover {
+                  transform: translateY(-3px) scale(1.1);
+              }
+              
+              &.twitter { background: #1DA1F2; box-shadow: 0 4px 10px rgba(29, 161, 242, 0.3); }
+              &.facebook { background: #4267B2; box-shadow: 0 4px 10px rgba(66, 103, 178, 0.3); }
+              &.linkedin { background: #0077b5; box-shadow: 0 4px 10px rgba(0, 119, 181, 0.3); }
+              &.whatsapp { background: #25D366; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+          }
+      }
+    }
+
+    // Edit Modal (Form) Styles
+    &.edit-modal {
+        max-width: 600px;
+    }
+
+    .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            
+            label {
+                font-size: 0.9rem;
+                color: var(--text-sub);
+                font-weight: 500;
+            }
+            
+            .input-icon-wrapper {
+                position: relative;
+                
+                .input-icon {
+                    position: absolute;
+                    left: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--text-muted);
+                }
+                
+                .input-field {
+                    padding-left: 2.5rem;
+                }
+            }
+            
+            .input-field {
+                @include input-base;
+                
+                &.textarea {
+                    min-height: 120px;
+                    resize: vertical;
+                    font-family: inherit;
+                }
+            }
+
+            select.input-field {
+                 appearance: none;
+                 cursor: pointer;
+            }
+            
+            .tags-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+                
+                .tag-pill {
+                    background: rgba(99, 102, 241, 0.1);
+                    color: var(--accent);
+                    padding: 0.25rem 0.75rem;
+                    border-radius: $radius-full;
+                    font-size: 0.85rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    border: 1px solid rgba(99, 102, 241, 0.2);
+                    
+                    svg {
+                        cursor: pointer;
+                        &:hover { color: var(--danger); }
+                    }
+                }
+            }
+        }
+    }
+
+    // Comment Modal Styles
+    &.comment-modal {
+        max-width: 500px;
+        height: 80vh; // Fixed height for comment list scroll
+        max-height: 80vh;
+        
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden; // Parent handles structure, children scroll
+        }
+    }
+
+    .comments-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            gap: 1rem;
+            
+            .empty-icon {
+                font-size: 3rem;
+                opacity: 0.5;
+            }
+        }
+        
+        .comment-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: $radius-sm;
+            padding: 1rem;
+            
+            .comment-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 0.5rem;
+                
+                .user-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    
+                    .username {
+                        font-weight: 600;
+                        color: var(--text-main);
+                        font-size: 0.9rem;
+                    }
+                    
+                    .timestamp {
+                        font-size: 0.75rem;
+                        color: var(--text-muted);
+                    }
+                }
+                
+                .delete-comment-btn {
+                    background: transparent;
+                    border: none;
+                    color: var(--text-muted);
+                    cursor: pointer;
+                    padding: 0.25rem;
+                    transition: color 0.2s;
+                    
+                    &:hover {
+                        color: var(--danger);
+                    }
+                }
+            }
+            
+            .comment-content {
+                color: var(--text-sub);
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-bottom: 0;
+                text-align: left;
+            }
+        }
+    }
+    
+    .comment-form {
+        display: flex;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+        
+        .comment-input {
+            @include input-base;
+            flex-grow: 1;
+        }
+        
+        .send-btn {
+            @include btn-primary;
+            padding: 0;
+            width: 3rem;
+            height: 3rem; // Match input height roughly
+            border-radius: $radius-sm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    }
+  }
+}
+
+// Mobile Bottom Sheet Style
+@include mobile {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+    
+    .modal-content {
+      width: 100%;
+      max-width: 100%;
+      border-radius: $radius-lg $radius-lg 0 0;
+      animation: slideUp 0.3s ease-out;
+      padding: 2rem 1.5rem;
+      max-height: 85vh;
+      
+      &.comment-modal {
+          height: 85vh;
+      }
+    }
+  }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

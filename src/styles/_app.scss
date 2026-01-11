@@ -1,41 +1,12 @@
+// App-specific wrapper styles if needed
 @import 'variables';
-@import 'mixins';
 
-.app-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: $spacing-xl;
-  
-  @media (max-width: 768px) {
-    padding: $spacing-md;
-  }
-}
-
-.card {
-  @include card-style;
-}
-
-// Global Loading State
-.loading-container {
+.app-wrapper {
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-  margin-top: 10%;
+  flex-direction: column;
 }
 
-// Access Denied State
-.access-denied {
-  text-align: center;
-  margin-top: 2rem;
-  padding: $spacing-xl;
-  
-  h2 {
-    color: $danger-color;
-    margin-bottom: $spacing-md;
-  }
-  
-  p {
-    color: $text-secondary;
-  }
+.main-content {
+  flex: 1;
 }

@@ -2,236 +2,302 @@
 @import 'mixins';
 
 .header {
-  @include glass-effect;
-  padding: $spacing-md $spacing-xl;
   position: sticky;
   top: 0;
-  z-index: 100;
-  margin-bottom: $spacing-xl;
-  border-bottom: 1px solid var(--glass-border);
+  z-index: 1000;
+  width: 100%;
+  padding: $space-sm 0;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
 
   .container {
-    max-width: 1280px;
-    margin: 0 auto;
-    @include flex-between;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
   }
 
   .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: $text-primary;
     display: flex;
     align-items: center;
-    gap: $spacing-sm;
+    gap: $space-xs;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    
+    svg {
+      color: var(--accent);
+    }
 
-    &:hover {
-      text-decoration: none;
-      color: $accent-color;
+    &:hover svg {
+      transform: rotate(180deg);
+      transition: transform 0.5s ease;
     }
   }
 
   .search-container {
     position: relative;
-    flex: 1;
     max-width: 400px;
-    margin: 0 $spacing-lg;
+    width: 100%;
+    margin: 0 $space-md;
 
-    @media (max-width: 768px) {
-      display: none;
+    @include mobile {
+      display: none; // Hidden on mobile initially, or use a toggle
+      &.mobile-visible {
+        display: block;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        padding: $space-sm;
+        background: var(--bg-main);
+        margin: 0;
+      }
     }
 
     .search-input-wrapper {
       position: relative;
-      display: flex;
-      align-items: center;
-
+      
       .search-icon {
         position: absolute;
-        left: 12px;
-        color: $text-secondary;
-        font-size: 1.1rem;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-sub);
         pointer-events: none;
       }
 
-      .search-input {
-        width: 100%;
-        padding: 0.7rem 1rem 0.7rem 2.5rem;
-        background: color-mix(in srgb, var(--bg-primary), transparent 60%);
-        border: 1px solid var(--glass-border);
-        border-radius: 50px;
-        color: $text-primary;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        
-        &:focus {
-          outline: none;
-          background: color-mix(in srgb, var(--bg-primary), transparent 20%);
-          border-color: color-mix(in srgb, var(--accent-color), transparent 50%);
-          box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-color), transparent 90%);
-        }
+      input {
+        @include input-base;
+        padding-left: 2.5rem;
+        border-radius: $radius-full;
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text-main);
 
-        &::placeholder {
-          color: color-mix(in srgb, var(--text-secondary), transparent 30%);
+        &:focus {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: var(--accent);
         }
       }
     }
 
-    .search-results-panel {
+    .search-results {
       position: absolute;
-      top: 120%;
+      top: 100%;
       left: 0;
-      width: 100%;
-      @include glass-effect;
-      background: color-mix(in srgb, var(--bg-tertiary), transparent 15%); // Slightly darker for better contrast
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px var(--glass-shadow);
-      animation: fadeIn 0.2s ease-out;
-      z-index: 1000;
-      padding: 0.5rem;
+      right: 0;
+      margin-top: $space-xs;
+      @include glass-panel;
+      background: var(--bg-card); // Solid fallback or card bg
+      border: 1px solid var(--border);
+      z-index: 1001;
+      max-height: 300px;
+      overflow-y: auto;
 
       .search-result-item {
-        padding: 0.8rem 1rem;
-        border-radius: 8px;
+        padding: $space-sm;
+        border-bottom: 1px solid var(--border);
         cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid var(--glass-border);
+        transition: background 0.2s;
 
         &:last-child {
           border-bottom: none;
         }
 
         &:hover {
-          background: color-mix(in srgb, var(--accent-color), transparent 90%);
-          transform: translateX(4px);
+          background: rgba(255, 255, 255, 0.05);
         }
 
-        .result-content {
-          display: flex;
-          flex-direction: column;
-          gap: 0.2rem;
-          width: 100%;
+        h4 {
+          font-size: 0.9rem;
+          color: var(--text-main);
+          margin-bottom: 0.2rem;
+        }
 
-          .result-title {
-            color: $text-primary;
-            font-weight: 500;
-            font-size: 0.95rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .result-category {
-            color: $accent-color;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
+        p {
+          font-size: 0.8rem;
+          color: var(--text-sub);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
+    }
+  }
 
-      .no-results {
-        padding: 1.5rem;
-        text-align: center;
-        color: $text-secondary;
-        font-style: italic;
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+
+    @include mobile {
+      gap: $space-sm;
+    }
+
+    .nav-link {
+      color: var(--text-sub);
+      font-weight: 500;
+      font-size: 0.95rem;
+      
+      &:hover, &.active {
+        color: var(--text-main);
+      }
+
+      @include mobile {
+        display: none;
       }
     }
-  }
 
-  .theme-toggle {
-    background: none;
-    border: none;
-    color: $text-primary;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    margin-right: $spacing-md;
-
-    &:hover {
-      background: color-mix(in srgb, var(--text-primary), transparent 90%);
-      color: $accent-color;
-      transform: rotate(15deg);
-    }
-  }
-
-  .mobile-menu-btn {
-    display: none;
-    background: none;
-    border: none;
-    color: $text-primary;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 101;
-
-    @media (max-width: 768px) {
-      display: block;
-    }
-  }
-
-  .nav-links {
-    display: flex;
-    gap: $spacing-lg;
-    align-items: center;
-
-    a {
-      color: $text-primary;
-      font-weight: 600;
-      transition: color 0.3s ease;
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: $space-xs;
+      transition: color 0.2s;
 
       &:hover {
-        color: $accent-color;
-      }
-
-      &.active {
-        color: $accent-color;
+        color: var(--accent);
       }
     }
 
-    .user-welcome {
-        color: $text-secondary;
+    .auth-buttons {
+      display: flex;
+      align-items: center;
+      gap: $space-sm;
+
+      @include mobile {
+        display: none;
+      }
+
+      .btn-login {
+        @include btn-ghost;
+        padding: 0.5rem 1rem;
         font-size: 0.9rem;
+      }
+
+      .btn-register {
+        @include btn-primary;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
     }
 
-    .logout-btn {
-      @include secondary-button;
-      padding: $spacing-xs $spacing-md;
-      font-size: 0.9rem;
+    .logged-in-actions {
+      display: flex;
+      align-items: center;
+      gap: $space-sm;
+
+      .logout-btn-desktop {
+        @include btn-ghost;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &:hover {
+          color: var(--danger);
+          border: 1px solid var(--danger);
+        }
+
+        @include mobile {
+          display: none;
+        }
+      }
     }
 
-    @media (max-width: 768px) {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      height: 100vh;
-      width: 70%;
-      background: color-mix(in srgb, var(--bg-primary), transparent 5%);
-      backdrop-filter: blur(10px);
-      flex-direction: column;
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: $space-sm;
+      cursor: pointer;
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+      }
+    }
+    
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.5rem;
+      cursor: pointer;
+
+      @include mobile {
+        display: block;
+      }
+    }
+  }
+}
+
+// Mobile Menu Overlay
+.mobile-menu {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  height: 120vh;
+  background: var(--bg-main);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  padding: $space-md;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  
+  &.open {
+    transform: translateX(0);
+  }
+
+  .nav-link {
+    display: block;
+    font-size: 1.2rem;
+    padding: $space-sm 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+  }
+
+  .mobile-logout-btn {
+    width: 100%;
+    margin-top: $space-md;
+    @include btn-secondary;
+    justify-content: space-between;
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.3);
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: var(--danger);
+    }
+  }
+
+  .mobile-auth-buttons {
+    margin-top: $space-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+
+    .btn-login {
+      @include btn-ghost;
+      width: 100%;
       justify-content: center;
-      transition: right 0.3s ease-in-out;
-      border-left: 1px solid var(--glass-border);
-      box-shadow: -5px 0 15px var(--glass-shadow);
-      padding: 2rem;
-      gap: 2rem;
+    }
 
-      &.active {
-        right: 0;
-      }
-
-      .user-welcome {
-          display: block;
-          text-align: center;
-          margin-bottom: 1rem;
-      }
+    .btn-register {
+      @include btn-primary;
+      width: 100%;
+      justify-content: center;
     }
   }
 }

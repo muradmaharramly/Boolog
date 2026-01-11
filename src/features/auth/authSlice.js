@@ -49,6 +49,22 @@ export const signIn = createAsyncThunk('auth/signIn', async ({ email, password }
             throw error;
         }
 
+        // Ensure Admin has a profile in the public.profiles table
+        // This is crucial for blogs/comments to correctly link to the Admin author
+        const { error: upsertError } = await supabase
+            .from('profiles')
+            .upsert({
+                id: data.user.id,
+                email: data.user.email,
+                username: 'Admin',
+                role: 'admin',
+                avatar_url: null
+            });
+
+        if (upsertError) {
+            console.error('Failed to ensure admin profile:', upsertError);
+        }
+
         // Return admin session structure
         // We mock a profile for consistency, or we could fetch one if you add admin to profiles too
         return { 
@@ -103,6 +119,19 @@ export const checkSession = createAsyncThunk('auth/checkSession', async (_, { re
   // 1. Check Supabase Session (Admin)
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
+    // Ensure Admin has a profile
+    const { error: upsertError } = await supabase
+        .from('profiles')
+        .upsert({
+            id: session.user.id,
+            email: session.user.email,
+            username: 'Admin',
+            role: 'admin',
+            avatar_url: null
+        });
+        
+    if (upsertError) console.error('Failed to ensure admin profile in checkSession:', upsertError);
+
     return { 
         session: { user: session.user }, 
         profile: { 

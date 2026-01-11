@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { signIn, clearError } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
 import { BeatLoader } from 'react-spinners';
+import { FiShield, FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import '../styles/_auth.scss';
 
 const AdminLogin = () => {
@@ -19,7 +20,6 @@ const AdminLogin = () => {
        if (adminEmail && user.email !== adminEmail) {
            toast.error('You are logged in but not authorized as admin.');
        } else {
-           // Redirect to where they came from or /admin
            const from = location.state?.from?.pathname || '/admin';
            navigate(from, { replace: true });
        }
@@ -38,28 +38,51 @@ const AdminLogin = () => {
   return (
     <div className="auth-container">
       <div className="auth-card admin-login-card">
-        <h2>Admin Login</h2>
+        <div className="admin-badge">
+            <div className="badge-icon">
+                <FiShield />
+            </div>
+        </div>
+        <h2>Admin Portal</h2>
+        <p className="admin-subtitle">
+          Restricted access. Authorized personnel only.
+        </p>
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
+            <label>Admin Email</label>
+            <div className="input-wrapper">
+              <FiMail className="input-icon" />
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                placeholder="admin@boolog.com"
+              />
+            </div>
           </div>
+          
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              required
-            />
+            <div className="input-wrapper">
+              <FiLock className="input-icon" />
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                placeholder="••••••••"
+              />
+            </div>
           </div>
+
           <button type="submit" disabled={loading}>
-            {loading ? <BeatLoader size={8} color="#ffffff" /> : 'Login as Admin'}
+            {loading ? <BeatLoader size={8} color="#ffffff" /> : (
+                <span>
+                  Access Dashboard <FiArrowRight />
+                </span>
+            )}
           </button>
         </form>
       </div>

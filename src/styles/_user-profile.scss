@@ -1,0 +1,303 @@
+@import 'variables';
+@import 'mixins';
+
+.user-profile-container {
+  max-width: 1180px;
+  margin: $space-xl auto;
+  padding: $space-md;
+
+  @include mobile {
+    padding: $space-sm;
+    margin: $space-lg auto;
+  }
+}
+
+.profile-card {
+  @include glass-panel;
+  padding: 0; // Reset padding for banner
+  overflow: hidden;
+  border-radius: $radius-lg;
+  position: relative;
+}
+
+.profile-banner {
+  height: 180px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+  position: relative;
+  
+  // Abstract shapes decoration
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+  }
+
+  &::before {
+    width: 200px;
+    height: 200px;
+    background: rgba(99, 102, 241, 0.4);
+    top: -50px;
+    left: -50px;
+  }
+
+  &::after {
+    width: 150px;
+    height: 150px;
+    background: rgba(236, 72, 153, 0.4);
+    bottom: -30px;
+    right: 10%;
+  }
+}
+
+.profile-header {
+  padding: 0 $space-xl $space-xl;
+  position: relative;
+  margin-top: -65px; // Pull avatar up overlapping banner
+
+  @include mobile {
+    padding: 0 $space-md $space-lg;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .avatar-wrapper {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 4px solid var(--bg-card); // Create separation from banner
+    background: var(--bg-card);
+    padding: 4px;
+    margin-bottom: $space-md;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .profile-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .header-actions {
+    position: absolute;
+    top: 80px; // Below banner
+    right: $space-xl;
+
+    @include mobile {
+      position: static;
+      margin-top: $space-sm;
+      margin-bottom: $space-md;
+    }
+
+    .view-profile-btn {
+      @include btn-secondary;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+
+  .user-identity {
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+      
+      @include mobile {
+        justify-content: center;
+        font-size: 1.6rem;
+      }
+
+      .verified-badge {
+        color: var(--accent);
+        font-size: 1.2rem;
+      }
+    }
+
+    .user-email {
+      color: var(--text-sub);
+      font-size: 1rem;
+    }
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $space-md;
+  padding: 0 $space-xl $space-xl;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: $space-xl;
+
+  @include mobile {
+    grid-template-columns: 1fr 1fr;
+    gap: $space-lg;
+    padding: 0 $space-md $space-lg;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    span {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+  }
+}
+
+.profile-sections {
+  padding: 0 $space-xl $space-xl;
+
+  @include mobile {
+    padding: 0 $space-md $space-lg;
+  }
+}
+
+.section-group {
+  margin-bottom: $space-xl;
+
+  h3 {
+    font-size: 1.1rem;
+    margin-bottom: $space-md;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .section-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: $space-xl;
+    align-items: start;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $space-md;
+    }
+
+    .description {
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: $space-md;
+    }
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  input {
+    @include input-base;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    cursor: default;
+    
+    &:focus {
+      border-color: var(--border);
+      box-shadow: none;
+    }
+  }
+
+  .input-with-copy {
+    display: flex;
+    gap: $space-sm;
+
+    input {
+      flex: 1;
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      width: 42px;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+.qr-section {
+    display: flex;
+    justify-content: left;
+    margin-top: $space-md;
+    padding: $space-md;
+    background: rgba(255,255,255, 0.05);
+    border-radius: $radius-md;
+}
+
+.logout-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: $space-xl;
+  padding-top: $space-xl;
+  border-top: 1px solid var(--border);
+
+  @include mobile {
+    flex-direction: column;
+    gap: $space-md;
+    text-align: center;
+  }
+
+  .logout-info {
+    h4 {
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 0.3rem;
+    }
+    p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  }
+
+        .logout-btn {
+        @include btn-ghost;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &:hover {
+          color: var(--danger);
+          border: 1px solid var(--danger);
+        }
+      }
+}

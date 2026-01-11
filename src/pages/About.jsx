@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiUsers, FiTarget, FiGlobe, FiGithub, FiMessageSquare, FiTrendingUp } from 'react-icons/fi';
 import '../styles/_about.scss';
+import { BsStars } from 'react-icons/bs';
 
 const About = () => {
   return (
@@ -8,7 +9,8 @@ const About = () => {
       {/* Hero Section */}
       <section className="about-hero">
         <div className="container">
-          <h1>Empowering the Developer Community</h1>
+        <span className="about-badge"><BsStars /> About the Boolog</span>
+          <h1>Empowering the Developer <span className="highlight">Community</span></h1>
           <p>Boolog is more than just a blog—it's a hub for knowledge, collaboration, and growth.</p>
         </div>
       </section>

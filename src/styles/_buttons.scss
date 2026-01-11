@@ -2,31 +2,65 @@
 @import 'mixins';
 
 .btn {
-  @include button-base;
-  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: $spacing-sm;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
   
-  // Variants
+  // Primary Button
   &.btn-primary {
-    @include primary-button;
+    @include btn-primary;
   }
 
-  &.btn-secondary {
-    @include secondary-button;
+  // Secondary/Ghost Button
+  &.btn-secondary, &.btn-ghost {
+    @include btn-ghost;
   }
 
+  // Danger Button
   &.btn-danger {
-    @include danger-button;
+    background: var(--danger);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: $radius-full;
+    font-weight: 600;
+    
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
   }
 
+  // Warning Button
   &.btn-warning {
-    @include warning-button;
+    background: var(--warning);
+    color: #000;
+    padding: 0.75rem 1.5rem;
+    border-radius: $radius-full;
+    font-weight: 600;
+
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
   }
 
+  // Info Button
   &.btn-info {
-    @include info-button;
+    background: #3B82F6; // Tailwind blue-500 equivalent
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: $radius-full;
+    font-weight: 600;
+
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
   }
 }

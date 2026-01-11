@@ -1,0 +1,153 @@
+@import 'variables';
+@import 'mixins';
+
+// 🔄 Loading State
+.loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh; // Occupy significant space but not forced full viewport if embedded
+    width: 100%;
+    
+    &.full-page {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 9999;
+        background: var(--bg-app);
+        backdrop-filter: blur(10px);
+    }
+
+    .loader-content {
+        text-align: center;
+        
+        p {
+            margin-top: $space-md;
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+    }
+}
+
+// ⚠️ Error State
+.error-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    padding: $space-lg;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 70%);
+        filter: blur(80px);
+        z-index: -1;
+    }
+
+    .error-card {
+        @include glass-panel;
+        padding: $space-xl;
+        max-width: 500px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $space-md;
+
+        .error-icon {
+            font-size: 4rem;
+            color: var(--danger);
+            margin-bottom: $space-sm;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--text-main);
+        }
+
+        p {
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .actions {
+            margin-top: $space-md;
+            display: flex;
+            gap: $space-md;
+        }
+    }
+}
+
+// 🚫 404 Not Found
+.not-found-page {
+    @extend .error-page;
+
+    &::before {
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    }
+
+    .error-card {
+        .error-icon {
+            color: var(--accent);
+        }
+    }
+    button, a{
+        font-size: 0.9rem;
+        @include btn-primary;
+    }
+    
+}
+
+// 📭 Empty State
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $space-xl $space-lg;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: $radius-lg;
+    border: 1px dashed var(--border);
+    margin: $space-lg 0;
+    width: 100%;
+
+    .empty-icon {
+        font-size: 3rem;
+        color: var(--text-muted);
+        margin-bottom: $space-md;
+        opacity: 0.7;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        color: var(--text-main);
+        margin-bottom: $space-xs;
+    }
+
+    p {
+        color: var(--text-sub);
+        max-width: 400px;
+        margin-bottom: $space-md;
+    }
+
+    .btn-primary {
+        @include btn-primary;
+    }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}

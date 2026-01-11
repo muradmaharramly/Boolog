@@ -14,21 +14,34 @@ const stringToGradient = (string) => {
 };
 
 const Avatar = ({ url, username, size = '40px', className = '' }) => {
+  // Size presets
+  const sizeMap = {
+    xs: '24px',
+    sm: '32px',
+    md: '40px',
+    lg: '60px',
+    xl: '120px'
+  };
+
+  const finalSize = sizeMap[size] || size;
+
   const styles = {
-    width: size,
-    height: size,
-    minWidth: size,
-    minHeight: size,
+    width: finalSize,
+    height: finalSize,
+    minWidth: finalSize,
+    minHeight: finalSize,
     borderRadius: '50%',
     objectFit: 'cover',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: `calc(${size} * 0.5)`,
+    fontSize: `calc(${finalSize} * 0.45)`,
     fontWeight: 'bold',
     color: '#fff',
     textTransform: 'uppercase',
     border: '2px solid rgba(255, 255, 255, 0.1)',
+    flexShrink: 0, // Prevent squeezing in flex containers
+    overflow: 'hidden', // Ensure image stays within circle
   };
 
   if (url) {

@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { signIn, clearError } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
 import { BeatLoader } from 'react-spinners';
+import { FiMail, FiLock, FiArrowRight } from 'react-icons/fi';
 import '../styles/_auth.scss';
 
 const Login = () => {
@@ -30,32 +31,49 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Login to Boolog</h2>
+        <h2>Welcome Back</h2>
+        <p>Enter your credentials to access your account</p>
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
+            <label>Email Address</label>
+            <div className="input-wrapper">
+              <FiMail className="input-icon" />
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                placeholder="name@example.com"
+              />
+            </div>
           </div>
+          
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              required
-            />
+            <div className="input-wrapper">
+              <FiLock className="input-icon" />
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                placeholder="••••••••"
+              />
+            </div>
           </div>
+
           <button type="submit" disabled={loading}>
-            {loading ? <BeatLoader size={8} color="#ffffff" /> : 'Login'}
+            {loading ? <BeatLoader size={8} color="#ffffff" /> : (
+              <>
+                Sign In <FiArrowRight />
+              </>
+            )}
           </button>
         </form>
+        
         <p>
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register">Create Account</Link>
         </p>
       </div>
     </div>
