@@ -23,17 +23,24 @@
     display: flex;
     align-items: center;
     gap: $space-xs;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text-main);
+    text-decoration: none;
     
-    svg {
-      color: var(--accent);
+    img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease;
     }
 
-    &:hover svg {
-      transform: rotate(180deg);
-      transition: transform 0.5s ease;
+    span {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
     }
   }
 

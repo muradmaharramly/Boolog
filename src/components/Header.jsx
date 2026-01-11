@@ -3,10 +3,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { signOut } from '../features/auth/authSlice';
 import { fetchBlogs } from '../features/blogs/blogsSlice';
-import { FiCpu, FiMenu, FiX, FiSearch, FiSun, FiMoon, FiUser } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiSun, FiMoon, FiUser } from 'react-icons/fi';
 import Avatar from './Avatar';
 import '../styles/_header.scss';
 import { AiOutlineLogout } from 'react-icons/ai';
+import logoImg from '../assets/images/boolog-logo.png';
 
 const Header = () => {
   const { user, profile } = useSelector((state) => state.auth);
@@ -88,7 +89,7 @@ const Header = () => {
         <div className="container">
           {/* Logo */}
           <Link to="/" className="logo" onClick={() => setIsMenuOpen(false)}>
-            <FiCpu size={24} />
+            <img src={logoImg} alt="Boolog" />
             <span>Boolog</span>
           </Link>
 

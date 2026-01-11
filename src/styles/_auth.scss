@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $space-lg;
+  padding: $space-sm;
   position: relative;
   overflow: hidden;
 
@@ -28,8 +28,8 @@
 .auth-card {
   @include glass-panel;
   width: 100%;
-  max-width: 450px;
-  padding: $space-xl;
+  max-width: 500px;
+  padding: $space-md $space-lg;
   position: relative;
   animation: fadeIn 0.5s ease-out;
 
@@ -89,7 +89,7 @@
   form {
     display: flex;
     flex-direction: column;
-    gap: $space-md;
+    gap: $space-sm;
 
     .form-group {
       display: flex;
@@ -144,6 +144,8 @@
       @include btn-primary;
       width: 100%;
       margin-top: $space-sm;
+      margin-bottom:  $space-sm;
+      padding: $space-sm;
       
       span {
         display: flex;
