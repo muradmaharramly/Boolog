@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { FiClock, FiHeart, FiMessageSquare } from 'react-icons/fi';
+import { FiClock, FiHeart, FiMessageSquare, FiShare2 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { toggleLike } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
+import ShareModal from './ShareModal';
 import '../styles/_blogcard.scss';
 
 const BlogCard = ({ blog }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Handle potentially missing data safely
   const title = blog?.title || 'Untitled Post';
@@ -39,9 +41,15 @@ const BlogCard = ({ blog }) => {
     navigate(`/blog/${blog.id}`);
   };
 
+  const handleShareClick = (e) => {
+    e.stopPropagation();
+    setIsShareModalOpen(true);
+  };
+
   return (
-    <div className="blog-card" onClick={() => navigate(`/blog/${blog.id}`)}>
-      <div className="blog-image">
+    <>
+      <div className="blog-card" onClick={() => navigate(`/blog/${blog.id}`)}>
+        <div className="blog-image">
         <img src={imageUrl} alt={title} loading="lazy" />
         <span className="category-badge">{category}</span>
       </div>
@@ -80,10 +88,25 @@ const BlogCard = ({ blog }) => {
               <FiMessageSquare size={16} />
               <span>{commentsCount}</span>
             </button>
+            <button 
+              className="action-btn share-btn" 
+              onClick={handleShareClick}
+              title="Share"
+            >
+              <FiShare2 size={16} />
+            </button>
           </div>
         </div>
       </div>
     </div>
+
+    <ShareModal 
+      isOpen={isShareModalOpen} 
+      onClose={() => setIsShareModalOpen(false)} 
+      url={`${window.location.origin}/blog/${blog.id}`}
+      title={title}
+    />
+    </>
   );
 };
 
