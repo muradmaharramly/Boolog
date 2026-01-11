@@ -28,6 +28,41 @@ export const fetchStats = createAsyncThunk('admin/fetchStats', async (_, { rejec
   return { usersCount, blogsCount, commentsCount };
 });
 
+export const fetchRecentComments = createAsyncThunk('admin/fetchRecentComments', async (_, { rejectWithValue }) => {
+  // 1. Fetch comments
+  const { data: comments, error } = await supabase
+    .from('comments')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) return rejectWithValue(error.message);
+  
+  if (!comments || comments.length === 0) return [];
+
+  // 2. Fetch profiles
+  const userIds = [...new Set(comments.map(c => c.user_id).filter(Boolean))];
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, username, avatar_url')
+    .in('id', userIds);
+
+  // 3. Fetch blogs
+  const blogIds = [...new Set(comments.map(c => c.blog_id).filter(Boolean))];
+  const { data: blogs } = await supabase
+    .from('blogs')
+    .select('id, title')
+    .in('id', blogIds);
+
+  // 4. Map data
+  const enrichedComments = comments.map(comment => ({
+    ...comment,
+    profiles: profiles?.find(p => p.id === comment.user_id) || { username: 'Admin', avatar_url: null },
+    blogs: blogs?.find(b => b.id === comment.blog_id) || { title: 'Unknown Blog' }
+  }));
+
+  return enrichedComments;
+});
+
 export const addCategory = createAsyncThunk('admin/addCategory', async (name, { rejectWithValue }) => {
   const { data, error } = await supabase
     .from('categories')
@@ -43,6 +78,7 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState: {
     users: [],
+    recentComments: [],
     stats: { usersCount: 0, blogsCount: 0, commentsCount: 0 },
     loading: false,
     error: null,
@@ -65,6 +101,10 @@ const adminSlice = createSlice({
       // Fetch Stats
       .addCase(fetchStats.fulfilled, (state, action) => {
         state.stats = action.payload;
+      })
+      // Fetch Recent Comments
+      .addCase(fetchRecentComments.fulfilled, (state, action) => {
+        state.recentComments = action.payload;
       })
       // Add Category
       .addCase(addCategory.rejected, (state, action) => {

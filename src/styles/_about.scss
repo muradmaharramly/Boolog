@@ -88,6 +88,10 @@
     position: relative;
     overflow: hidden;
 
+            @include mobile {
+          padding: $space-md
+        }
+
     .icon-box {
       width: 60px;
       height: 60px;

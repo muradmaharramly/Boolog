@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchStats, fetchUsers, addCategory } from '../features/admin/adminSlice';
+import { fetchStats, fetchUsers, addCategory, fetchRecentComments } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
-import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock } from 'react-icons/fi';
 import ConfirmModal from '../components/ConfirmModal';
 import EditModal from '../components/EditModal';
 import LoadingScreen from '../components/LoadingScreen';
@@ -11,7 +11,7 @@ import '../styles/_admin-dashboard.scss';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, users, loading } = useSelector((state) => state.admin);
+  const { stats, users, recentComments, loading } = useSelector((state) => state.admin);
   const { categories, items: blogs } = useSelector((state) => state.blogs);
   const { user } = useSelector((state) => state.auth);
   
@@ -29,11 +29,14 @@ const AdminDashboard = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState(null);
 
+  const totalViews = blogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
+
   useEffect(() => {
     dispatch(fetchStats());
     dispatch(fetchUsers());
     dispatch(fetchCategories());
     dispatch(fetchBlogs());
+    dispatch(fetchRecentComments());
   }, [dispatch]);
 
   const handleAddCategory = async (e) => {
@@ -145,14 +148,14 @@ const AdminDashboard = () => {
         <div className="stat-card">
             <div className="stat-icon purple"><FiBarChart2 /></div>
             <div className="stat-info">
-                <h3>{stats.total_views || 0}</h3>
+                <h3>{totalViews}</h3>
                 <p>Total Views</p>
             </div>
         </div>
         <div className="stat-card blue">
             <div className="stat-icon blue"><FiFileText /></div>
             <div className="stat-info">
-                <h3>{stats.total_blogs || 0}</h3>
+                <h3>{stats.blogsCount || 0}</h3>
                 <p>Published Blogs</p>
             </div>
         </div>
@@ -166,17 +169,17 @@ const AdminDashboard = () => {
         <div className="stat-card orange">
             <div className="stat-icon orange"><FiActivity /></div>
             <div className="stat-info">
-                <h3>{stats.total_comments || 0}</h3>
+                <h3>{stats.commentsCount || 0}</h3>
                 <p>Total Comments</p>
             </div>
         </div>
       </div>
 
       <div className="dashboard-layout">
-        {/* Left Column: Forms */}
-        <div className="dashboard-column">
+        {/* Top Row: Add Category & Publish Blog */}
+        <div className="dashboard-row top-row">
             {/* Add Category */}
-            <div className="dashboard-card">
+            <div className="dashboard-card small-card">
                 <h2><FiPlus /> Add Category</h2>
                 <form onSubmit={handleAddCategory}>
                     <div className="form-group">
@@ -189,10 +192,21 @@ const AdminDashboard = () => {
                     </div>
                     <button type="submit">Add Category</button>
                 </form>
+
+                <div className="categories-list-preview">
+                  <h3>Existing Categories</h3>
+                  <div className="tags-list">
+                    {categories.map(cat => (
+                      <span key={cat.id} className="tag-badge">
+                        {cat.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
             </div>
 
             {/* Publish Blog */}
-            <div className="dashboard-card">
+            <div className="dashboard-card large-card">
                 <h2><FiEdit2 /> Publish Article</h2>
                 <form onSubmit={handleAddBlog}>
                     <div className="form-group">
@@ -262,13 +276,16 @@ const AdminDashboard = () => {
             </div>
         </div>
 
-        {/* Right Column: List */}
-        <div className="dashboard-column">
+        {/* Middle Row: Manage Articles */}
+        <div className="dashboard-row full-width">
             <div className="dashboard-card">
                 <h2><FiFileText /> Manage Articles</h2>
                 <div className="blog-list">
                     {blogs.map(blog => (
                         <div key={blog.id} className="blog-list-item">
+                            {blog.image_url && (
+                                <img src={blog.image_url} alt={blog.title} className="blog-thumb" />
+                            )}
                             <div className="item-info">
                                 <h4>{blog.title}</h4>
                                 <div className="meta">
@@ -287,6 +304,32 @@ const AdminDashboard = () => {
                         </div>
                     ))}
                 </div>
+            </div>
+        </div>
+
+        {/* Bottom Row: Recent Comments */}
+        <div className="dashboard-row full-width">
+            <div className="dashboard-card">
+              <h2><FiMessageSquare /> Recent Comments</h2>
+              <div className="comments-list">
+                {recentComments?.length > 0 ? (
+                  recentComments.map(comment => (
+                    <div key={comment.id} className="comment-item">
+                      <div className="comment-header">
+                        <span className="author">{comment.profiles?.username || 'Admin'}</span>
+                        <span className="date">{new Date(comment.created_at).toLocaleDateString()}</span>
+                      </div>
+                      <p className="comment-text">{comment.content}</p>
+                      <div className="comment-blog">
+                        <FiFileText size={12} />
+                        <span>{comment.blogs?.title}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="no-data">No comments yet.</p>
+                )}
+              </div>
             </div>
         </div>
       </div>
