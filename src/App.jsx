@@ -17,6 +17,7 @@ import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import PrivateRoute from './components/PrivateRoute';
 import ScrollProgress from './components/ScrollProgress';
+import BackToTop from './components/BackToTop';
 import './styles/_app.scss';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
   return (
     <div className="app-wrapper">
       <ScrollProgress />
+      <BackToTop />
       <Header />
       <main className="main-content">
         <Routes>
