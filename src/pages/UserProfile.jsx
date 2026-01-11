@@ -76,9 +76,17 @@ const UserProfile = () => {
                 className="profile-avatar"
               />
           </div>
-          
-          <div className="header-actions">
-            <button className="view-profile-btn">View Public Profile</button>
+
+          <div className="profile-qr">
+             <div className="qr-box">
+                <QRCodeCanvas 
+                  value={`${window.location.origin}/user/${profile.username}`}
+                  size={120}
+                  level={"M"}
+                  includeMargin={false}
+                />
+                <span className="scan-text">Scan to Share</span>
+             </div>
           </div>
 
           <div className="user-identity">
@@ -119,9 +127,7 @@ const UserProfile = () => {
             <div className="section-content">
               <div className="description">
                 This will be displayed on your profile. Others can scan your QR code to find you.
-                <div className="qr-section">
-                    <QRCodeCanvas className='qr-code' value={profileUrl} />
-                </div>
+                <button className="view-profile-btn" onClick={() => navigate(`/user/${profile.username}`)}>View Public Profile</button>
               </div>
               <div className="fields">
                 <div className="input-group">

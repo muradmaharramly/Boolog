@@ -85,23 +85,7 @@
     }
   }
 
-  .header-actions {
-    position: absolute;
-    top: 80px; // Below banner
-    right: $space-xl;
-
-    @include mobile {
-      position: static;
-      margin-top: $space-sm;
-      margin-bottom: $space-md;
-    }
-
-    .view-profile-btn {
-      @include btn-secondary;
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-    }
-  }
+ 
 
   .user-identity {
     h1 {
@@ -236,6 +220,12 @@
       color: var(--text-sub);
       font-size: 0.9rem;
       line-height: 1.5;
+        .view-profile-btn {
+      @include btn-secondary;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      margin-top: $space-md;
+    }
     }
 
     .fields {
