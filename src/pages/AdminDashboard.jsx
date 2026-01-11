@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchStats, fetchUsers, addCategory, fetchRecentComments } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
-import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown } from 'react-icons/fi';
 import ConfirmModal from '../components/ConfirmModal';
 import EditModal from '../components/EditModal';
 import LoadingScreen from '../components/LoadingScreen';
 import '../styles/_admin-dashboard.scss';
+import { GoPlus } from 'react-icons/go';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,10 @@ const AdminDashboard = () => {
   // State for "Publish New Blog" form
   const [newBlogData, setNewBlogData] = useState({ title: '', content: '', image_url: '', category_id: '', tags: [] });
   const [newBlogTag, setNewBlogTag] = useState('');
+  
+  // Custom Dropdown State
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const categoryDropdownRef = React.useRef(null);
 
   // State for "Edit Blog" modal
   const [showEditModal, setShowEditModal] = useState(false);
@@ -37,6 +42,14 @@ const AdminDashboard = () => {
     dispatch(fetchCategories());
     dispatch(fetchBlogs());
     dispatch(fetchRecentComments());
+
+    const handleClickOutside = (event) => {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setIsCategoryDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dispatch]);
 
   const handleAddCategory = async (e) => {
@@ -112,6 +125,17 @@ const AdminDashboard = () => {
   const openEditModal = (blog) => {
     setBlogToEdit(blog);
     setShowEditModal(true);
+  };
+
+  const handleCategorySelect = (categoryId) => {
+    setNewBlogData({ ...newBlogData, category_id: categoryId });
+    setIsCategoryDropdownOpen(false);
+  };
+
+  const getSelectedCategoryName = () => {
+    if (!newBlogData.category_id) return 'Select Category';
+    const cat = categories.find(c => c.id == newBlogData.category_id);
+    return cat ? cat.name : 'Select Category';
   };
 
   const handleAddTag = (e) => {
@@ -221,15 +245,35 @@ const AdminDashboard = () => {
                     
                     <div className="form-group">
                         <label>Category</label>
-                        <select
-                            value={newBlogData.category_id}
-                            onChange={(e) => setNewBlogData({ ...newBlogData, category_id: e.target.value })}
-                        >
-                            <option value="">Select Category</option>
-                            {categories.map(cat => (
-                                <option key={cat.id} value={cat.id}>{cat.name}</option>
-                            ))}
-                        </select>
+                        <div className="custom-select-wrapper" ref={categoryDropdownRef}>
+                            <div 
+                                className={`custom-select-trigger ${isCategoryDropdownOpen ? 'open' : ''}`}
+                                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                            >
+                                <span>{getSelectedCategoryName()}</span>
+                                <FiChevronDown className="chevron-icon" />
+                            </div>
+                            
+                            {isCategoryDropdownOpen && (
+                                <div className="custom-select-options">
+                                    <div 
+                                        className={`option ${newBlogData.category_id === '' ? 'selected' : ''}`}
+                                        onClick={() => handleCategorySelect('')}
+                                    >
+                                        Select Category
+                                    </div>
+                                    {categories.map(cat => (
+                                        <div 
+                                            key={cat.id} 
+                                            className={`option ${newBlogData.category_id === cat.id ? 'selected' : ''}`}
+                                            onClick={() => handleCategorySelect(cat.id)}
+                                        >
+                                            {cat.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -260,7 +304,7 @@ const AdminDashboard = () => {
                                 onChange={(e) => setNewBlogTag(e.target.value)}
                                 placeholder="Add tag"
                             />
-                            <button onClick={handleAddTag}>Add</button>
+                            <button onClick={handleAddTag}><GoPlus /></button>
                         </div>
                         <div className="tags-list">
                             {newBlogData.tags.map(tag => (

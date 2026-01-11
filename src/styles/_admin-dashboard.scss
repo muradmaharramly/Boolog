@@ -106,12 +106,14 @@
 
   &.top-row {
     .small-card {
-      flex: 0 1 auto; // Auto width based on content
-      min-width: 300px; // Prevent too small
+      width: 100%;
+      max-width: 400px;
+      flex: 0 1 400px; // Basis 400px, allowed to shrink, not grow
       
       @include tablet {
         max-width: 100%;
         flex: 1;
+        flex-basis: auto;
       }
     }
 
@@ -162,6 +164,89 @@
         @include input-base;
         background: rgba(0, 0, 0, 0.2);
         color: var(--text-main);
+      }
+      
+      .custom-select-wrapper {
+        position: relative;
+        width: 100%;
+        z-index: 100;
+
+        .custom-select-trigger {
+          @include input-base;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          height: 48px;
+          padding: 0 1rem;
+          background: rgba(0, 0, 0, 0.2);
+          color: var(--text-main);
+          border-radius: $radius-md;
+          cursor: pointer;
+          user-select: none;
+          transition: all 0.2s;
+          border: 1px solid var(--border);
+
+          &:hover {
+            border-color: var(--text-sub);
+          }
+
+          &.open {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
+            
+            .chevron-icon {
+              transform: rotate(180deg);
+            }
+          }
+
+          span {
+            font-weight: 500;
+          }
+
+          .chevron-icon {
+            color: var(--text-sub);
+            transition: transform 0.2s;
+          }
+        }
+
+        .custom-select-options {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 0;
+          right: 0;
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          border-radius: $radius-md;
+          overflow: hidden;
+          box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+          z-index: 101;
+          animation: fadeIn 0.2s ease-out;
+          max-height: 250px;
+          overflow-y: auto;
+          
+          &::-webkit-scrollbar { width: 4px; }
+          &::-webkit-scrollbar-track { background: transparent; }
+          &::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+          .option {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+            font-weight: 500;
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.05);
+              color: var(--text-main);
+            }
+
+            &.selected {
+              background: var(--accent);
+              color: white;
+            }
+          }
+        }
       }
       
       textarea {
