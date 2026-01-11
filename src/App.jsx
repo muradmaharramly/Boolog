@@ -11,6 +11,7 @@ import About from './pages/About';
 import Blogs from './pages/Blogs';
 import BlogDetails from './pages/BlogDetails';
 import UserProfile from './pages/UserProfile';
+import PublicProfile from './pages/PublicProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
 import NotFound from './pages/NotFound';
@@ -39,6 +40,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
           <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+          <Route path="/user/:username" element={<PublicProfile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin/login" element={<AdminLogin />} />

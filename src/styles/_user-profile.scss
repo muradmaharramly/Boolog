@@ -123,9 +123,48 @@
       }
     }
 
-    .user-email {
+    .user-email, .user-role {
       color: var(--text-sub);
       font-size: 1rem;
+    }
+  }
+
+  .profile-qr {
+    position: absolute;
+    right: $space-xl;
+    top: 0; // Align with the top of the avatar/header content area
+    
+    @include mobile {
+      position: relative;
+      right: auto;
+      top: auto;
+      margin-top: $space-md;
+      display: flex;
+      justify-content: center;
+    }
+
+    .qr-box {
+      background: white;
+      padding: 10px;
+      border-radius: $radius-md;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      .scan-text {
+        margin-top: 5px;
+        color: #333;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
     }
   }
 }
