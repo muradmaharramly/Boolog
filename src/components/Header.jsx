@@ -115,8 +115,13 @@ const Header = () => {
                       className="search-result-item"
                       onClick={() => handleSearchResultClick(blog.id)}
                     >
-                      <h4>{blog.title}</h4>
-                      <p>{blog.content.substring(0, 50)}...</p>
+                      {blog.image_url && (
+                        <img src={blog.image_url} alt={blog.title} className="search-result-thumb" />
+                      )}
+                      <div className="search-result-info">
+                        <h4>{blog.title}</h4>
+                        <p>{blog.content.substring(0, 50)}...</p>
+                      </div>
                     </div>
                   ))
                 ) : (

@@ -5,7 +5,7 @@ import BlogCard from '../components/BlogCard';
 import LoadingScreen from '../components/LoadingScreen';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
-import { FiSearch, FiFilter } from 'react-icons/fi'; // Added FiFilter
+import { FiSearch, FiFilter, FiChevronDown } from 'react-icons/fi'; // Added FiFilter
 import '../styles/_blogs.scss';
 import { BsStars } from 'react-icons/bs';
 
@@ -14,10 +14,20 @@ const Blogs = () => {
   const { items: blogs, categories, loading, error } = useSelector((state) => state.blogs);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = React.useRef(null);
 
   useEffect(() => {
     dispatch(fetchBlogs());
     dispatch(fetchCategories());
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dispatch]);
 
   const filteredBlogs = blogs.filter(blog => {
@@ -28,6 +38,17 @@ const Blogs = () => {
                         (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(lowerSearch)));
     return matchCategory && matchSearch;
   });
+
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setIsDropdownOpen(false);
+  };
+
+  const getCategoryName = (id) => {
+    if (id === 'all') return 'All Categories';
+    const cat = categories.find(c => c.id == id);
+    return cat ? cat.name : 'All Categories';
+  };
 
   const handleRetry = () => {
     dispatch(fetchBlogs());
@@ -55,18 +76,35 @@ const Blogs = () => {
             />
         </div>
         
-        <div className="select-wrapper">
-            <FiFilter className="select-icon" />
-            <select 
-                value={selectedCategory} 
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                aria-label="Filter by category"
+        <div className="select-wrapper" ref={dropdownRef}>
+            <div 
+                className={`custom-select-trigger ${isDropdownOpen ? 'open' : ''}`} 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-                <option value="all">All Categories</option>
-                {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-            </select>
+                <FiFilter className="select-icon" />
+                <span>{getCategoryName(selectedCategory)}</span>
+                <FiChevronDown className="chevron-icon" />
+            </div>
+            
+            {isDropdownOpen && (
+                <div className="custom-select-options">
+                    <div 
+                        className={`option ${selectedCategory === 'all' ? 'selected' : ''}`}
+                        onClick={() => handleCategorySelect('all')}
+                    >
+                        All Categories
+                    </div>
+                    {categories.map(cat => (
+                        <div 
+                            key={cat.id} 
+                            className={`option ${selectedCategory == cat.id ? 'selected' : ''}`}
+                            onClick={() => handleCategorySelect(cat.id)}
+                        >
+                            {cat.name}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
       </div>
 

@@ -104,6 +104,9 @@
       overflow-y: auto;
 
       .search-result-item {
+        display: flex;
+        align-items: center;
+        gap: $space-sm;
         padding: $space-sm;
         border-bottom: 1px solid var(--border);
         cursor: pointer;
@@ -117,18 +120,34 @@
           background: rgba(255, 255, 255, 0.05);
         }
 
-        h4 {
-          font-size: 0.9rem;
-          color: var(--text-main);
-          margin-bottom: 0.2rem;
+        .search-result-thumb {
+          width: 50px;
+          height: 35px;
+          border-radius: $radius-sm;
+          object-fit: cover;
+          flex-shrink: 0;
         }
 
-        p {
-          font-size: 0.8rem;
-          color: var(--text-sub);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+        .search-result-info {
+          flex: 1;
+          min-width: 0; // Fix text truncation in flex
+
+          h4 {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          p {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
       }
     }
