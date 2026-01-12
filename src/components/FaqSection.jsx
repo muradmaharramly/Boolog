@@ -15,8 +15,8 @@ const FaqSection = () => {
       answer: "Yes! Boolog is completely free for both readers and writers. We believe in democratizing access to technical knowledge."
     },
     {
-      question: "How do I start writing?",
-      answer: "Simply create an account, go to your dashboard, and click 'New Post'. Our rich markdown editor makes it easy to format code blocks, add images, and structure your articles."
+      question: "Who can publish articles on Boolog?",
+      answer: "Only administrators can publish blog posts on Boolog. This ensures content quality, consistency, and a curated reading experience for all users."
     },
     {
       question: "Can I customize my profile?",
