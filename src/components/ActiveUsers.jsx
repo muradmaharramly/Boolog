@@ -101,14 +101,41 @@ const ActiveUsers = () => {
   if (users.length === 0) return null;
 
   return (
-    <div className="active-users-container">
+    <div className="active-users-section">
+      <div className="content-wrapper">
+        {/* Background Decor */}
+            <div className="glow-shape left"></div>
+            <div className="glow-shape right"></div>
+        {/* Left: Text & Context */}
+        <div className="text-content">
+            <div className="live-badge">
+                <span className="pulsing-dot"></span>
+                Live on Boolog
+            </div>
+            <h3>Developers Reading Right Now</h3>
+            <p>Join a growing community of engineers sharing knowledge in real time.</p>
+            
+            <div className="micro-stats">
+                <div className="stat">
+                    <span className="number">12</span>
+                    <span className="label">reading now</span>
+                </div>
+                <div className="divider"></div>
+                <div className="stat">
+                    <span className="number">140+</span>
+                    <span className="label">joined today</span>
+                </div>
+            </div>
+        </div>
+
+        {/* Center: Avatar Row (Preserved Logic) */}
         <div className="avatars-scroll-wrapper">
             {users.map((u, index) => (
                 <div 
                     key={u.id} 
                     className="avatar-item" 
                     style={{ zIndex: users.length - index }}
-                    title={u.isRealDisplay ? u.username : ''} // Only show tooltip for real ones
+                    title={u.isRealDisplay ? u.username : ''} 
                 >
                     {u.isRealDisplay && u.avatar_url ? (
                         <img src={u.avatar_url} alt={u.username} />
@@ -123,15 +150,16 @@ const ActiveUsers = () => {
                 </div>
             ))}
             
-            {/* Plus Button at the end */}
+            {/* Plus Button */}
             <div className="avatar-item plus-item" onClick={handlePlusClick} title="Join Community">
                 <FiPlus />
             </div>
         </div>
         
-        <div className="join-text">
-            Join {totalCount > 100 ? totalCount : '100+'} others
-        </div>
+        {/* Right: CTA */}
+   
+
+      </div>
     </div>
   );
 };

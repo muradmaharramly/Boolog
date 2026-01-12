@@ -3,6 +3,9 @@
 
 .cta-section {
     padding: $space-xl 0;
+    @include mobile {
+            padding: $space-xs 0;
+        }
     
     .cta-card {
         position: relative;
