@@ -25,6 +25,10 @@ const BlogDetails = () => {
   const [sidebarTab, setSidebarTab] = useState('recent'); // 'recent' | 'popular'
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (blogs.length === 0) {
       dispatch(fetchBlogs());
     }

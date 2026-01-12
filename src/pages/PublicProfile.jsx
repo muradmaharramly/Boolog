@@ -117,7 +117,7 @@ const PublicProfile = () => {
           </div>
           <div className="stat-item">
             <label><FiActivity style={{marginRight: '5px', verticalAlign: 'text-bottom'}}/>Activity Points</label>
-            <span>{activityPoints}</span>
+              <span>{activityPoints}</span>
           </div>
         </div>
       </div>
