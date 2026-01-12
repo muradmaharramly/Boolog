@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { FiArrowRight, FiCode, FiLayout, FiZap, FiUsers, FiTrendingUp, FiHeart, FiMessageSquare } from 'react-icons/fi';
 import '../styles/_home.scss';
 import { BsStars } from 'react-icons/bs';
+import ActiveUsers from '../components/ActiveUsers';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -58,6 +59,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <ActiveUsers />
 
       {/* Bento Grid Features */}
       <section className="features-section">
