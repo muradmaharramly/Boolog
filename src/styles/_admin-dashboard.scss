@@ -164,7 +164,12 @@
         @include input-base;
         background: rgba(0, 0, 0, 0.2);
         color: var(--text-main);
-      }
+        border-radius: $radius-lg;
+        -webkit-border-radius: $radius-lg;
+        -moz-border-radius: $radius-lg;
+        -ms-border-radius: $radius-lg;
+        -o-border-radius: $radius-lg;
+}
       
       .custom-select-wrapper {
         position: relative;

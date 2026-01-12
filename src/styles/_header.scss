@@ -78,11 +78,15 @@
 
       input {
         @include input-base;
+        padding: 12px;
         padding-left: 2.5rem;
-        border-radius: $radius-full;
+        border-radius: $radius-lg;
         background: rgba(255, 255, 255, 0.03);
         color: var(--text-main);
-
+        -webkit-border-radius: $radius-lg;
+        -moz-border-radius: $radius-lg;
+        -ms-border-radius: $radius-lg;
+        -o-border-radius: $radius-lg;
         &:focus {
           background: rgba(255, 255, 255, 0.08);
           border-color: var(--accent);
@@ -275,7 +279,7 @@
   left: 0;
   width: 100%;
   height: 120vh;
-  background: var(--bg-main);
+  background: rgba(0, 0, 0, 0.132);
   backdrop-filter: blur(20px);
   z-index: 999;
   padding: $space-md;
