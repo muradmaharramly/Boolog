@@ -9,6 +9,7 @@ import { FiArrowRight, FiCode, FiLayout, FiZap, FiUsers, FiTrendingUp, FiHeart, 
 import '../styles/_home.scss';
 import { BsStars } from 'react-icons/bs';
 import ActiveUsers from '../components/ActiveUsers';
+import FaqSection from '../components/FaqSection';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -194,6 +195,8 @@ const Home = () => {
       )}
 
       <CTASection />
+
+      <FaqSection />
     </div>
   );
 };

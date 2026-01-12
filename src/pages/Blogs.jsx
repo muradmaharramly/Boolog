@@ -257,7 +257,7 @@ const Blogs = () => {
       </div>
 
       {loading ? (
-        <LoadingScreen message="Loading articles..." />
+        <LoadingScreen message="" />
       ) : error ? (
         <ErrorState message={`Error loading blogs: ${error}`} onRetry={handleRetry} />
       ) : sortedBlogs.length === 0 ? (
