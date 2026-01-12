@@ -184,6 +184,13 @@
             overflow: hidden;
             flex-shrink: 0; // Prevent squishing
 
+            @include mobile {
+                // Hide avatars after the 6th one
+                &:nth-child(n+6):not(.plus-item) {
+                    display: none;
+                }
+            }
+
             .avatar-content {
                 width: 100%;
                 height: 100%;
