@@ -202,9 +202,8 @@ h1 {
 .blog-actions-bar {
   display: flex;
   gap: $space-md;
-  margin-bottom: $space-xl;
+  margin-bottom: $space-md;
   padding: $space-md;
-  background: var(--glass-bg); // Darker glass
   border: 1px solid var(--border);
   border-radius: $radius-md;
   justify-content: space-around;
@@ -257,9 +256,8 @@ h1 {
   align-items: center;
   gap: $space-md;
   padding: $space-lg;
-  background: var(--glass-bg);
   border-radius: $radius-md;
-  margin-bottom: $space-xl;
+  margin-bottom: $space-md;
   border: 1px solid var(--border);
 
   @include mobile {
