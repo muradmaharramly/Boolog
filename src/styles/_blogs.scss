@@ -186,6 +186,48 @@
         }
       }
     }
+
+    .view-toggle {
+      display: flex;
+      align-items: center;
+      gap: $space-xs;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: $radius-full;
+      padding: 0.25rem;
+      height: 48px;
+       @include mobile {
+          display: none;
+        }
+
+      .view-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: $radius-full;
+        border: none;
+        background: transparent;
+        color: var(--text-sub);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.05);
+          color: var(--text-main);
+        }
+
+        &.active {
+          background: rgba(99, 102, 241, 0.18);
+          color: var(--accent);
+        }
+
+        svg {
+          font-size: 1.1rem;
+        }
+      }
+    }
   }
 
   .blogs-grid {
@@ -198,10 +240,17 @@
     }
   }
 
+  .blogs-list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
+  }
+}
+
   .no-blogs {
     text-align: center;
     padding: $space-xl;
     color: var(--text-sub);
     grid-column: 1 / -1;
   }
-}
+

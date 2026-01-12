@@ -163,3 +163,50 @@
     }
   }
 }
+
+.blog-card.list {
+  flex-direction: row;
+  gap: $space-md;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+
+  .blog-image {
+    width: 260px;
+    height: auto;
+    flex: 0 0 260px;
+
+    img {
+      height: 100%;
+      min-height: 180px;
+    }
+  }
+
+  .blog-content {
+    padding: $space-md $space-md $space-md 0;
+
+    p {
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  @include mobile {
+    flex-direction: column;
+    gap: 0;
+
+    .blog-image {
+      width: 100%;
+      flex: 0 0 auto;
+      height: 200px;
+
+      img {
+        min-height: 0;
+      }
+    }
+
+    .blog-content {
+      padding: $space-md;
+    }
+  }
+}

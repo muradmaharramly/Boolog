@@ -5,7 +5,7 @@ import BlogCard from '../components/BlogCard';
 import LoadingScreen from '../components/LoadingScreen';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
-import { FiSearch, FiFilter, FiChevronDown } from 'react-icons/fi'; // Added FiFilter
+import { FiSearch, FiFilter, FiChevronDown, FiGrid, FiList } from 'react-icons/fi';
 import '../styles/_blogs.scss';
 import { BsStars } from 'react-icons/bs';
 
@@ -14,6 +14,7 @@ const Blogs = () => {
   const { items: blogs, categories, loading, error } = useSelector((state) => state.blogs);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOption, setSortOption] = useState('all');
+  const [viewMode, setViewMode] = useState('grid');
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = React.useRef(null);
@@ -232,6 +233,27 @@ const Blogs = () => {
                 </div>
             )}
         </div>
+
+        <div className="view-toggle" role="group" aria-label="View mode">
+          <button
+            type="button"
+            className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+            onClick={() => setViewMode('grid')}
+            title="Grid view"
+            aria-pressed={viewMode === 'grid'}
+          >
+            <FiGrid />
+          </button>
+          <button
+            type="button"
+            className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+            onClick={() => setViewMode('list')}
+            title="List view"
+            aria-pressed={viewMode === 'list'}
+          >
+            <FiList />
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -244,9 +266,9 @@ const Blogs = () => {
             message="Try adjusting your search or category filter." 
         />
       ) : (
-        <div className="blogs-grid">
+        <div className={viewMode === 'list' ? 'blogs-list' : 'blogs-grid'}>
           {sortedBlogs.map(blog => (
-            <BlogCard key={blog.id} blog={blog} />
+            <BlogCard key={blog.id} blog={blog} viewMode={viewMode} />
           ))}
         </div>
       )}

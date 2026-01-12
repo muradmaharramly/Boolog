@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import ShareModal from './ShareModal';
 import '../styles/_blogcard.scss';
 
-const BlogCard = ({ blog }) => {
+const BlogCard = ({ blog, viewMode = 'grid' }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -48,57 +48,60 @@ const BlogCard = ({ blog }) => {
 
   return (
     <>
-      <div className="blog-card" onClick={() => navigate(`/blog/${blog.id}`)}>
+      <div
+        className={`blog-card ${viewMode === 'list' ? 'list' : 'grid'}`}
+        onClick={() => navigate(`/blog/${blog.id}`)}
+      >
         <div className="blog-image">
-        <img src={imageUrl} alt={title} loading="lazy" />
-        <span className="category-badge">{category}</span>
-      </div>
-      
-      <div className="blog-content">
-        <div className="blog-date">
-          <FiClock size={14} />
-          <span>{date}</span>
+          <img src={imageUrl} alt={title} loading="lazy" />
+          <span className="category-badge">{category}</span>
         </div>
         
-        <h3>{title}</h3>
-        <p>{content}</p>
-        
-        <div className="blog-footer">
-          <div className="author">
-            <div className="avatar-small">
-              {authorName.charAt(0).toUpperCase()}
-            </div>
-            <span>{authorName}</span>
+        <div className="blog-content">
+          <div className="blog-date">
+            <FiClock size={14} />
+            <span>{date}</span>
           </div>
           
-          <div className="actions">
-            <button 
-              className={`action-btn like-btn ${isLiked ? 'active' : ''}`} 
-              onClick={handleLike}
-              title={isLiked ? 'Unlike' : 'Like'}
-            >
-              <FiHeart size={16} fill={isLiked ? 'currentColor' : 'none'} />
-              <span>{likesCount}</span>
-            </button>
-            <button 
-              className="action-btn comment-btn" 
-              onClick={handleCommentClick}
-              title="Comments"
-            >
-              <FiMessageSquare size={16} />
-              <span>{commentsCount}</span>
-            </button>
-            <button 
-              className="action-btn share-btn" 
-              onClick={handleShareClick}
-              title="Share"
-            >
-              <FiShare2 size={16} />
-            </button>
+          <h3>{title}</h3>
+          <p>{content}</p>
+          
+          <div className="blog-footer">
+            <div className="author">
+              <div className="avatar-small">
+                {authorName.charAt(0).toUpperCase()}
+              </div>
+              <span>{authorName}</span>
+            </div>
+            
+            <div className="actions">
+              <button 
+                className={`action-btn like-btn ${isLiked ? 'active' : ''}`} 
+                onClick={handleLike}
+                title={isLiked ? 'Unlike' : 'Like'}
+              >
+                <FiHeart size={16} fill={isLiked ? 'currentColor' : 'none'} />
+                <span>{likesCount}</span>
+              </button>
+              <button 
+                className="action-btn comment-btn" 
+                onClick={handleCommentClick}
+                title="Comments"
+              >
+                <FiMessageSquare size={16} />
+                <span>{commentsCount}</span>
+              </button>
+              <button 
+                className="action-btn share-btn" 
+                onClick={handleShareClick}
+                title="Share"
+              >
+                <FiShare2 size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
     <ShareModal 
       isOpen={isShareModalOpen} 
