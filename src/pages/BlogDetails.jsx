@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBlogs, fetchComments, addComment, deleteComment, toggleLike } from '../features/blogs/blogsSlice';
 import { BeatLoader } from 'react-spinners';
-import { FiHeart, FiCalendar, FiUser, FiTag, FiSend, FiTrash2, FiAward, FiShare2, FiMessageSquare } from 'react-icons/fi';
+import { FiHeart, FiCalendar, FiUser, FiTag, FiSend, FiTrash2, FiAward, FiShare2, FiMessageSquare, FiEye } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import BlogCard from '../components/BlogCard';
 import ShareModal from '../components/ShareModal';
@@ -55,8 +55,42 @@ const BlogDetails = () => {
     );
   }
 
+  const hashString = (value) => {
+    const str = String(value ?? '');
+    let hash = 2166136261;
+    for (let i = 0; i < str.length; i += 1) {
+      hash ^= str.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  };
+
+  const getDayIndex = (d) => {
+    const dateObj = d instanceof Date ? d : new Date(d);
+    if (Number.isNaN(dateObj.getTime())) return null;
+    const utcMidnight = Date.UTC(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate());
+    return Math.floor(utcMidnight / 86400000);
+  };
+
+  const getSyntheticViews = (blogId, createdAt) => {
+    const todayIndex = getDayIndex(new Date());
+    const createdIndex = getDayIndex(createdAt) ?? todayIndex;
+    const daysElapsed = Math.max(0, (todayIndex ?? 0) - (createdIndex ?? 0));
+
+    const base = 60 + (hashString(`${blogId}:base`) % 441);
+    const increments = [3, 5, 10];
+
+    let total = base;
+    for (let i = 1; i <= daysElapsed; i += 1) {
+      const stepSeed = `${blogId}:${createdIndex + i}`;
+      total += increments[hashString(stepSeed) % increments.length];
+    }
+    return total;
+  };
+
   const isLiked = blog.likes?.some(l => l.user_id === user?.id);
   const likesCount = blog.likes?.length || 0;
+  const viewsCount = getSyntheticViews(blog?.id ?? blog?.title, blog?.created_at);
 
   const handleLike = () => {
     if (!user) {
@@ -127,6 +161,9 @@ const BlogDetails = () => {
                 <div className="meta-info">
                     <span>
                         <FiCalendar /> {new Date(blog.created_at).toLocaleDateString()}
+                    </span>
+                    <span>
+                        <FiEye /> {new Intl.NumberFormat().format(viewsCount)} views
                     </span>
                     <span>
                         <FiUser /> {blog.profiles?.username || 'Admin'}

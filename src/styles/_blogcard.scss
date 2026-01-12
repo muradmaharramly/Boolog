@@ -54,13 +54,22 @@
     flex-direction: column;
     flex: 1;
 
-    .blog-date {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: $space-xs;
+    .blog-meta-row {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: space-between;
+      gap: $space-sm;
+      margin-bottom: $space-xs;
+
+      .blog-date,
+      .blog-views {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+      }
     }
 
     h3 {
