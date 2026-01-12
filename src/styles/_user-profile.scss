@@ -76,6 +76,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 
     .profile-avatar {
       width: 100%;
@@ -83,9 +84,98 @@
       border-radius: 50%;
       object-fit: cover;
     }
+
+    .avatar-hover-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      color: white;
+      backdrop-filter: blur(1px);
+      z-index: 5;
+    }
+
+    .avatar-edit-badge {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      border-radius: $radius-full;
+      padding: 4px 12px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      color: white;
+      font-size: 1rem;
+      gap: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border: 2px solid var(--bg-card);
+      z-index: 10;
+      transition: transform 0.2s ease;
+
+      span {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: none;
+        letter-spacing: 0.5px;
+      }
+      
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &:hover {
+      .avatar-hover-overlay {
+        opacity: 1;
+      }
+      
+      .avatar-edit-badge {
+        transform: translateX(-50%) scale(1.05);
+      }
+    }
   }
 
- 
+  .profile-qr {
+    position: absolute;
+    top: 0px;
+    right: $space-xl;
+    
+    @include mobile {
+      position: static;
+      margin-top: $space-md;
+      order: 3;
+    }
+
+    .qr-box {
+      background: white;
+      padding: $space-sm;
+      border-radius: $radius-md;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      
+      .scan-text {
+        font-size: 0.75rem;
+        color: #333;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+  }
 
   .user-identity {
     h1 {
@@ -98,119 +188,82 @@
       
       @include mobile {
         justify-content: center;
-        font-size: 1.6rem;
       }
 
       .verified-badge {
         color: var(--accent);
-        font-size: 1.2rem;
+        font-size: 1.5rem;
       }
     }
 
-    .user-email, .user-role {
+    .user-email {
       color: var(--text-sub);
-      font-size: 1rem;
-    }
-  }
-
-  .profile-qr {
-    position: absolute;
-    right: $space-xl;
-    top: 0; // Align with the top of the avatar/header content area
-    
-    @include mobile {
-      position: relative;
-      right: auto;
-      top: auto;
-      margin-top: $space-md;
-      display: flex;
-      justify-content: center;
-    }
-
-    .qr-box {
-      background: white;
-      padding: 10px;
-      border-radius: $radius-md;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: scale(1.05);
-      }
-
-      .scan-text {
-        margin-top: 5px;
-        color: #333;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
+      font-size: 1.1rem;
     }
   }
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: $space-md;
   padding: 0 $space-xl $space-xl;
   border-bottom: 1px solid var(--border);
-  margin-bottom: $space-xl;
 
   @include mobile {
-    grid-template-columns: 1fr 1fr;
-    gap: $space-lg;
     padding: 0 $space-md $space-lg;
+    gap: $space-sm;
   }
 
   .stat-item {
+    background: var(--bg-body);
+    padding: $space-md;
+    border-radius: $radius-md;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.25rem;
+    border: 1px solid var(--border);
 
     label {
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-sub);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     span {
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1.25rem;
+      font-weight: 700;
       color: var(--text-main);
     }
   }
 }
 
 .profile-sections {
-  padding: 0 $space-xl $space-xl;
+  padding: $space-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $space-xl;
 
   @include mobile {
-    padding: 0 $space-md $space-lg;
+    padding: $space-md;
   }
 }
 
 .section-group {
-  margin-bottom: $space-xl;
-
   h3 {
     font-size: 1.1rem;
     margin-bottom: $space-md;
     color: var(--text-main);
-    font-weight: 600;
+    border-left: 3px solid var(--accent);
+    padding-left: $space-sm;
   }
 
   .section-content {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: $space-xl;
-    align-items: start;
-
+    
     @include mobile {
       grid-template-columns: 1fr;
       gap: $space-md;
@@ -218,115 +271,152 @@
 
     .description {
       color: var(--text-sub);
-      font-size: 0.9rem;
-      line-height: 1.5;
-        .view-profile-btn {
-      @include btn-secondary;
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-      margin-top: $space-md;
-    }
+      font-size: 0.95rem;
+      line-height: 1.6;
+
+      .view-profile-btn {
+        margin-top: $space-md;
+        @include btn-ghost;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+      }
     }
 
     .fields {
       display: flex;
       flex-direction: column;
       gap: $space-md;
-    }
-  }
-}
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
 
-  input {
-    @include input-base;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    cursor: default;
-    
-    &:focus {
-      border-color: var(--border);
-      box-shadow: none;
-    }
-  }
+        label {
+          font-size: 0.9rem;
+          color: var(--text-sub);
+          font-weight: 500;
+        }
 
-  .input-with-copy {
-    display: flex;
-    gap: $space-sm;
-
-    input {
-      flex: 1;
-    }
-
-    button {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      color: var(--text-sub);
-      width: 42px;
-      border-radius: $radius-sm;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--accent);
+        input {
+          @include input-base;
+        }
+        
+        .input-with-copy {
+            display: flex;
+            gap: $space-xs;
+            
+            input {
+                flex: 1;
+            }
+            
+            button {
+                background: var(--bg-body);
+                border: 1px solid var(--border);
+                color: var(--text-sub);
+                width: 42px;
+                border-radius: $radius-sm;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                
+                &:hover {
+                    border-color: var(--accent);
+                    color: var(--accent);
+                }
+            }
+        }
       }
     }
   }
 }
 
-.qr-section {
-    display: flex;
-    justify-content: left;
-    margin-top: $space-md;
-    padding: $space-md;
-    background: rgba(255,255,255, 0.05);
-    border-radius: $radius-md;
-}
-
 .logout-section {
+  margin-top: $space-md;
+  padding-top: $space-xl;
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: $space-xl;
-  padding-top: $space-xl;
-  border-top: 1px solid var(--border);
 
   @include mobile {
     flex-direction: column;
-    gap: $space-md;
     text-align: center;
+    gap: $space-md;
   }
 
   .logout-info {
     h4 {
-      font-size: 1rem;
       color: var(--text-main);
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.25rem;
     }
     p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-sub);
+      font-size: 0.9rem;
     }
   }
 
-        .logout-btn {
-        @include btn-ghost;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+  .logout-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid transparent;
+    padding: 0.75rem 1.5rem;
+    border-radius: $radius-full;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:hover {
+      background: var(--danger);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+  }
+}
+
+/* Avatar Update Modal Styles */
+.avatar-update-form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+    padding: $space-sm 0;
+    
+    .form-group {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        &:hover {
-          color: var(--danger);
-          border: 1px solid var(--danger);
+        flex-direction: column;
+        gap: $space-xs;
+        
+        label {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: 500;
         }
-      }
+        
+        input {
+            @include input-base;
+        }
+    }
+    
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: $space-sm;
+        margin-top: $space-sm;
+        
+        .btn-cancel {
+            @include btn-ghost;
+            padding: 0.5rem 1rem;
+        }
+        
+        .btn-save {
+            @include btn-primary;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.95rem;
+        }
+    }
 }

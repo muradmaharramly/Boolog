@@ -115,6 +115,29 @@ export const signOut = createAsyncThunk('auth/signOut', async (_, { rejectWithVa
   return null;
 });
 
+export const updateProfile = createAsyncThunk('auth/updateProfile', async ({ id, updates }, { rejectWithValue }) => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    
+    // Update local storage if using custom auth
+    const storedUser = localStorage.getItem('boolog_user');
+    if (storedUser) {
+        localStorage.setItem('boolog_user', JSON.stringify(data));
+    }
+    
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
 export const checkSession = createAsyncThunk('auth/checkSession', async (_, { rejectWithValue }) => {
   // 1. Check Supabase Session (Admin)
   const { data: { session } } = await supabase.auth.getSession();
@@ -236,6 +259,18 @@ const authSlice = createSlice({
         }
       })
       .addCase(checkSession.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update Profile
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile = action.payload;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

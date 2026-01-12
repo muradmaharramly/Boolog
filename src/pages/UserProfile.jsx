@@ -3,10 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 import { BeatLoader } from 'react-spinners';
-import { FiCopy, FiCheckCircle, FiLogOut, FiCalendar, FiActivity, FiMessageSquare, FiHeart } from 'react-icons/fi';
-import { signOut } from '../features/auth/authSlice';
+import { FiCopy, FiCheckCircle, FiLogOut, FiCalendar, FiActivity, FiMessageSquare, FiHeart, FiCamera } from 'react-icons/fi';
+import { signOut, updateProfile } from '../features/auth/authSlice';
 import { fetchBlogs } from '../features/blogs/blogsSlice';
 import Avatar from '../components/Avatar';
+import Modal from '../components/Modal';
+import { toast } from 'react-toastify';
 import '../styles/_user-profile.scss';
 import { AiOutlineLogout } from 'react-icons/ai';
 
@@ -16,6 +18,8 @@ const UserProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+  const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
   useEffect(() => {
     if (!user) {
@@ -60,6 +64,25 @@ const UserProfile = () => {
     navigate('/login');
   };
 
+  const handleAvatarClick = () => {
+    setNewAvatarUrl(profile.avatar_url || '');
+    setIsEditingAvatar(true);
+  };
+
+  const handleSaveAvatar = async (e) => {
+    e.preventDefault();
+    try {
+        await dispatch(updateProfile({ 
+            id: profile.id, 
+            updates: { avatar_url: newAvatarUrl } 
+        })).unwrap();
+        toast.success('Avatar updated successfully!');
+        setIsEditingAvatar(false);
+    } catch (error) {
+        toast.error('Failed to update avatar: ' + error);
+    }
+  };
+
   return (
     <div className="user-profile-container">
       <div className="profile-card">
@@ -68,13 +91,19 @@ const UserProfile = () => {
 
         {/* Header with Avatar */}
         <div className="profile-header">
-          <div className="avatar-wrapper">
+          <div className="avatar-wrapper" onClick={handleAvatarClick} title="Click to edit avatar">
              <Avatar 
                 url={profile.avatar_url} 
                 username={profile.username} 
                 size="110px"
                 className="profile-avatar"
               />
+              <div className="avatar-hover-overlay">
+                  <FiCamera size={30} />
+              </div>
+               <div className="avatar-edit-badge">
+                   <span>Click to change</span>
+               </div>
           </div>
 
           <div className="profile-qr">
@@ -160,6 +189,37 @@ const UserProfile = () => {
 
         </div>
       </div>
+      
+      {/* Avatar Update Modal */}
+      <Modal
+        isOpen={isEditingAvatar}
+        onClose={() => setIsEditingAvatar(false)}
+        title="Update Avatar"
+      >
+        <form onSubmit={handleSaveAvatar} className="avatar-update-form">
+            <div className="form-group">
+                <label>Avatar URL</label>
+                <input 
+                    type="text" 
+                    value={newAvatarUrl} 
+                    onChange={(e) => setNewAvatarUrl(e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                    autoFocus
+                />
+                <small style={{color: 'var(--text-sub)', fontSize: '0.8rem'}}>
+                    Paste a direct link to an image (JPG, PNG, GIF)
+                </small>
+            </div>
+            <div className="modal-actions">
+                <button type="button" onClick={() => setIsEditingAvatar(false)} className="btn-cancel">
+                    Cancel
+                </button>
+                <button type="submit" className="btn-save">
+                    Update Avatar
+                </button>
+            </div>
+        </form>
+      </Modal>
     </div>
   );
 };

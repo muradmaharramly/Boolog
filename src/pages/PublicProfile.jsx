@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { BeatLoader } from 'react-spinners';
 import { QRCodeCanvas } from 'qrcode.react';
-import { FiCalendar, FiActivity, FiMessageSquare, FiHeart, FiUser, FiSmartphone } from 'react-icons/fi';
+import { FiCalendar, FiActivity, FiMessageSquare, FiHeart, FiUser, FiSmartphone, FiCheckCircle } from 'react-icons/fi';
 import Avatar from '../components/Avatar';
 import BlogCard from '../components/BlogCard';
 import '../styles/_user-profile.scss'; // Reuse styles
@@ -105,7 +105,9 @@ const PublicProfile = () => {
           </div>
           
           <div className="user-identity">
-            <h1>{profile.username}</h1>
+            <h1>{profile.username}
+                <FiCheckCircle className="verified-badge" title="Verified User" />
+            </h1>
             <p className="user-role">Community Member</p>
           </div>
         </div>
