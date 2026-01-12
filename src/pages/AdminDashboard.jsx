@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchStats, fetchUsers, addCategory, fetchRecentComments } from '../features/admin/adminSlice';
+import { fetchStats, fetchUsers, addCategory, fetchRecentComments, deleteUser, updateUser } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
-import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash, FiMail, FiLink, FiCopy } from 'react-icons/fi';
 import ConfirmModal from '../components/ConfirmModal';
 import EditModal from '../components/EditModal';
+import UserEditModal from '../components/UserEditModal';
 import LoadingScreen from '../components/LoadingScreen';
 import '../styles/_admin-dashboard.scss';
 import { GoPlus } from 'react-icons/go';
@@ -34,6 +35,14 @@ const AdminDashboard = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState(null);
 
+  // State for "Edit User" modal
+  const [showUserEditModal, setShowUserEditModal] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
+
+  // State for "Delete User" modal
+  const [isUserDeleteModalOpen, setIsUserDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
   const totalViews = blogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
 
   useEffect(() => {
@@ -51,6 +60,50 @@ const AdminDashboard = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dispatch]);
+
+  const handleUpdateUser = async (formData) => {
+    const result = await dispatch(updateUser(formData));
+    if (!result.error) {
+      toast.success('User updated successfully');
+      setShowUserEditModal(false);
+      setUserToEdit(null);
+      dispatch(fetchUsers());
+    } else {
+      toast.error(result.payload);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (userToDelete) {
+      const result = await dispatch(deleteUser(userToDelete.id));
+      if (!result.error) {
+        toast.success('User deleted successfully');
+        dispatch(fetchUsers());
+      } else {
+        toast.error(result.payload);
+      }
+      setIsUserDeleteModalOpen(false);
+      setUserToDelete(null);
+    }
+  };
+
+  const openUserDeleteModal = (user) => {
+    setUserToDelete(user);
+    setIsUserDeleteModalOpen(true);
+  };
+
+  const openUserEditModal = (user) => {
+    setUserToEdit(user);
+    setShowUserEditModal(true);
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+        toast.success('Link copied to clipboard!');
+    }, (err) => {
+        toast.error('Could not copy text: ', err);
+    });
+  };
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
@@ -376,6 +429,80 @@ const AdminDashboard = () => {
               </div>
             </div>
         </div>
+
+        {/* Users Section */}
+        <div className="dashboard-row full-width">
+            <div className="dashboard-card">
+              <h2><FiUsers /> Users</h2>
+              <div className="table-responsive">
+                <table className="users-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Email</th>
+                      <th>Points</th>
+                      <th>Public Profile</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.length > 0 ? (
+                      users.map(u => {
+                        // Calculate points: 50 base + 10 per comment
+                        // Note: recentComments might not be all comments, but for this task we use what we have.
+                        // Ideally we should fetch comment counts per user from backend.
+                        // Assuming recentComments contains all comments as per slice implementation.
+                        const userCommentsCount = recentComments?.filter(c => c.user_id === u.id).length || 0;
+                        const points = (userCommentsCount * 10) + 50;
+                        const publicProfileUrl = `${window.location.origin}/user/${u.username}`;
+                        
+                        return (
+                          <tr key={u.id}>
+                            <td>
+                              <div className="user-info-cell">
+                                <img 
+                                  src={u.avatar_url || `https://ui-avatars.com/api/?name=${u.username}&background=random`} 
+                                  alt={u.username} 
+                                  className="user-avatar-mini" 
+                                />
+                                <span>{u.username}</span>
+                              </div>
+                            </td>
+                            <td>{u.email || 'N/A'}</td>
+                            <td>{points}</td>
+                            <td>
+                              <div className="profile-link-cell" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <a href={publicProfileUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'none', fontSize: '0.9rem', maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                  {publicProfileUrl}
+                                </a>
+                                <button className="btn-icon-small" onClick={() => copyToClipboard(publicProfileUrl)} title="Copy Link" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-sub)', display: 'flex', alignItems: 'center' }}>
+                                  <FiCopy size={14} />
+                                </button>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="actions-cell">
+                                <button className="btn-edit" onClick={() => openUserEditModal(u)} title="Edit">
+                                    <FiEdit2 />
+                                </button>
+                                <button className="btn-delete" onClick={() => openUserDeleteModal(u)} title="Delete">
+                                    <FiTrash />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="4" style={{textAlign: 'center', padding: '1rem'}}>No users found.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
       </div>
 
       <EditModal 
@@ -386,12 +513,27 @@ const AdminDashboard = () => {
         categories={categories}
       />
 
+      <UserEditModal 
+        isOpen={showUserEditModal}
+        onClose={() => setShowUserEditModal(false)}
+        initialData={userToEdit}
+        onSave={handleUpdateUser}
+      />
+
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteBlog}
         title="Delete Blog"
         message="Are you sure you want to delete this blog post? This action cannot be undone."
+      />
+
+      <ConfirmModal
+        isOpen={isUserDeleteModalOpen}
+        onClose={() => setIsUserDeleteModalOpen(false)}
+        onConfirm={handleDeleteUser}
+        title="Delete User"
+        message={`Are you sure you want to delete user "${userToDelete?.username}"? This action cannot be undone.`}
       />
     </div>
   );

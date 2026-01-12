@@ -1,0 +1,92 @@
+@import 'variables';
+@import 'mixins';
+
+/* Users Table Styles */
+.table-responsive {
+  overflow-x: auto;
+
+ 
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse; // Changed to collapse for cleaner borders
+  border-spacing: 0;
+  
+  th {
+    text-align: left;
+    padding: $space-md;
+    color: var(--text-sub);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.02); // Slight header background
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: $space-md;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover {
+    background: var(--hover-bg); // Row hover effect
+  }
+
+  .user-info-cell {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+
+    .user-avatar-mini {
+      width: 40px; // Slightly larger
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--bg-body);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    span {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+  }
+
+  .actions-cell {
+    display: flex;
+    gap: $space-xs;
+    
+    button {
+        width: 32px;
+        height: 32px;
+        border-radius: $radius-sm;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &.btn-edit {
+          background: rgba(139, 92, 246, 0.1);
+          color: var(--accent);
+          &:hover { background: var(--accent); color: white; }
+        }
+
+        &.btn-delete {
+          background: rgba(239, 68, 68, 0.1);
+          color: var(--danger);
+          &:hover { background: var(--danger); color: white; }
+        }
+  }
+}
+}

@@ -74,6 +74,29 @@ export const addCategory = createAsyncThunk('admin/addCategory', async (name, { 
   return data;
 });
 
+export const deleteUser = createAsyncThunk('admin/deleteUser', async (userId, { rejectWithValue }) => {
+  const { error } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', userId);
+    
+  if (error) return rejectWithValue(error.message);
+  return userId;
+});
+
+export const updateUser = createAsyncThunk('admin/updateUser', async (userData, { rejectWithValue }) => {
+  const { id, ...updates } = userData;
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+    
+  if (error) return rejectWithValue(error.message);
+  return data;
+});
+
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
@@ -109,6 +132,17 @@ const adminSlice = createSlice({
       // Add Category
       .addCase(addCategory.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      // Delete User
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.users = state.users.filter(user => user.id !== action.payload);
+      })
+      // Update User
+      .addCase(updateUser.fulfilled, (state, action) => {
+        const index = state.users.findIndex(user => user.id === action.payload.id);
+        if (index !== -1) {
+          state.users[index] = action.payload;
+        }
       });
   },
 });

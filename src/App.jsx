@@ -20,6 +20,7 @@ import PrivateRoute from './components/PrivateRoute';
 import ScrollProgress from './components/ScrollProgress';
 import BackToTop from './components/BackToTop';
 import './styles/_app.scss';
+import './styles/_admin-users.scss';
 
 function App() {
   const dispatch = useDispatch();
