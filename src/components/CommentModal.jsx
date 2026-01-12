@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiSend, FiTrash2, FiClock, FiMessageSquare } from 'react-icons/fi';
+import { FiSend, FiTrash2, FiClock, FiMessageSquare, FiTrash } from 'react-icons/fi';
 import Modal from './Modal';
 import Avatar from './Avatar';
 import { formatDistanceToNow } from 'date-fns';
@@ -11,17 +11,6 @@ const formatDate = (dateString) => {
 
 const CommentModal = ({ isOpen, onClose, comments = [], onAddComment, onDeleteComment, currentUser, loading }) => {
   const [newComment, setNewComment] = useState('');
-  const commentsEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      setTimeout(scrollToBottom, 100);
-    }
-  }, [isOpen, comments]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,33 +29,43 @@ const CommentModal = ({ isOpen, onClose, comments = [], onAddComment, onDeleteCo
             <p>No comments yet. Be the first to share your thoughts!</p>
           </div>
         ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="comment-item">
-              <div className="comment-header">
-                <div className="user-info">
-                  <Avatar 
-                    url={comment.author?.avatar_url || comment.profiles?.avatar_url} 
-                    username={comment.author?.username || comment.profiles?.username || 'Unknown User'} 
-                    size="sm" 
-                  />
-                  <span className="username">{comment.author?.username || comment.profiles?.username || 'Unknown User'}</span>
-                  <span className="timestamp">{formatDate(comment.created_at)}</span>
+          comments.map((comment) => {
+            const isOwnComment = currentUser?.id === comment.user_id;
+            const baseUsername = comment.author?.username || comment.profiles?.username;
+            const displayName = baseUsername || (isOwnComment ? (currentUser?.username || 'Admin') : 'Admin');
+
+            const avatarUrl = comment.author?.avatar_url || comment.profiles?.avatar_url;
+
+            return (
+              <div key={comment.id} className="comment-item">
+                <div className="comment-header">
+                  <div className="user-info">
+                    <Avatar 
+                      url={avatarUrl} 
+                      username={displayName} 
+                      size="sm" 
+                    />
+                    <span className="username">{displayName}</span>
+                    {comment.isFirst && (
+                      <span className="first-badge">First</span>
+                    )}
+                    <span className="timestamp">{formatDate(comment.created_at)}</span>
+                  </div>
+                  {(currentUser?.id === comment.user_id || currentUser?.role === 'admin') && (
+                    <button 
+                      className="delete-comment-btn" 
+                      onClick={() => onDeleteComment(comment.id)}
+                      title="Delete comment"
+                    >
+                      <FiTrash />
+                    </button>
+                  )}
                 </div>
-                {(currentUser?.id === comment.user_id || currentUser?.role === 'admin') && (
-                  <button 
-                    className="delete-comment-btn" 
-                    onClick={() => onDeleteComment(comment.id)}
-                    title="Delete comment"
-                  >
-                    <FiTrash2 />
-                  </button>
-                )}
+                <p className="comment-content">{comment.content}</p>
               </div>
-              <p className="comment-content">{comment.content}</p>
-            </div>
-          ))
+            );
+          })
         )}
-        <div ref={commentsEndRef} />
       </div>
 
       <form onSubmit={handleSubmit} className="comment-form">

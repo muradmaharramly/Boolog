@@ -118,7 +118,7 @@ export const addComment = createAsyncThunk('blogs/addComment', async ({ blogId, 
     
   // If profile fetch fails (e.g. Admin not in profiles), just return basic info
   // or default values.
-  const profile = profileData || { username: 'Unknown', avatar_url: null };
+  const profile = profileData || { username: 'Admin', avatar_url: null };
 
   return {
     ...commentData,
@@ -150,7 +150,7 @@ export const fetchComments = createAsyncThunk('blogs/fetchComments', async (blog
         const profile = profiles?.find(p => p.id === comment.user_id);
         return {
             ...comment,
-            profiles: profile || { username: 'Unknown', avatar_url: null }
+            profiles: profile || { username: 'Admin', avatar_url: null }
         };
     });
 

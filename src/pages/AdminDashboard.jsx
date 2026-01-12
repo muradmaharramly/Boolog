@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchStats, fetchUsers, addCategory, fetchRecentComments } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
-import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash } from 'react-icons/fi';
 import ConfirmModal from '../components/ConfirmModal';
 import EditModal from '../components/EditModal';
 import LoadingScreen from '../components/LoadingScreen';
@@ -342,7 +342,7 @@ const AdminDashboard = () => {
                                     <FiEdit2 size={14} />
                                 </button>
                                 <button className="btn-delete" onClick={() => openDeleteModal(blog)} title="Delete">
-                                    <FiTrash2 size={14} />
+                                    <FiTrash size={14} />
                                 </button>
                             </div>
                         </div>

@@ -16,7 +16,7 @@ const BlogDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { items: blogs, loading } = useSelector((state) => state.blogs);
-  const { user } = useSelector((state) => state.auth);
+  const { user, profile } = useSelector((state) => state.auth);
   
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
@@ -132,8 +132,23 @@ const BlogDetails = () => {
       }
   };
 
-  // Sort comments by date ascending to find the "First"
-  const sortedComments = blog.comments ? [...blog.comments].sort((a, b) => new Date(a.created_at) - new Date(b.created_at)) : [];
+  // Process comments: Find "First" (oldest), pin it to top, sort rest Newest -> Oldest
+  const sortedComments = (() => {
+    if (!blog.comments || blog.comments.length === 0) return [];
+    
+    // Sort all by date ascending (oldest first)
+    const chronological = [...blog.comments].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    
+    // Identify the first comment
+    const firstComment = { ...chronological[0], isFirst: true };
+    
+    if (chronological.length === 1) return [firstComment];
+    
+    // Get the rest and sort them by date descending (newest first)
+    const rest = chronological.slice(1).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    return [firstComment, ...rest];
+  })();
 
   const otherBlogs = blogs
     .filter(b => b.id !== blog.id)
@@ -292,15 +307,15 @@ const BlogDetails = () => {
         title={blog.title}
       />
 
-      <CommentModal
-        isOpen={isCommentModalOpen}
-        onClose={() => setIsCommentModalOpen(false)}
-        comments={sortedComments}
-        onAddComment={handleAddComment}
-        onDeleteComment={handleDeleteClick}
-        currentUser={user}
-        loading={loading}
-      />
+              <CommentModal
+                isOpen={isCommentModalOpen}
+                onClose={() => setIsCommentModalOpen(false)}
+                comments={sortedComments}
+                onAddComment={handleAddComment}
+                onDeleteComment={handleDeleteClick}
+                currentUser={profile || user}
+                loading={loading}
+              />
 
       <ConfirmModal 
         isOpen={isDeleteModalOpen}

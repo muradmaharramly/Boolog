@@ -366,21 +366,38 @@
                 margin-bottom: 0.5rem;
                 
                 .user-info {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    
-                    .username {
-                        font-weight: 600;
-                        color: var(--text-main);
-                        font-size: 0.9rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        
+                        .username {
+                            font-weight: 600;
+                            color: var(--text-main);
+                            font-size: 0.9rem;
+                        }
+
+                        .first-badge {
+                            background: transparent;
+                            color:  #FFA500;
+                            padding: 2px 8px;
+                            border-radius: 12px;
+                            font-size: 0.7rem;
+                            font-weight: 800;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 4px;
+                            border: 1px solid  #FFA500;
+                            box-shadow: 0 2px 5px rgba(255, 215, 0, 0.3);
+                            
+                            letter-spacing: 0.5px;
+                            white-space: nowrap;
+                        }
+                        
+                        .timestamp {
+                            font-size: 0.75rem;
+                            color: var(--text-muted);
+                        }
                     }
-                    
-                    .timestamp {
-                        font-size: 0.75rem;
-                        color: var(--text-muted);
-                    }
-                }
                 
                 .delete-comment-btn {
                     background: transparent;
