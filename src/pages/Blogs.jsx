@@ -13,9 +13,12 @@ const Blogs = () => {
   const dispatch = useDispatch();
   const { items: blogs, categories, loading, error } = useSelector((state) => state.blogs);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortOption, setSortOption] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = React.useRef(null);
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const sortDropdownRef = React.useRef(null);
 
   useEffect(() => {
     dispatch(fetchBlogs());
@@ -24,6 +27,9 @@ const Blogs = () => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
+      }
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target)) {
+        setIsSortDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -44,11 +50,67 @@ const Blogs = () => {
     setIsDropdownOpen(false);
   };
 
+  const handleSortSelect = (value) => {
+    setSortOption(value);
+    setIsSortDropdownOpen(false);
+  };
+
   const getCategoryName = (id) => {
     if (id === 'all') return 'All Categories';
     const cat = categories.find(c => c.id == id);
     return cat ? cat.name : 'All Categories';
   };
+
+  const getSortLabel = (value) => {
+    switch (value) {
+      case 'a-z':
+        return 'A-Z';
+      case 'z-a':
+        return 'Z-A';
+      case 'most-popular':
+        return 'Most Popular';
+      case 'new-old':
+        return 'New to Old';
+      case 'old-new':
+        return 'Old to New';
+      case 'most-discussed':
+        return 'Most Discussed';
+      case 'all':
+      default:
+        return 'All';
+    }
+  };
+
+  const sortedBlogs = (() => {
+    if (sortOption === 'all') return filteredBlogs;
+
+    const getLikesCount = (blog) => blog?.likes?.length || 0;
+    const getCommentsCount = (blog) => blog?.comments?.length || 0;
+    const getCreatedAt = (blog) => {
+      const ts = new Date(blog?.created_at).getTime();
+      return Number.isFinite(ts) ? ts : 0;
+    };
+    const getTitle = (blog) => (blog?.title || '').toString();
+
+    const list = [...filteredBlogs];
+
+    switch (sortOption) {
+      case 'a-z':
+        return list.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
+      case 'z-a':
+        return list.sort((a, b) => getTitle(b).localeCompare(getTitle(a)));
+      case 'most-popular':
+        return list.sort((a, b) => getLikesCount(b) - getLikesCount(a));
+      case 'new-old':
+        return list.sort((a, b) => getCreatedAt(b) - getCreatedAt(a));
+      case 'old-new':
+        return list.sort((a, b) => getCreatedAt(a) - getCreatedAt(b));
+      case 'most-discussed':
+        return list.sort((a, b) => getCommentsCount(b) - getCommentsCount(a));
+      default:
+        return list;
+    }
+  })();
 
   const handleRetry = () => {
     dispatch(fetchBlogs());
@@ -79,7 +141,10 @@ const Blogs = () => {
         <div className="select-wrapper" ref={dropdownRef}>
             <div 
                 className={`custom-select-trigger ${isDropdownOpen ? 'open' : ''}`} 
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => {
+                  setIsDropdownOpen(!isDropdownOpen);
+                  setIsSortDropdownOpen(false);
+                }}
             >
                 <FiFilter className="select-icon" />
                 <span>{getCategoryName(selectedCategory)}</span>
@@ -106,20 +171,81 @@ const Blogs = () => {
                 </div>
             )}
         </div>
+
+        <div className="select-wrapper" ref={sortDropdownRef}>
+            <div 
+                className={`custom-select-trigger ${isSortDropdownOpen ? 'open' : ''}`} 
+                onClick={() => {
+                  setIsSortDropdownOpen(!isSortDropdownOpen);
+                  setIsDropdownOpen(false);
+                }}
+            >
+                <FiFilter className="select-icon" />
+                <span>{getSortLabel(sortOption)}</span>
+                <FiChevronDown className="chevron-icon" />
+            </div>
+            
+            {isSortDropdownOpen && (
+                <div className="custom-select-options">
+                    <div 
+                        className={`option ${sortOption === 'all' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('all')}
+                    >
+                        All
+                    </div>
+                    <div 
+                        className={`option ${sortOption === 'a-z' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('a-z')}
+                    >
+                        A-Z
+                    </div>
+                    <div 
+                        className={`option ${sortOption === 'z-a' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('z-a')}
+                    >
+                        Z-A
+                    </div>
+                    <div 
+                        className={`option ${sortOption === 'most-popular' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('most-popular')}
+                    >
+                        Most Popular
+                    </div>
+                    <div 
+                        className={`option ${sortOption === 'new-old' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('new-old')}
+                    >
+                        New to Old
+                    </div>
+                    <div 
+                        className={`option ${sortOption === 'old-new' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('old-new')}
+                    >
+                        Old to New
+                    </div>
+                    <div 
+                        className={`option ${sortOption === 'most-discussed' ? 'selected' : ''}`}
+                        onClick={() => handleSortSelect('most-discussed')}
+                    >
+                        Most Discussed
+                    </div>
+                </div>
+            )}
+        </div>
       </div>
 
       {loading ? (
         <LoadingScreen message="Loading articles..." />
       ) : error ? (
         <ErrorState message={`Error loading blogs: ${error}`} onRetry={handleRetry} />
-      ) : filteredBlogs.length === 0 ? (
+      ) : sortedBlogs.length === 0 ? (
         <EmptyState 
             title="No articles found" 
             message="Try adjusting your search or category filter." 
         />
       ) : (
         <div className="blogs-grid">
-          {filteredBlogs.map(blog => (
+          {sortedBlogs.map(blog => (
             <BlogCard key={blog.id} blog={blog} />
           ))}
         </div>
