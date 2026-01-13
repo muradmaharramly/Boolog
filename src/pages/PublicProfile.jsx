@@ -20,6 +20,10 @@ const PublicProfile = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [username]);
+
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
