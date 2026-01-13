@@ -7,7 +7,10 @@
 
 .about-hero {
   text-align: center;
-  padding: 100px 0 80px;
+  padding: $space-xl 0;
+  @include mobile {
+             padding: $space-md 0;
+        }
     // Background Glow
   &::before {
     content: '';

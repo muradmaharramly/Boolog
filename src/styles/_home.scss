@@ -22,11 +22,11 @@
 // 🦸 Hero Section
 .hero {
   position: relative;
-  padding: 120px 0 80px;
+  padding: $space-xl 0;
   text-align: center;
   overflow: hidden;
   @include mobile {
-             padding: 40px 0 80px;
+             padding: $space-lg 0;
         }
 
   .hero-badge {

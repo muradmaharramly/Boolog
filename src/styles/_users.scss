@@ -4,6 +4,9 @@
 .users-page {
     padding: $space-xl 0;
     min-height: 80vh;
+    @include mobile {
+             padding: $space-md 0;
+        }
 
     &::before {
     content: '';

@@ -4,8 +4,10 @@
 .blogs-container {
   max-width: $max-width;
   margin: 0 auto;
-  padding: $space-xl $space-lg;
-     // Background Glow
+  padding: $space-xl 0;
+    @include mobile {
+             padding: $space-md 0;
+        }
   &::before {
     content: '';
     position: absolute;
