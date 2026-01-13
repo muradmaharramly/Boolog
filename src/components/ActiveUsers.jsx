@@ -38,36 +38,46 @@ const ActiveUsers = () => {
       try {
         const { data, count, error } = await supabase
           .from('profiles')
-          .select('id, username, avatar_url', { count: 'exact' })
+          .select('id, username, avatar_url, created_at', { count: 'exact' })
           .order('created_at', { ascending: true })
-          .limit(15);
+          .limit(20);
 
         if (error) throw error;
         
         const realUsers = data || [];
         const targetCount = 12;
-        const needed = targetCount - realUsers.length;
         
-        const mocks = Array.from({ length: Math.max(0, needed) }).map((_, i) => ({
-            id: `mock-${i}`,
-            username: `User ${i+1}`,
-            avatar_url: null 
-        }));
+        // 1. Sort to ensure oldest are first (already done by query, but double check)
+        // 2. We want to show REAL users if available.
+        
+        let displayUsers = [...realUsers];
+        
+        // If we don't have enough real users, fill with mocks
+        if (displayUsers.length < targetCount) {
+             const needed = targetCount - displayUsers.length;
+             const mocks = Array.from({ length: Math.max(0, needed) }).map((_, i) => ({
+                id: `mock-${i}`,
+                username: `User ${i+1}`,
+                avatar_url: null,
+                isMock: true
+            }));
+            displayUsers = [...displayUsers, ...mocks];
+        }
 
-        const allUsers = [...realUsers, ...mocks].slice(0, targetCount);
+        // Limit to targetCount
+        displayUsers = displayUsers.slice(0, targetCount);
         
-        // Process users according to specific rules:
-        // 1. First 2 users: Show REAL identity (avatar image OR initials with color)
-        // 2. Others: Show ONLY random color (no text, no image)
-        
-        const finalUsers = allUsers.map((u, index) => {
-            const isRealDisplay = index < 2;
+        const finalUsers = displayUsers.map((u, index) => {
             const seed = u.username || u.id || Math.random().toString();
+            
+            // All users are "Real Display" now unless they are mocks without info?
+            // User request: "make that make other avatars as a real users"
+            // So we treat all as displayable.
             
             return {
                 ...u,
-                isRealDisplay, // Flag for render
-                initials: isRealDisplay ? getInitials(u.username) : '', // Only calculate initials if needed
+                isRealDisplay: true, // Always show content if we have it
+                initials: getInitials(u.username),
                 color: getRandomColor(seed)
             };
         });
@@ -81,8 +91,8 @@ const ActiveUsers = () => {
         const mocks = Array.from({ length: 12 }).map((_, i) => ({
             id: `mock-${i}`,
             username: `User ${i+1}`,
-            isRealDisplay: i < 2,
-            initials: i < 2 ? `U${i+1}` : '',
+            isRealDisplay: true,
+            initials: `U${i+1}`,
             color: getRandomColor(`User ${i+1}`)
         }));
         setUsers(mocks);
@@ -92,6 +102,12 @@ const ActiveUsers = () => {
 
     fetchUsers();
   }, []);
+
+  const handleUserClick = (user) => {
+    if (user.username && !user.isMock) {
+        navigate(`/user/${user.username}`);
+    }
+  };
 
   const handlePlusClick = () => {
     if (!user) {
@@ -135,8 +151,9 @@ const ActiveUsers = () => {
                 <div 
                     key={u.id} 
                     className="avatar-item" 
-                    style={{ zIndex: users.length - index }}
+                    style={{ zIndex: users.length - index, cursor: !u.isMock ? 'pointer' : 'default' }}
                     title={u.isRealDisplay ? u.username : ''} 
+                    onClick={() => handleUserClick(u)}
                 >
                     {u.isRealDisplay && u.avatar_url ? (
                         <img src={u.avatar_url} alt={u.username} />
@@ -151,10 +168,12 @@ const ActiveUsers = () => {
                 </div>
             ))}
             
-            {/* Plus Button */}
-            <div className="avatar-item plus-item" onClick={handlePlusClick} title="Join Community">
-                <FiPlus />
-            </div>
+            {/* Plus Button - Only show if user is NOT logged in */}
+            {!user && (
+                <div className="avatar-item plus-item" onClick={handlePlusClick} title="Join Community">
+                    <FiPlus />
+                </div>
+            )}
         </div>
         
         {/* Right: CTA */}
