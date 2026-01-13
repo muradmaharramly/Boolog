@@ -205,7 +205,7 @@ const AdminDashboard = () => {
 
 
   if (loading && users.length === 0) {
-    return <LoadingScreen fullPage message="" />;
+    return <LoadingScreen fullPage />;
   }
 
   return (

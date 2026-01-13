@@ -19,17 +19,6 @@
         background: var(--bg-app);
         backdrop-filter: blur(10px);
     }
-
-    .loader-content {
-        text-align: center;
-        
-        p {
-            margin-top: $space-md;
-            color: var(--text-sub);
-            font-size: 1.1rem;
-            animation: pulse 2s infinite;
-        }
-    }
 }
 
 // ⚠️ Error State

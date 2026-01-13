@@ -185,7 +185,7 @@ const Users = () => {
 
         {/* Grid Section */}
         {loading ? (
-          <LoadingScreen message="Loading community..." />
+          <LoadingScreen />
         ) : (
           <div className="users-grid">
             {filteredUsers.length > 0 ? (
