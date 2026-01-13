@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchStats, fetchUsers, addCategory, fetchRecentComments, deleteUser, updateUser } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
-import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash, FiMail, FiLink, FiCopy } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash, FiMail, FiLink, FiCopy, FiSearch, FiFilter } from 'react-icons/fi';
 import ConfirmModal from '../components/ConfirmModal';
 import EditModal from '../components/EditModal';
 import UserEditModal from '../components/UserEditModal';
@@ -43,6 +43,128 @@ const AdminDashboard = () => {
   const [isUserDeleteModalOpen, setIsUserDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  // User Search & Filter State
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userFilterType, setUserFilterType] = useState('new');
+  const [isUserFilterDropdownOpen, setIsUserFilterDropdownOpen] = useState(false);
+  const userFilterDropdownRef = React.useRef(null);
+
+  // Comment Search & Filter State
+  const [commentSearchQuery, setCommentSearchQuery] = useState('');
+  const [commentFilterType, setCommentFilterType] = useState('new');
+  const [isCommentFilterDropdownOpen, setIsCommentFilterDropdownOpen] = useState(false);
+  const commentFilterDropdownRef = React.useRef(null);
+
+  // Blog Search & Filter State
+  const [blogSearchQuery, setBlogSearchQuery] = useState('');
+  const [blogFilterType, setBlogFilterType] = useState('all');
+  const [isBlogFilterDropdownOpen, setIsBlogFilterDropdownOpen] = useState(false);
+  const blogFilterDropdownRef = React.useRef(null);
+
+  const usersWithPoints = React.useMemo(() => {
+    return users.map(u => {
+      const userCommentsCount = recentComments?.filter(c => c.user_id === u.id).length || 0;
+      const points = (userCommentsCount * 10) + 50;
+      return { ...u, points };
+    });
+  }, [users, recentComments]);
+
+  const filteredUsers = usersWithPoints.filter(u => {
+      const query = userSearchQuery.toLowerCase();
+      return (
+          (u.username || '').toLowerCase().includes(query) || 
+          (u.email || '').toLowerCase().includes(query)
+      );
+  }).sort((a, b) => {
+      if (userFilterType === 'new') return new Date(b.created_at) - new Date(a.created_at);
+      if (userFilterType === 'old') return new Date(a.created_at) - new Date(b.created_at);
+      if (userFilterType === 'popular') return b.points - a.points;
+      return 0;
+  });
+
+  const getUserFilterLabel = (type) => {
+      switch(type) {
+          case 'new': return 'Newest';
+          case 'old': return 'Oldest';
+          case 'popular': return 'Most Popular';
+          default: return 'Newest';
+      }
+  };
+
+  const getCommentFilterLabel = (type) => {
+      switch(type) {
+          case 'new': return 'Newest';
+          case 'old': return 'Oldest';
+          default: return 'Newest';
+      }
+  };
+
+  const getBlogFilterLabel = (value) => {
+    switch (value) {
+      case 'a-z': return 'A-Z';
+      case 'z-a': return 'Z-A';
+      case 'most-popular': return 'Most Popular';
+      case 'new-old': return 'New to Old';
+      case 'old-new': return 'Old to New';
+      case 'most-discussed': return 'Most Discussed';
+      case 'all': default: return 'All';
+    }
+  };
+
+  const filteredBlogs = React.useMemo(() => {
+    if (!blogs) return [];
+
+    const lowerSearch = blogSearchQuery.toLowerCase();
+    const searchedBlogs = blogs.filter(blog => 
+        (blog.title || '').toLowerCase().includes(lowerSearch) || 
+        (blog.content || '').toLowerCase().includes(lowerSearch) ||
+        (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(lowerSearch)))
+    );
+
+    const getLikesCount = (blog) => blog?.likes?.length || 0;
+    const getCommentsCount = (blog) => blog?.comments?.length || 0;
+    const getCreatedAt = (blog) => {
+      const ts = new Date(blog?.created_at).getTime();
+      return Number.isFinite(ts) ? ts : 0;
+    };
+    const getTitle = (blog) => (blog?.title || '').toString();
+
+    const list = [...searchedBlogs];
+
+    switch (blogFilterType) {
+      case 'a-z':
+        return list.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
+      case 'z-a':
+        return list.sort((a, b) => getTitle(b).localeCompare(getTitle(a)));
+      case 'most-popular':
+        return list.sort((a, b) => getLikesCount(b) - getLikesCount(a));
+      case 'new-old':
+        return list.sort((a, b) => getCreatedAt(b) - getCreatedAt(a));
+      case 'old-new':
+        return list.sort((a, b) => getCreatedAt(a) - getCreatedAt(b));
+      case 'most-discussed':
+        return list.sort((a, b) => getCommentsCount(b) - getCommentsCount(a));
+      default:
+        return list;
+    }
+  }, [blogs, blogSearchQuery, blogFilterType]);
+
+  const filteredComments = React.useMemo(() => {
+    if (!recentComments) return [];
+    
+    return recentComments.filter(c => {
+        const query = commentSearchQuery.toLowerCase();
+        return (
+            (c.content || '').toLowerCase().includes(query) || 
+            (c.profiles?.username || 'Admin').toLowerCase().includes(query)
+        );
+    }).sort((a, b) => {
+        if (commentFilterType === 'new') return new Date(b.created_at) - new Date(a.created_at);
+        if (commentFilterType === 'old') return new Date(a.created_at) - new Date(b.created_at);
+        return 0;
+    });
+  }, [recentComments, commentSearchQuery, commentFilterType]);
+
   const totalViews = blogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
 
   useEffect(() => {
@@ -55,6 +177,15 @@ const AdminDashboard = () => {
     const handleClickOutside = (event) => {
       if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
         setIsCategoryDropdownOpen(false);
+      }
+      if (userFilterDropdownRef.current && !userFilterDropdownRef.current.contains(event.target)) {
+        setIsUserFilterDropdownOpen(false);
+      }
+      if (commentFilterDropdownRef.current && !commentFilterDropdownRef.current.contains(event.target)) {
+        setIsCommentFilterDropdownOpen(false);
+      }
+      if (blogFilterDropdownRef.current && !blogFilterDropdownRef.current.contains(event.target)) {
+        setIsBlogFilterDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -376,30 +507,109 @@ const AdminDashboard = () => {
         {/* Middle Row: Manage Articles */}
         <div className="dashboard-row full-width">
             <div className="dashboard-card">
-                <h2><FiFileText /> Manage Articles</h2>
-                <div className="blog-list">
-                    {blogs.map(blog => (
-                        <div key={blog.id} className="blog-list-item">
-                            {blog.image_url && (
-                                <img src={blog.image_url} alt={blog.title} className="blog-thumb" />
+                <div className="card-header-actions">
+                    <h2><FiFileText /> Manage Articles</h2>
+                    
+                    <div className="controls">
+                        {/* Search */}
+                        <div className="search-box">
+                            <FiSearch className="search-icon" />
+                            <input 
+                                type="text" 
+                                placeholder="Search articles..." 
+                                value={blogSearchQuery}
+                                onChange={(e) => setBlogSearchQuery(e.target.value)}
+                            />
+                        </div>
+
+                        {/* Filter */}
+                        <div className="custom-select-wrapper" ref={blogFilterDropdownRef}>
+                            <div 
+                                className={`custom-select-trigger ${isBlogFilterDropdownOpen ? 'open' : ''}`}
+                                onClick={() => setIsBlogFilterDropdownOpen(!isBlogFilterDropdownOpen)}
+                            >
+                                <FiFilter className="select-icon" />
+                                <span>{getBlogFilterLabel(blogFilterType)}</span>
+                                <FiChevronDown className="chevron-icon" />
+                            </div>
+                            
+                            {isBlogFilterDropdownOpen && (
+                                <div className="custom-select-options">
+                                    <div 
+                                        className={`option ${blogFilterType === 'all' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('all'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        All
+                                    </div>
+                                    <div 
+                                        className={`option ${blogFilterType === 'a-z' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('a-z'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        A-Z
+                                    </div>
+                                    <div 
+                                        className={`option ${blogFilterType === 'z-a' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('z-a'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        Z-A
+                                    </div>
+                                    <div 
+                                        className={`option ${blogFilterType === 'most-popular' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('most-popular'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        Most Popular
+                                    </div>
+                                    <div 
+                                        className={`option ${blogFilterType === 'new-old' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('new-old'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        New to Old
+                                    </div>
+                                    <div 
+                                        className={`option ${blogFilterType === 'old-new' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('old-new'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        Old to New
+                                    </div>
+                                    <div 
+                                        className={`option ${blogFilterType === 'most-discussed' ? 'selected' : ''}`}
+                                        onClick={() => { setBlogFilterType('most-discussed'); setIsBlogFilterDropdownOpen(false); }}
+                                    >
+                                        Most Discussed
+                                    </div>
+                                </div>
                             )}
-                            <div className="item-info">
-                                <h4>{blog.title}</h4>
-                                <div className="meta">
-                                    <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                                    <span>• {blog.categories?.name}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="blog-list">
+                    {filteredBlogs.length > 0 ? (
+                        filteredBlogs.map(blog => (
+                            <div key={blog.id} className="blog-list-item">
+                                {blog.image_url && (
+                                    <img src={blog.image_url} alt={blog.title} className="blog-thumb" />
+                                )}
+                                <div className="item-info">
+                                    <h4>{blog.title}</h4>
+                                    <div className="meta">
+                                        <span>{new Date(blog.created_at).toLocaleDateString()}</span>
+                                        <span>• {blog.categories?.name}</span>
+                                    </div>
+                                </div>
+                                <div className="item-actions">
+                                    <button className="btn-edit" onClick={() => openEditModal(blog)} title="Edit">
+                                        <FiEdit2 size={14} />
+                                    </button>
+                                    <button className="btn-delete" onClick={() => openDeleteModal(blog)} title="Delete">
+                                        <FiTrash size={14} />
+                                    </button>
                                 </div>
                             </div>
-                            <div className="item-actions">
-                                <button className="btn-edit" onClick={() => openEditModal(blog)} title="Edit">
-                                    <FiEdit2 size={14} />
-                                </button>
-                                <button className="btn-delete" onClick={() => openDeleteModal(blog)} title="Delete">
-                                    <FiTrash size={14} />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <p className="no-data">No articles found.</p>
+                    )}
                 </div>
             </div>
         </div>
@@ -407,10 +617,55 @@ const AdminDashboard = () => {
         {/* Bottom Row: Recent Comments */}
         <div className="dashboard-row full-width">
             <div className="dashboard-card">
-              <h2><FiMessageSquare /> Recent Comments</h2>
+              <div className="card-header-actions">
+                <h2><FiMessageSquare /> Recent Comments</h2>
+                
+                <div className="controls">
+                    {/* Search */}
+                    <div className="search-box">
+                        <FiSearch className="search-icon" />
+                        <input 
+                            type="text" 
+                            placeholder="Search comments..." 
+                            value={commentSearchQuery}
+                            onChange={(e) => setCommentSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Filter */}
+                    <div className="custom-select-wrapper" ref={commentFilterDropdownRef}>
+                        <div 
+                            className={`custom-select-trigger ${isCommentFilterDropdownOpen ? 'open' : ''}`}
+                            onClick={() => setIsCommentFilterDropdownOpen(!isCommentFilterDropdownOpen)}
+                        >
+                            <FiFilter className="select-icon" />
+                            <span>{getCommentFilterLabel(commentFilterType)}</span>
+                            <FiChevronDown className="chevron-icon" />
+                        </div>
+                        
+                        {isCommentFilterDropdownOpen && (
+                            <div className="custom-select-options">
+                                <div 
+                                    className={`option ${commentFilterType === 'new' ? 'selected' : ''}`}
+                                    onClick={() => { setCommentFilterType('new'); setIsCommentFilterDropdownOpen(false); }}
+                                >
+                                    Newest
+                                </div>
+                                <div 
+                                    className={`option ${commentFilterType === 'old' ? 'selected' : ''}`}
+                                    onClick={() => { setCommentFilterType('old'); setIsCommentFilterDropdownOpen(false); }}
+                                >
+                                    Oldest
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+              </div>
+
               <div className="comments-list">
-                {recentComments?.length > 0 ? (
-                  recentComments.map(comment => (
+                {filteredComments?.length > 0 ? (
+                  filteredComments.map(comment => (
                     <div key={comment.id} className="comment-item">
                       <div className="comment-header">
                         <span className="author">{comment.profiles?.username || 'Admin'}</span>
@@ -424,7 +679,7 @@ const AdminDashboard = () => {
                     </div>
                   ))
                 ) : (
-                  <p className="no-data">No comments yet.</p>
+                  <p className="no-data">No comments found.</p>
                 )}
               </div>
             </div>
@@ -433,7 +688,57 @@ const AdminDashboard = () => {
         {/* Users Section */}
         <div className="dashboard-row full-width">
             <div className="dashboard-card">
-              <h2><FiUsers /> Users</h2>
+              <div className="card-header-actions">
+                <h2><FiUsers /> Users</h2>
+                
+                <div className="controls">
+                    {/* Search */}
+                    <div className="search-box">
+                        <FiSearch className="search-icon" />
+                        <input 
+                            type="text" 
+                            placeholder="Search users..." 
+                            value={userSearchQuery}
+                            onChange={(e) => setUserSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Filter */}
+                    <div className="custom-select-wrapper" ref={userFilterDropdownRef}>
+                        <div 
+                            className={`custom-select-trigger ${isUserFilterDropdownOpen ? 'open' : ''}`}
+                            onClick={() => setIsUserFilterDropdownOpen(!isUserFilterDropdownOpen)}
+                        >
+                            <FiFilter className="select-icon" />
+                            <span>{getUserFilterLabel(userFilterType)}</span>
+                            <FiChevronDown className="chevron-icon" />
+                        </div>
+                        
+                        {isUserFilterDropdownOpen && (
+                            <div className="custom-select-options">
+                                <div 
+                                    className={`option ${userFilterType === 'new' ? 'selected' : ''}`}
+                                    onClick={() => { setUserFilterType('new'); setIsUserFilterDropdownOpen(false); }}
+                                >
+                                    Newest
+                                </div>
+                                <div 
+                                    className={`option ${userFilterType === 'old' ? 'selected' : ''}`}
+                                    onClick={() => { setUserFilterType('old'); setIsUserFilterDropdownOpen(false); }}
+                                >
+                                    Oldest
+                                </div>
+                                <div 
+                                    className={`option ${userFilterType === 'popular' ? 'selected' : ''}`}
+                                    onClick={() => { setUserFilterType('popular'); setIsUserFilterDropdownOpen(false); }}
+                                >
+                                    Most Popular
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+              </div>
               <div className="table-responsive">
                 <table className="users-table">
                   <thead>
@@ -446,14 +751,8 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.length > 0 ? (
-                      users.map(u => {
-                        // Calculate points: 50 base + 10 per comment
-                        // Note: recentComments might not be all comments, but for this task we use what we have.
-                        // Ideally we should fetch comment counts per user from backend.
-                        // Assuming recentComments contains all comments as per slice implementation.
-                        const userCommentsCount = recentComments?.filter(c => c.user_id === u.id).length || 0;
-                        const points = (userCommentsCount * 10) + 50;
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map(u => {
                         const publicProfileUrl = `${window.location.origin}/user/${u.username}`;
                         
                         return (
@@ -469,13 +768,13 @@ const AdminDashboard = () => {
                               </div>
                             </td>
                             <td>{u.email || 'N/A'}</td>
-                            <td>{points}</td>
+                            <td>{u.points}</td>
                             <td>
-                              <div className="profile-link-cell" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <a href={publicProfileUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'none', fontSize: '0.9rem', maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              <div className="profile-link-cell">
+                                <a href={publicProfileUrl} target="_blank" rel="noopener noreferrer">
                                   {publicProfileUrl}
                                 </a>
-                                <button className="btn-icon-small" onClick={() => copyToClipboard(publicProfileUrl)} title="Copy Link" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-sub)', display: 'flex', alignItems: 'center' }}>
+                                <button className="btn-icon-small" onClick={() => copyToClipboard(publicProfileUrl)} title="Copy Link">
                                   <FiCopy size={14} />
                                 </button>
                               </div>
@@ -495,7 +794,7 @@ const AdminDashboard = () => {
                       })
                     ) : (
                       <tr>
-                        <td colSpan="4" style={{textAlign: 'center', padding: '1rem'}}>No users found.</td>
+                        <td colSpan="5" style={{textAlign: 'center', padding: '1rem'}}>No users found.</td>
                       </tr>
                     )}
                   </tbody>

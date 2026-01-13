@@ -145,6 +145,120 @@
     color: var(--text-main);
   }
 
+  // Header Actions with Search & Filter
+  .card-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $space-md;
+    flex-wrap: wrap;
+    gap: $space-md;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: $space-md;
+
+    h2 {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .controls {
+        display: flex;
+        gap: $space-sm;
+        align-items: center;
+
+        .search-box {
+            @include input-base;
+            border-radius: $radius-full;
+            display: flex;
+            align-items: center;
+            padding: 0 0.8rem;
+            height: 38px;
+            width: 300px;
+            
+            .search-icon {
+                color: var(--text-sub);
+                margin-right: $space-xs;
+            }
+
+            input {
+                background: transparent;
+                border: none;
+                outline: none;
+                color: var(--text-main);
+                width: 100%;
+                font-size: 0.9rem;
+                padding: 0;
+                height: 100%;
+                
+                &::placeholder {
+                    color: var(--text-sub);
+                }
+            }
+        }
+
+        .custom-select-wrapper {
+            width: 160px;
+            position: relative;
+            z-index: 10;
+            
+            .custom-select-trigger {
+                @include input-base;
+                border-radius: $radius-full;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                height: 38px;
+                padding: 0 1rem;
+                cursor: pointer;
+                color: var(--text-main);
+                
+                &.open {
+                    border-color: var(--accent);
+                    .chevron-icon { transform: rotate(180deg); }
+                }
+                
+                .chevron-icon {
+                    color: var(--text-sub);
+                    transition: transform 0.2s;
+                }
+            }
+            
+            .custom-select-options {
+                 position: absolute;
+                 top: calc(100% + 5px);
+                 left: 0; 
+                 right: 0;
+                 background: var(--bg-card);
+                 border: 1px solid var(--border);
+                 border-radius: $radius-md;
+                 overflow: hidden;
+                 z-index: 100;
+                 box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                 
+                 .option {
+                     padding: 0.6rem 1rem;
+                     cursor: pointer;
+                     color: var(--text-sub);
+                     font-size: 0.9rem;
+                     transition: all 0.2s;
+
+                     &:hover { 
+                        color: var(--text-main); 
+                        background: rgba(255,255,255,0.05); 
+                     }
+                     
+                     &.selected { 
+                        background: var(--accent); 
+                        color: white; 
+                     }
+                 }
+            }
+        }
+    }
+  }
+
   form {
     display: flex;
     flex-direction: column;
@@ -334,6 +448,44 @@
       }
     }
   }
+
+  // Profile Link Cell in Table
+  .profile-link-cell {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+    
+    a {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 0.9rem;
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    
+    .btn-icon-small {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-sub);
+        display: flex;
+        align-items: center;
+        padding: 4px;
+        border-radius: $radius-sm;
+        transition: color 0.2s;
+        
+        &:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.05);
+        }
+    }
+  }
 }
 
 .comments-list {
@@ -482,4 +634,3 @@
     }
   }
 }
-
