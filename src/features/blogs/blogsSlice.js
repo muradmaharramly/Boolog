@@ -9,7 +9,7 @@ export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async (_, { rejec
       *,
       categories (name),
       likes (user_id),
-      comments (id)
+      comments (id, user_id)
     `)
     .order('created_at', { ascending: false });
 

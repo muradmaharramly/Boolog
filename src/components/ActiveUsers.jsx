@@ -39,6 +39,7 @@ const ActiveUsers = () => {
         const { data, count, error } = await supabase
           .from('profiles')
           .select('id, username, avatar_url', { count: 'exact' })
+          .order('created_at', { ascending: true })
           .limit(15);
 
         if (error) throw error;

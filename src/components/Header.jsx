@@ -135,6 +135,7 @@ const Header = () => {
           <div className="nav-actions">
             <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>Home</Link>
             <Link to="/blogs" className={`nav-link ${location.pathname === '/blogs' ? 'active' : ''}`}>Blogs</Link>
+            <Link to="/users" className={`nav-link ${location.pathname === '/users' ? 'active' : ''}`}>People</Link>
             <Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}>About</Link>
             
             {/* Theme Toggle */}
@@ -179,6 +180,7 @@ const Header = () => {
       <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
         <Link to="/" className="nav-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
         <Link to="/blogs" className="nav-link" onClick={() => setIsMenuOpen(false)}>Blogs</Link>
+        <Link to="/users" className="nav-link" onClick={() => setIsMenuOpen(false)}>People</Link>
         <Link to="/about" className="nav-link" onClick={() => setIsMenuOpen(false)}>About</Link>
         {user ? (
            <>

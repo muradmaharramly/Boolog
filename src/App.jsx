@@ -12,6 +12,7 @@ import Blogs from './pages/Blogs';
 import BlogDetails from './pages/BlogDetails';
 import UserProfile from './pages/UserProfile';
 import PublicProfile from './pages/PublicProfile';
+import Users from './pages/Users';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
 import NotFound from './pages/NotFound';
@@ -40,6 +41,7 @@ function App() {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/about" element={<About />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
+          <Route path="/users" element={<Users />} />
           <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
           <Route path="/user/:username" element={<PublicProfile />} />
           <Route path="/login" element={<Login />} />
