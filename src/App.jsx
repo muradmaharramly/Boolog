@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { checkSession } from './features/auth/authSlice';
 import Header from './components/Header';
@@ -25,10 +25,15 @@ import './styles/_admin-users.scss';
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     dispatch(checkSession());
   }, [dispatch]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <div className="app-wrapper">
