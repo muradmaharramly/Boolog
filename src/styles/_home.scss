@@ -30,7 +30,10 @@
         }
 
   .hero-badge {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
     padding: 0.5rem 1rem;
     background: var(--glass-bg);
     border: 1px solid var(--border);

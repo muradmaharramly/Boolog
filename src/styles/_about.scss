@@ -26,7 +26,10 @@
   }
   
    .about-badge {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
     padding: 0.5rem 1rem;
     background: var(--glass-bg);
     border: 1px solid var(--border);
@@ -80,6 +83,7 @@
   grid-template-columns: 1.2fr 0.8fr;
   gap: $space-lg;
   margin-bottom: $space-xl;
+  animation: fadeIn 1s ease-out 0.2s backwards;
 
   @include mobile {
     grid-template-columns: 1fr;

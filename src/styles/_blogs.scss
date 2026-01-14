@@ -23,7 +23,10 @@
   
 
    .blogs-badge {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
     padding: 0.5rem 1rem;
     background: var(--glass-bg);
     border: 1px solid var(--border);
@@ -64,6 +67,7 @@
     p {
       color: var(--text-sub);
       font-size: 1.1rem;
+      animation: fadeIn 1s ease-out 0.2s backwards;
     }
   }
 
@@ -72,6 +76,7 @@
     justify-content: center;
     gap: $space-md;
     margin-bottom: $space-xl;
+    animation: fadeIn 1s ease-out 0.2s backwards;
     
     @include mobile {
       flex-direction: column;

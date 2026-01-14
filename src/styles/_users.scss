@@ -38,7 +38,10 @@
         .header-text {
             text-align: center;
             .users-badge {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
     padding: 0.5rem 1rem;
     background: var(--glass-bg);
     border: 1px solid var(--border);
@@ -53,6 +56,7 @@
                 font-size: 3rem;
                 margin-bottom: $space-xs;
                 color: var(--text-main);
+                animation: fadeIn 1s ease-out 0.2s backwards;
                 
                 .highlight {
                     background: var(--accent-gradient);
@@ -64,12 +68,14 @@
             p {
                 color: var(--text-sub);
                 font-size: 1.1rem;
+                animation: fadeIn 1s ease-out 0.2s backwards;
             }
         }
 
         .controls {
             display: flex;
             gap: $space-md;
+            animation: fadeIn 1s ease-out 0.2s backwards;
 
             @include mobile {
                 width: 100%;
@@ -208,6 +214,7 @@
             display: flex;
             flex-direction: column;
             gap: $space-md;
+            animation: fadeIn 1s ease-out 0.2s backwards;
 
             &:hover {
                 transform: translateY(-5px);
