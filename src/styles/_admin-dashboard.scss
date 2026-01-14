@@ -43,13 +43,16 @@
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: $space-md;
   margin-bottom: $space-lg;
+  margin-left: -$space-xl;
 
   @include mobile {
-    grid-template-columns: 1fr;
+    flex-wrap: wrap;
+    margin-left: 0;
   }
 
   .stat-card {
@@ -57,7 +60,11 @@
     padding: $space-md;
     flex-direction: row;
     align-items: center;
+    flex: 0 0 25%;
     gap: $space-md;
+    @include mobile {
+    flex:0 0 100%;
+  }
 
     .stat-icon {
       width: 48px;
