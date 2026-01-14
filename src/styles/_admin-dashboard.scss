@@ -626,6 +626,12 @@
         cursor: pointer;
         transition: all 0.2s;
 
+        &.btn-visit {
+          background: rgba(59, 130, 246, 0.12);
+          color: var(--accent);
+          &:hover { background: var(--accent); color: white; }
+        }
+
         &.btn-edit {
           background: rgba(139, 92, 246, 0.1);
           color: var(--accent);

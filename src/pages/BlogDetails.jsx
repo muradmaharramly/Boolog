@@ -92,6 +92,19 @@ const BlogDetails = () => {
     return total;
   };
 
+  const formatViews = (value) => {
+    const n = Number(value) || 0;
+    if (n >= 1000000) {
+      const v = (n / 1000000).toFixed(1);
+      return `${v.endsWith('.0') ? v.slice(0, -2) : v}M`;
+    }
+    if (n >= 1000) {
+      const v = (n / 1000).toFixed(1);
+      return `${v.endsWith('.0') ? v.slice(0, -2) : v}K`;
+    }
+    return String(n);
+  };
+
   const isLiked = blog.likes?.some(l => l.user_id === user?.id);
   const likesCount = blog.likes?.length || 0;
   const viewsCount = getSyntheticViews(blog?.id ?? blog?.title, blog?.created_at);
@@ -182,7 +195,7 @@ const BlogDetails = () => {
                         <FiCalendar /> {new Date(blog.created_at).toLocaleDateString()}
                     </span>
                     <span>
-                        <FiEye /> {new Intl.NumberFormat().format(viewsCount)} views
+                        <FiEye /> {formatViews(viewsCount)} views
                     </span>
                     <span>
                         <FiUser /> {blog.profiles?.username || 'Admin'}

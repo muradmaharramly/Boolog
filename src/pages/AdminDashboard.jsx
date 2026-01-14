@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fetchStats, fetchUsers, addCategory, fetchRecentComments, deleteUser, updateUser } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
@@ -10,9 +11,11 @@ import UserEditModal from '../components/UserEditModal';
 import LoadingScreen from '../components/LoadingScreen';
 import '../styles/_admin-dashboard.scss';
 import { GoPlus } from 'react-icons/go';
+import { LuExternalLink } from 'react-icons/lu';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { stats, users, recentComments, loading } = useSelector((state) => state.admin);
   const { categories, items: blogs } = useSelector((state) => state.blogs);
   const { user } = useSelector((state) => state.auth);
@@ -111,6 +114,52 @@ const AdminDashboard = () => {
     }
   };
 
+  const hashString = (value) => {
+    const str = String(value ?? '');
+    let hash = 2166136261;
+    for (let i = 0; i < str.length; i += 1) {
+      hash ^= str.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  };
+
+  const getDayIndex = (d) => {
+    const dateObj = d instanceof Date ? d : new Date(d);
+    if (Number.isNaN(dateObj.getTime())) return null;
+    const utcMidnight = Date.UTC(dateObj.getUTCFullYear(), dateObj.getUTCMonth(), dateObj.getUTCDate());
+    return Math.floor(utcMidnight / 86400000);
+  };
+
+  const getSyntheticViews = (blogId, createdAt) => {
+    const todayIndex = getDayIndex(new Date());
+    const createdIndex = getDayIndex(createdAt) ?? todayIndex;
+    const daysElapsed = Math.max(0, (todayIndex ?? 0) - (createdIndex ?? 0));
+
+    const base = 60 + (hashString(`${blogId}:base`) % 441);
+    const increments = [3, 5, 10];
+
+    let total = base;
+    for (let i = 1; i <= daysElapsed; i += 1) {
+      const stepSeed = `${blogId}:${createdIndex + i}`;
+      total += increments[hashString(stepSeed) % increments.length];
+    }
+    return total;
+  };
+
+  const formatViews = (value) => {
+    const n = Number(value) || 0;
+    if (n >= 1000000) {
+      const v = (n / 1000000).toFixed(1);
+      return `${v.endsWith('.0') ? v.slice(0, -2) : v}M`;
+    }
+    if (n >= 1000) {
+      const v = (n / 1000).toFixed(1);
+      return `${v.endsWith('.0') ? v.slice(0, -2) : v}K`;
+    }
+    return String(n);
+  };
+
   const filteredBlogs = React.useMemo(() => {
     if (!blogs) return [];
 
@@ -165,7 +214,10 @@ const AdminDashboard = () => {
     });
   }, [recentComments, commentSearchQuery, commentFilterType]);
 
-  const totalViews = blogs.reduce((acc, blog) => acc + (blog.views || 0), 0);
+  const totalViews = blogs.reduce(
+    (acc, blog) => acc + getSyntheticViews(blog?.id ?? blog?.title, blog?.created_at),
+    0
+  );
 
   useEffect(() => {
     dispatch(fetchStats());
@@ -356,7 +408,7 @@ const AdminDashboard = () => {
         <div className="stat-card">
             <div className="stat-icon purple"><FiBarChart2 /></div>
             <div className="stat-info">
-                <h3>{totalViews}</h3>
+                <h3>{formatViews(totalViews)}</h3>
                 <p>Total Views</p>
             </div>
         </div>
@@ -595,9 +647,15 @@ const AdminDashboard = () => {
                                     <div className="meta">
                                         <span>{new Date(blog.created_at).toLocaleDateString()}</span>
                                         <span>• {blog.categories?.name}</span>
+                                        <span>• {formatViews(getSyntheticViews(blog?.id ?? blog?.title, blog?.created_at))} views</span>
+                                        <span>• {(blog.likes?.length || 0)} likes</span>
+                                        <span>• {(blog.comments?.length || 0)} comments</span>
                                     </div>
                                 </div>
                                 <div className="item-actions">
+                                    <button className="btn-visit" onClick={() => navigate(`/blog/${blog.id}`)} title="Visit article">
+                                        <LuExternalLink size={14} />
+                                    </button>
                                     <button className="btn-edit" onClick={() => openEditModal(blog)} title="Edit">
                                         <FiEdit2 size={14} />
                                     </button>

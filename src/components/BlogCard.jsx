@@ -47,6 +47,19 @@ const BlogCard = ({ blog, viewMode = 'grid' }) => {
     return total;
   };
 
+  const formatViews = (value) => {
+    const n = Number(value) || 0;
+    if (n >= 1000000) {
+      const v = (n / 1000000).toFixed(1);
+      return `${v.endsWith('.0') ? v.slice(0, -2) : v}M`;
+    }
+    if (n >= 1000) {
+      const v = (n / 1000).toFixed(1);
+      return `${v.endsWith('.0') ? v.slice(0, -2) : v}K`;
+    }
+    return String(n);
+  };
+
   // Handle potentially missing data safely
   const title = blog?.title || 'Untitled Post';
   const content = blog?.content || 'No content available.';
@@ -99,7 +112,7 @@ const BlogCard = ({ blog, viewMode = 'grid' }) => {
             </div>
             <div className="blog-views">
               <FiEye size={14} />
-              <span>{new Intl.NumberFormat().format(viewsCount)} views</span>
+              <span>{formatViews(viewsCount)} views</span>
             </div>
           </div>
           
