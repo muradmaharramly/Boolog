@@ -513,7 +513,6 @@
   }
 
   .comment-item {
-    background: rgba(255, 255, 255, 0.03);
     padding: $space-md;
     border-radius: $radius-md;
     border: 1px solid var(--border);
@@ -545,8 +544,12 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
-    .comment-blog {
+    
+    .comment-ending{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .comment-blog {
       display: flex;
       align-items: center;
       gap: $space-xs;
@@ -559,6 +562,24 @@
         text-overflow: ellipsis;
       }
     }
+    button {
+        width: 32px;
+        height: 32px;
+        border-radius: $radius-sm;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &.btn-delete {
+          background: rgba(239, 68, 68, 0.1);
+          color: var(--danger);
+          &:hover { background: var(--danger); color: white; }
+        }
+    }
+  }
   }
 }
 
@@ -578,7 +599,6 @@
     align-items: center;
     gap: $space-md;
     padding: $space-md;
-    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border);
     border-radius: $radius-md;
     transition: all 0.2s ease;
