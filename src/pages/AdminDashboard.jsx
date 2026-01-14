@@ -12,6 +12,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import '../styles/_admin-dashboard.scss';
 import { GoPlus } from 'react-icons/go';
 import { LuExternalLink } from 'react-icons/lu';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const AdminDashboard = () => {
     const dispatch = useDispatch();
@@ -67,6 +68,14 @@ const AdminDashboard = () => {
     const [blogFilterType, setBlogFilterType] = useState('all');
     const [isBlogFilterDropdownOpen, setIsBlogFilterDropdownOpen] = useState(false);
     const blogFilterDropdownRef = React.useRef(null);
+
+    const [isMobile, setIsMobile] = useState(false);
+    const [blogCurrentPage, setBlogCurrentPage] = useState(1);
+    const [commentCurrentPage, setCommentCurrentPage] = useState(1);
+    const [userCurrentPage, setUserCurrentPage] = useState(1);
+    const blogPageSize = 5;
+    const commentPageSize = 5;
+    const userPageSize = 10;
 
     const usersWithPoints = React.useMemo(() => {
         return users.map(u => {
@@ -218,6 +227,92 @@ const AdminDashboard = () => {
         });
     }, [recentComments, commentSearchQuery, commentFilterType]);
 
+    const blogTotalPages = Math.max(1, Math.ceil(filteredBlogs.length / blogPageSize));
+    const paginatedBlogs = React.useMemo(() => {
+        const start = (blogCurrentPage - 1) * blogPageSize;
+        return filteredBlogs.slice(start, start + blogPageSize);
+    }, [filteredBlogs, blogCurrentPage]);
+
+    const commentTotalPages = Math.max(1, Math.ceil(filteredComments.length / commentPageSize));
+    const paginatedComments = React.useMemo(() => {
+        const start = (commentCurrentPage - 1) * commentPageSize;
+        return filteredComments.slice(start, start + commentPageSize);
+    }, [filteredComments, commentCurrentPage]);
+
+    const userTotalPages = Math.max(1, Math.ceil(filteredUsers.length / userPageSize));
+    const paginatedUsers = React.useMemo(() => {
+        const start = (userCurrentPage - 1) * userPageSize;
+        return filteredUsers.slice(start, start + userPageSize);
+    }, [filteredUsers, userCurrentPage]);
+
+    const getPaginationItems = (currentPage, totalPages) => {
+        const items = [];
+        if (isMobile) {
+            if (totalPages <= 3) {
+                for (let i = 1; i <= totalPages; i += 1) {
+                    items.push(i);
+                }
+                return items;
+            }
+
+            items.push(1);
+
+            if (currentPage <= 2) {
+                items.push(2, 'dots', totalPages);
+                return items;
+            }
+
+            if (currentPage >= totalPages - 1) {
+                items.push('dots', totalPages - 1, totalPages);
+                return items;
+            }
+
+            items.push('dots', currentPage, 'dots', totalPages);
+            return items;
+        }
+
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i += 1) {
+                items.push(i);
+            }
+            return items;
+        }
+
+        items.push(1);
+
+        if (currentPage <= 3) {
+            items.push(2, 3, 4, 'dots');
+            items.push(totalPages);
+            return items;
+        }
+
+        if (currentPage >= totalPages - 2) {
+            items.push('dots');
+            for (let i = totalPages - 3; i <= totalPages; i += 1) {
+                items.push(i);
+            }
+            return items;
+        }
+
+        items.push('dots', currentPage, currentPage + 1, currentPage + 2, 'dots', totalPages);
+        return items;
+    };
+
+    const goToBlogPage = (page) => {
+        if (page < 1 || page > blogTotalPages) return;
+        setBlogCurrentPage(page);
+    };
+
+    const goToCommentPage = (page) => {
+        if (page < 1 || page > commentTotalPages) return;
+        setCommentCurrentPage(page);
+    };
+
+    const goToUserPage = (page) => {
+        if (page < 1 || page > userTotalPages) return;
+        setUserCurrentPage(page);
+    };
+
     const totalViews = blogs.reduce(
         (acc, blog) => acc + getSyntheticViews(blog?.id ?? blog?.title, blog?.created_at),
         0
@@ -247,6 +342,27 @@ const AdminDashboard = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [dispatch]);
+
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth <= 640);
+        };
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
+
+    useEffect(() => {
+        setBlogCurrentPage(1);
+    }, [blogSearchQuery, blogFilterType]);
+
+    useEffect(() => {
+        setCommentCurrentPage(1);
+    }, [commentSearchQuery, commentFilterType]);
+
+    useEffect(() => {
+        setUserCurrentPage(1);
+    }, [userSearchQuery, userFilterType]);
 
     const handleUpdateUser = async (formData) => {
         const result = await dispatch(updateUser(formData));
@@ -659,8 +775,8 @@ const AdminDashboard = () => {
                         </div>
 
                         <div className="blog-list">
-                            {filteredBlogs.length > 0 ? (
-                                filteredBlogs.map(blog => (
+                            {paginatedBlogs.length > 0 ? (
+                                paginatedBlogs.map(blog => (
                                     <div key={blog.id} className="blog-list-item">
                                         {blog.image_url && (
                                             <img src={blog.image_url} alt={blog.title} className="blog-thumb" />
@@ -692,6 +808,43 @@ const AdminDashboard = () => {
                                 <p className="no-data">No articles found.</p>
                             )}
                         </div>
+                        {filteredBlogs.length > blogPageSize && (
+                            <div className="pagination">
+                                <button
+                                    className="page-btn"
+                                    onClick={() => goToBlogPage(blogCurrentPage - 1)}
+                                    disabled={blogCurrentPage === 1}
+                                >
+                                    <IoIosArrowBack />
+                                </button>
+                                {getPaginationItems(blogCurrentPage, blogTotalPages).map((item, idx) => {
+                                    if (item === 'dots') {
+                                        return (
+                                            <button key={`blog-dots-${idx}`} className="page-btn" disabled>
+                                                ...
+                                            </button>
+                                        );
+                                    }
+                                    const page = item;
+                                    return (
+                                        <button
+                                            key={`blog-page-${page}`}
+                                            className={`page-btn ${page === blogCurrentPage ? 'active' : ''}`}
+                                            onClick={() => goToBlogPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
+                                <button
+                                    className="page-btn"
+                                    onClick={() => goToBlogPage(blogCurrentPage + 1)}
+                                    disabled={blogCurrentPage === blogTotalPages}
+                                >
+                                    <IoIosArrowForward />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -745,8 +898,8 @@ const AdminDashboard = () => {
                         </div>
 
                         <div className="comments-list">
-                            {filteredComments?.length > 0 ? (
-                                filteredComments.map(comment => (
+                            {paginatedComments.length > 0 ? (
+                                paginatedComments.map(comment => (
                                     <div key={comment.id} className="comment-item">
                                         <div className="comment-header">
                                             <span className="author">{comment.profiles?.username || 'Admin'}</span>
@@ -772,6 +925,43 @@ const AdminDashboard = () => {
                                 <p className="no-data">No comments found.</p>
                             )}
                         </div>
+                        {filteredComments.length > commentPageSize && (
+                            <div className="pagination">
+                                <button
+                                    className="page-btn"
+                                    onClick={() => goToCommentPage(commentCurrentPage - 1)}
+                                    disabled={commentCurrentPage === 1}
+                                >
+                                    <IoIosArrowBack />
+                                </button>
+                                {getPaginationItems(commentCurrentPage, commentTotalPages).map((item, idx) => {
+                                    if (item === 'dots') {
+                                        return (
+                                            <button key={`comment-dots-${idx}`} className="page-btn" disabled>
+                                                ...
+                                            </button>
+                                        );
+                                    }
+                                    const page = item;
+                                    return (
+                                        <button
+                                            key={`comment-page-${page}`}
+                                            className={`page-btn ${page === commentCurrentPage ? 'active' : ''}`}
+                                            onClick={() => goToCommentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
+                                <button
+                                    className="page-btn"
+                                    onClick={() => goToCommentPage(commentCurrentPage + 1)}
+                                    disabled={commentCurrentPage === commentTotalPages}
+                                >
+                                    <IoIosArrowForward />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -842,7 +1032,7 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody>
                                     {filteredUsers.length > 0 ? (
-                                        filteredUsers.map(u => {
+                                        paginatedUsers.map(u => {
                                             const publicProfileUrl = `${window.location.origin}/user/${u.username}`;
 
                                             return (
@@ -890,6 +1080,43 @@ const AdminDashboard = () => {
                                 </tbody>
                             </table>
                         </div>
+                        {filteredUsers.length > userPageSize && (
+                            <div className="pagination">
+                                <button
+                                    className="page-btn"
+                                    onClick={() => goToUserPage(userCurrentPage - 1)}
+                                    disabled={userCurrentPage === 1}
+                                >
+                                    <IoIosArrowBack />
+                                </button>
+                                {getPaginationItems(userCurrentPage, userTotalPages).map((item, idx) => {
+                                    if (item === 'dots') {
+                                        return (
+                                            <button key={`user-dots-${idx}`} className="page-btn" disabled>
+                                                ...
+                                            </button>
+                                        );
+                                    }
+                                    const page = item;
+                                    return (
+                                        <button
+                                            key={`user-page-${page}`}
+                                            className={`page-btn ${page === userCurrentPage ? 'active' : ''}`}
+                                            onClick={() => goToUserPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    );
+                                })}
+                                <button
+                                    className="page-btn"
+                                    onClick={() => goToUserPage(userCurrentPage + 1)}
+                                    disabled={userCurrentPage === userTotalPages}
+                                >
+                                    <IoIosArrowForward />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

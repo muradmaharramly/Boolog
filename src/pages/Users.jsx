@@ -9,6 +9,7 @@ import Avatar from '../components/Avatar';
 import { QRCodeCanvas } from 'qrcode.react';
 import '../styles/_users.scss';
 import { RiEye2Line } from 'react-icons/ri';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -19,6 +20,9 @@ const Users = () => {
   const filterDropdownRef = useRef(null);
   const [activeQrUserId, setActiveQrUserId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+  const pageSize = 9;
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -37,6 +41,17 @@ const Users = () => {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth <= 640);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const fetchUsers = async () => {
@@ -116,6 +131,7 @@ const Users = () => {
   const handleFilterSelect = (type) => {
     setFilterType(type);
     setIsFilterDropdownOpen(false);
+    setCurrentPage(1);
   };
 
   const handleCopyLink = (username) => {
@@ -125,13 +141,77 @@ const Users = () => {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / pageSize));
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredUsers.slice(start, start + pageSize);
+  }, [filteredUsers, currentPage]);
+
+  const getPaginationItems = () => {
+    const items = [];
+    if (isMobile) {
+      if (totalPages <= 3) {
+        for (let i = 1; i <= totalPages; i += 1) {
+          items.push(i);
+        }
+        return items;
+      }
+
+      items.push(1);
+
+      if (currentPage <= 2) {
+        items.push(2, 'dots', totalPages);
+        return items;
+      }
+
+      if (currentPage >= totalPages - 1) {
+        items.push('dots', totalPages - 1, totalPages);
+        return items;
+      }
+
+      items.push('dots', currentPage, 'dots', totalPages);
+      return items;
+    } else {
+      if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i += 1) {
+          items.push(i);
+        }
+        return items;
+      }
+
+      items.push(1);
+
+      if (currentPage <= 3) {
+        items.push(2, 3, 4, 'dots');
+        items.push(totalPages);
+        return items;
+      }
+
+      if (currentPage >= totalPages - 2) {
+        items.push('dots');
+        for (let i = totalPages - 3; i <= totalPages; i += 1) {
+          items.push(i);
+        }
+        return items;
+      }
+
+      items.push('dots', currentPage, currentPage + 1, currentPage + 2, 'dots', totalPages);
+      return items;
+    }
+  };
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   return (
     <div className="users-page">
       <div className="container">
         {/* Header Section */}
         <div className="users-header">
           <div className="header-text">
-          <span className="users-badge"><RiEye2Line />Look at others</span>
+          <span className="section-badge"><RiEye2Line />Look at others</span>
             <h1>Discover <span className="highlight">People</span></h1>
             <p>Connect with authors, developers, and tech enthusiasts from around the world.</p>
           </div>
@@ -188,8 +268,8 @@ const Users = () => {
           <LoadingScreen />
         ) : (
           <div className="users-grid">
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map(user => {
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map(user => {
                 const isQrActive = activeQrUserId === user.id;
                 
                 return (
@@ -289,6 +369,44 @@ const Users = () => {
                 <p>Try adjusting your search or filters.</p>
               </div>
             )}
+          </div>
+        )}
+
+        {filteredUsers.length > pageSize && (
+          <div className="pagination">
+            <button
+              className="page-btn"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <IoIosArrowBack />
+            </button>
+            {getPaginationItems().map((item, idx) => {
+              if (item === 'dots') {
+                return (
+                  <button key={`dots-${idx}`} className="page-btn" disabled>
+                    ...
+                  </button>
+                );
+              }
+              const page = item;
+              return (
+                <button
+                  key={page}
+                  className={`page-btn ${page === currentPage ? 'active' : ''}`}
+                  onClick={() => goToPage(page)}
+                >
+                  {page}
+                </button>
+              );
+            })}
+            <button
+              className="page-btn"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <IoIosArrowForward />
+            </button>
           </div>
         )}
       </div>

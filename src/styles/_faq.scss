@@ -35,22 +35,6 @@
             margin-bottom: $space-md;
         }
 
-        .badge {
-            display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    padding: 0.5rem 1rem;
-    background: var(--glass-bg);
-    border: 1px solid var(--border);
-    border-radius: $radius-full;
-    color: var(--accent);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: $space-md;
-    animation: fadeIn 1s ease-out;
-        }
-
         h2 {
             font-size: 3rem;
             margin-bottom: $space-md;

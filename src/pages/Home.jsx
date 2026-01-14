@@ -41,7 +41,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="hero">
         <div className="container">
-          <span className="hero-badge"><BsStars /> The Future of Tech Blogging</span>
+          <span className="section-badge"><BsStars /> The Future of Tech Blogging</span>
           <h1>
             Discover the <span className="highlight">Universe</span> <br />
             of Technology

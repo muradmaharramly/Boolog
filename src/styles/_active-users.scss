@@ -67,21 +67,6 @@
         align-items: center;
         justify-content: center;
 
-        .live-badge {
-            display:flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 0.5px;
-            margin-bottom: $space-sm;
-             padding: 0.5rem 1rem;
-            background: var(--glass-bg);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-
             .pulsing-dot {
                 width: 8px;
                 height: 8px;
@@ -103,7 +88,6 @@
                     opacity: 0.5;
                 }
             }
-        }
 
         h3 {
             font-size: 2rem;

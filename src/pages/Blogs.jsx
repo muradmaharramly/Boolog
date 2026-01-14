@@ -8,6 +8,7 @@ import ErrorState from '../components/ErrorState';
 import { FiSearch, FiFilter, FiChevronDown, FiGrid, FiList } from 'react-icons/fi';
 import '../styles/_blogs.scss';
 import { BsStars } from 'react-icons/bs';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const Blogs = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ const Blogs = () => {
   const dropdownRef = React.useRef(null);
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const sortDropdownRef = React.useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+  const pageSize = 6;
 
   useEffect(() => {
     dispatch(fetchBlogs());
@@ -36,6 +40,17 @@ const Blogs = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dispatch]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth <= 640);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const filteredBlogs = blogs.filter(blog => {
     const matchCategory = selectedCategory === 'all' || blog.category_id === parseInt(selectedCategory);
@@ -113,6 +128,70 @@ const Blogs = () => {
     }
   })();
 
+  const totalPages = Math.max(1, Math.ceil(sortedBlogs.length / pageSize));
+  const paginatedBlogs = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return sortedBlogs.slice(start, start + pageSize);
+  }, [sortedBlogs, currentPage]);
+
+  const getPaginationItems = () => {
+    const items = [];
+    if (isMobile) {
+      if (totalPages <= 3) {
+        for (let i = 1; i <= totalPages; i += 1) {
+          items.push(i);
+        }
+        return items;
+      }
+
+      items.push(1);
+
+      if (currentPage <= 2) {
+        items.push(2, 'dots', totalPages);
+        return items;
+      }
+
+      if (currentPage >= totalPages - 1) {
+        items.push('dots', totalPages - 1, totalPages);
+        return items;
+      }
+
+      items.push('dots', currentPage, 'dots', totalPages);
+      return items;
+    } else {
+      if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i += 1) {
+          items.push(i);
+        }
+        return items;
+      }
+
+      items.push(1);
+
+      if (currentPage <= 3) {
+        items.push(2, 3, 4, 'dots');
+        items.push(totalPages);
+        return items;
+      }
+
+      if (currentPage >= totalPages - 2) {
+        items.push('dots');
+        for (let i = totalPages - 3; i <= totalPages; i += 1) {
+          items.push(i);
+        }
+        return items;
+      }
+
+      items.push('dots', currentPage, currentPage + 1, currentPage + 2, 'dots', totalPages);
+      return items;
+    }
+  };
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   const handleRetry = () => {
     dispatch(fetchBlogs());
     dispatch(fetchCategories());
@@ -121,7 +200,7 @@ const Blogs = () => {
   return (
     <div className="blogs-container">
       <div className="header-section">
-      <span className="blogs-badge"><BsStars />Our blogs page</span>
+      <span className="section-badge"><BsStars />Our blogs page</span>
         <h1>
             Look at our <span className="highlight">Blogs</span> <br />
           </h1>
@@ -267,9 +346,46 @@ const Blogs = () => {
         />
       ) : (
         <div className={viewMode === 'list' ? 'blogs-list' : 'blogs-grid'}>
-          {sortedBlogs.map(blog => (
+          {paginatedBlogs.map(blog => (
             <BlogCard key={blog.id} blog={blog} viewMode={viewMode} />
           ))}
+        </div>
+      )}
+      {!loading && !error && sortedBlogs.length > pageSize && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <IoIosArrowBack />
+          </button>
+          {getPaginationItems().map((item, idx) => {
+            if (item === 'dots') {
+              return (
+                <button key={`dots-${idx}`} className="page-btn" disabled>
+                  ...
+                </button>
+              );
+            }
+            const page = item;
+            return (
+              <button
+                key={page}
+                className={`page-btn ${page === currentPage ? 'active' : ''}`}
+                onClick={() => goToPage(page)}
+              >
+                {page}
+              </button>
+            );
+          })}
+          <button
+            className="page-btn"
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            <IoIosArrowForward />
+          </button>
         </div>
       )}
     </div>

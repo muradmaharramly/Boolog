@@ -14,7 +14,7 @@ const CTASection = () => {
             <div className="glow-shape right"></div>
             
             <div className="cta-content">
-                <span className="cta-badge"><IoIosRocket /> Boolog Premium</span>
+                <span className="section-badge"><IoIosRocket /> Boolog Premium</span>
                 <h2>Start your journey today</h2>
                 <p>Unlock the full potential of your knowledge with our comprehensive blogging platform.</p>
                 <Link to="/register" className="cta-btn">

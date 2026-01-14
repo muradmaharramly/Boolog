@@ -9,7 +9,7 @@ const About = () => {
       {/* Hero Section */}
       <section className="about-hero">
         <div className="container">
-        <span className="about-badge"><BsStars /> About the Boolog</span>
+        <span className="section-badge"><BsStars /> About the Boolog</span>
           <h1>Empowering the Developer <span className="highlight">Community</span></h1>
           <p>Boolog is more than just a blog—it's a hub for knowledge, collaboration, and growth.</p>
         </div>

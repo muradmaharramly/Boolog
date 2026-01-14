@@ -38,7 +38,7 @@ const FaqSection = () => {
         <div className="faq-layout">
           {/* Left Column: Header */}
           <div className="faq-header">
-            <div className="badge">
+            <div className="section-badge">
               <FiHelpCircle /> Frequently asked questions
             </div>
             <h2>Frequently asked <br /><span className="highlight">questions</span></h2>

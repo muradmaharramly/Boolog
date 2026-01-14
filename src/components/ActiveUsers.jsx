@@ -125,7 +125,7 @@ const ActiveUsers = () => {
             <div className="glow-shape right"></div>
         {/* Left: Text & Context */}
         <div className="text-content">
-            <div className="live-badge">
+            <div className="section-badge">
                 <span className="pulsing-dot"></span>
                 Live on Boolog
             </div>
