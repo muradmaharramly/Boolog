@@ -276,7 +276,7 @@ const Users = () => {
                 <div 
                   key={user.id} 
                   className={`user-card ${isQrActive ? 'qr-active' : ''}`} 
-                  onClick={() => !isQrActive && navigate(`/user/${user.username}`)}
+                  onClick={() => !isQrActive && navigate(`/user/${user.username}`, { state: { from: 'users' } })}
                   style={{ cursor: isQrActive ? 'default' : 'pointer' }}
                 >
                 <div className="glow-shape left"></div>

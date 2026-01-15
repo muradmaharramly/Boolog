@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { checkSession } from './features/auth/authSlice';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Breadcrumb from './components/Breadcrumb';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
@@ -41,6 +42,7 @@ function App() {
       <BackToTop />
       <Header />
       <main className="main-content">
+        <Breadcrumb />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blogs" element={<Blogs />} />

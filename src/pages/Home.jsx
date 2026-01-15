@@ -153,7 +153,7 @@ const Home = () => {
               <LoadingScreen style={{ minHeight: '200px' }} />
             ) : (
               latestBlogs.map(blog => (
-                <BlogCard key={blog.id} blog={blog} />
+                <BlogCard key={blog.id} blog={blog} from="home" />
               ))
             )}
           </div>
@@ -173,7 +173,7 @@ const Home = () => {
                 <LoadingScreen style={{ minHeight: '200px' }} />
               ) : (
                 mostLikedBlogs.map(blog => (
-                  <BlogCard key={blog.id} blog={blog} />
+                  <BlogCard key={blog.id} blog={blog} from="home" />
                 ))
               )}
             </div>
@@ -194,7 +194,7 @@ const Home = () => {
                 <LoadingScreen style={{ minHeight: '200px' }} />
               ) : (
                 mostCommentedBlogs.map(blog => (
-                  <BlogCard key={blog.id} blog={blog} />
+                  <BlogCard key={blog.id} blog={blog} from="home" />
                 ))
               )}
             </div>

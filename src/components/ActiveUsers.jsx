@@ -105,7 +105,7 @@ const ActiveUsers = () => {
 
   const handleUserClick = (user) => {
     if (user.username && !user.isMock) {
-        navigate(`/user/${user.username}`);
+      navigate(`/user/${user.username}`, { state: { from: 'home' } });
     }
   };
 

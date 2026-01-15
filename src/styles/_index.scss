@@ -3,167 +3,220 @@
 @import 'mixins';
 @import 'global';
 
-// Main Index Styles
-// This file is the entry point for global styles.
-// Component-specific styles are imported in the components themselves.
 .pagination {
-    margin-top: $space-xl;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
+  margin-top: $space-xl;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
 
-    .page-btn {
-      min-width: 40px;
-      height: 40px;
-      padding: 0 0.75rem;
-      border-radius: $radius-full;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-sub);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
+.pagination .page-btn {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.75rem;
+  border-radius: $radius-full;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-sub);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-      &:hover:not(:disabled) {
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text-main);
-      }
+.pagination .page-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+}
 
-      &.active {
-        background: var(--accent);
-        color: #fff;
-        border-color: var(--accent);
-      }
+.pagination .page-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
 
-      &:disabled {
-        opacity: 0.5;
-        cursor: default;
-      }
-    }
+.pagination .page-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.section-badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 0.5rem 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: $radius-full;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: $space-md;
+  animation: fadeIn 1s ease-out;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-box svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-sub);
+}
+
+.search-box input {
+  @include input-base;
+  padding-left: 2.5rem;
+  border-radius: $radius-full;
+  height: 48px;
+  color: var(--text-main);
+}
+
+.search-box input::placeholder {
+  color: var(--text-sub);
+}
+
+.select-wrapper {
+  position: relative;
+  width: auto;
+  min-width: 220px;
+  z-index: 100;
+}
+
+@include mobile {
+  .select-wrapper {
+    width: 100%;
   }
+}
 
-   .section-badge {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    padding: 0.5rem 1rem;
-    background: var(--glass-bg);
-    border: 1px solid var(--border);
-    border-radius: $radius-full;
-    color: var(--accent);
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: $space-md;
-    animation: fadeIn 1s ease-out;
+.select-wrapper .custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem 0 2.5rem;
+  background: transparent;
+  border-radius: $radius-full;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+}
+
+.select-wrapper .custom-select-trigger.open {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.select-wrapper .custom-select-trigger .select-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-sub);
+  font-size: 1rem;
+}
+
+.select-wrapper .custom-select-trigger span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.select-wrapper .custom-select-trigger .chevron-icon {
+  color: var(--text-sub);
+  transition: transform 0.2s;
+}
+
+.select-wrapper .custom-select-trigger.open .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.select-wrapper .custom-select-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  z-index: 101;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.select-wrapper .custom-select-options .option {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  color: var(--text-sub);
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.select-wrapper .custom-select-options .option:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.select-wrapper .custom-select-options .option.selected {
+  background: var(--accent);
+  color: white;
+}
+
+.breadcrumb-wrapper {
+  padding: $space-sm 0;
+}
+
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: $radius-full;
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.breadcrumb::-webkit-scrollbar {
+  display: none;
+}
+
+.breadcrumb .breadcrumb-item a {
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.breadcrumb .breadcrumb-item a:hover {
+  color: var(--accent);
+}
+
+.breadcrumb .breadcrumb-item--active {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.breadcrumb .breadcrumb-separator {
+  color: var(--text-muted);
+}
+
+@include mobile {
+  .breadcrumb {
+    font-size: 0.8rem;
   }
-
-              .search-box {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-
-      svg {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-sub);
-      }
-
-      input {
-        @include input-base;
-        padding-left: 2.5rem;
-        border-radius: $radius-full;
-        height: 48px;
-        color: var(--text-main);
-        
-        &::placeholder {
-            color: var(--text-sub);
-        }
-      }
-    }
-
-            .select-wrapper {
-                position: relative;
-                width: auto;
-                min-width: 220px;
-                z-index: 100;
-
-                @include mobile {
-                    width: 100%;
-                }
-        
-                .custom-select-trigger {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    width: 100%;
-                    height: 48px; // Match search input height if possible, or adjust
-                    padding: 0 1rem 0 2.5rem;
-                    background: transparent;
-                    border-radius: $radius-full;
-                    cursor: pointer;
-                    user-select: none;
-                    transition: all 0.2s;
-                    border: 1px solid var(--border);
-        
-                    &.open {
-                        border-color: var(--accent);
-                        box-shadow: 0 0 0 3px var(--accent-glow);
-                    }
-        
-                    .select-icon {
-                        position: absolute;
-                        left: 12px; // Match search icon position
-                        color: var(--text-sub);
-                        font-size: 1rem;
-                    }
-        
-                    span {
-                        color: var(--text-main);
-                        font-weight: 500;
-                    }
-        
-                    .chevron-icon {
-                        color: var(--text-sub);
-                        transition: transform 0.2s;
-                    }
-        
-                    &.open .chevron-icon {
-                        transform: rotate(180deg);
-                    }
-                }
-        
-                .custom-select-options {
-                    position: absolute;
-                    top: calc(100% + 8px);
-                    left: 0;
-                    right: 0;
-                    background: var(--bg-card);
-                    border: 1px solid var(--border);
-                    border-radius: 8px;
-                    overflow: hidden;
-                    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
-                    z-index: 101;
-                    animation: fadeIn 0.2s ease-out;
-        
-                    .option {
-                        padding: 0.8rem 1rem;
-                        cursor: pointer;
-                        color: var(--text-sub);
-                        transition: all 0.2s;
-                        font-weight: 500;
-        
-                        &:hover {
-                            background: rgba(255, 255, 255, 0.05);
-                            color: var(--text-main);
-                        }
-        
-                        &.selected {
-                            background: var(--accent);
-                            color: white;
-                        }
-                    }
-                }
-            }
+}

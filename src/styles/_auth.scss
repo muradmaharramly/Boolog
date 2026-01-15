@@ -6,10 +6,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $space-sm;
+  padding: $space-xl;
   position: relative;
   overflow: hidden;
-
+  margin-top: -70px;
+  @include mobile{
+    padding: $space-xl $space-sm;
+  }
   // Background glow
   &::before {
     content: '';
@@ -32,6 +35,9 @@
   padding: $space-md $space-lg;
   position: relative;
   animation: fadeIn 0.5s ease-out;
+  @include mobile{
+    padding: $space-md $space-sm;
+  }
 
   h2 {
     font-size: 2rem;
@@ -108,7 +114,7 @@
         
         .input-icon {
           position: absolute;
-          left: 1rem;
+          right: 1rem;
           top: 50%;
           transform: translateY(-50%);
           color: var(--text-sub);
@@ -119,12 +125,11 @@
 
         input {
           @include input-base;
-          padding-left: 2.8rem;
-          background: rgba(0, 0, 0, 0.2);
+          padding-right: 2.8rem;
+          background: transparent;
           color: var(--text-main);
 
           &:focus {
-            background: rgba(0, 0, 0, 0.3);
             border-color: var(--accent);
           }
 

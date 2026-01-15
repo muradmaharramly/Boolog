@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import ShareModal from './ShareModal';
 import '../styles/_blogcard.scss';
 
-const BlogCard = ({ blog, viewMode = 'grid' }) => {
+const BlogCard = ({ blog, viewMode = 'grid', from }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -85,7 +85,7 @@ const BlogCard = ({ blog, viewMode = 'grid' }) => {
 
   const handleCommentClick = (e) => {
     e.stopPropagation();
-    navigate(`/blog/${blog.id}`);
+    navigate(`/blog/${blog.id}`, { state: { from } });
   };
 
   const handleShareClick = (e) => {
@@ -97,7 +97,7 @@ const BlogCard = ({ blog, viewMode = 'grid' }) => {
     <>
       <div
         className={`blog-card ${viewMode === 'list' ? 'list' : 'grid'}`}
-        onClick={() => navigate(`/blog/${blog.id}`)}
+        onClick={() => navigate(`/blog/${blog.id}`, { state: { from } })}
       >
       <div className="glow-shape left"></div>
             <div className="glow-shape right"></div>

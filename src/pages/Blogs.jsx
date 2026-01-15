@@ -347,7 +347,12 @@ const Blogs = () => {
       ) : (
         <div className={viewMode === 'list' ? 'blogs-list' : 'blogs-grid'}>
           {paginatedBlogs.map(blog => (
-            <BlogCard key={blog.id} blog={blog} viewMode={viewMode} />
+            <BlogCard
+              key={blog.id}
+              blog={blog}
+              viewMode={viewMode}
+              from="blogs"
+            />
           ))}
         </div>
       )}
