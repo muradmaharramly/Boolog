@@ -336,6 +336,7 @@ const Users = () => {
                     <div className="qr-overlay" onClick={(e) => e.stopPropagation()}>
                         <div className="qr-box">
                             <QRCodeCanvas 
+                            className='qr'
                                 value={`${window.location.origin}/user/${user.username}`}
                                 size={140}
                                 level={"M"}

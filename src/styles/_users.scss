@@ -221,6 +221,7 @@
                     padding: 5px;
                     border-radius: 50%;
                     transition: all 0.2s;
+                    font-size: 1.2rem;
 
                     &:hover {
                         background: rgba(var(--accent-rgb), 0.1);
@@ -339,7 +340,7 @@
             .qr-overlay {
                 position: absolute;
                 inset: 0;
-                background: rgba(0, 0, 0, 0.4);
+                background: rgba(0, 0, 0, 0.022);
                 backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);
                 display: flex;
@@ -349,18 +350,21 @@
                 z-index: 5;
                 animation: fadeIn 0.3s ease;
 
-                .qr-box {
-                    background: white;
+                .qr-box {                  
                     padding: 1.5rem;
-                    border-radius: 16px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     gap: 1rem;
-                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-
+                    .qr{
+                        border-radius: $radius-md;
+                        -webkit-border-radius: $radius-md;
+                        -moz-border-radius: $radius-md;
+                        -ms-border-radius: $radius-md;
+                        -o-border-radius: $radius-md;
+}
                     .scan-text {
-                        color: #333;
+                        color: var(--text-sub);
                         font-weight: 600;
                         font-size: 0.9rem;
                     }
@@ -369,16 +373,16 @@
                         display: flex;
                         align-items: center;
                         gap: 0.5rem;
-                        background: #f5f5f5;
+                        background: var(--bg-card);
                         padding: 0.5rem 0.8rem;
                         border-radius: 8px;
                         width: 100%;
                         max-width: 220px;
-                        border: 1px solid #e0e0e0;
+                        border: 1px solid var(--border);
 
                         .link-text {
                             font-size: 0.8rem;
-                            color: #666;
+                            color: var(--text-sub);
                             white-space: nowrap;
                             overflow: hidden;
                             text-overflow: ellipsis;
