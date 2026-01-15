@@ -318,6 +318,9 @@ const AdminDashboard = () => {
         0
     );
 
+    const viewsChange = '+5%';
+    const usersChange = '+2%';
+
     useEffect(() => {
         dispatch(fetchStats());
         dispatch(fetchUsers());
@@ -547,7 +550,10 @@ const AdminDashboard = () => {
                 <div className="stat-card">
                     <div className="stat-icon purple"><FiBarChart2 /></div>
                     <div className="stat-info">
-                        <h3>{formatViews(totalViews)}</h3>
+                        <div className="stat-info-row">
+                            <h3>{formatViews(totalViews)}</h3>
+                            <span className="stat-change stat-change--positive">{viewsChange}</span>
+                        </div>
                         <p>Total Views</p>
                     </div>
                 </div>
@@ -561,12 +567,15 @@ const AdminDashboard = () => {
                 <div className="stat-card green">
                     <div className="stat-icon green"><FiUsers /></div>
                     <div className="stat-info">
-                        <h3>{users.length || 0}</h3>
+                        <div className="stat-info-row">
+                            <h3>{users.length || 0}</h3>
+                            <span className="stat-change stat-change--positive">{usersChange}</span>
+                        </div>
                         <p>Active Users</p>
                     </div>
                 </div>
                 <div className="stat-card orange">
-                    <div className="stat-icon orange"><FiActivity /></div>
+                    <div className="stat-icon orange"><FiMessageSquare /></div>
                     <div className="stat-info">
                         <h3>{stats.commentsCount || 0}</h3>
                         <p>Total Comments</p>
@@ -620,7 +629,7 @@ const AdminDashboard = () => {
 
                             <div className="form-group">
                                 <label>Category</label>
-                                <div className="custom-select-wrapper" ref={categoryDropdownRef}>
+                                <div className="select-wrapper" ref={categoryDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isCategoryDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
@@ -714,7 +723,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {/* Filter */}
-                                <div className="custom-select-wrapper" ref={blogFilterDropdownRef}>
+                                <div className="select-wrapper" ref={blogFilterDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isBlogFilterDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsBlogFilterDropdownOpen(!isBlogFilterDropdownOpen)}
@@ -867,7 +876,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {/* Filter */}
-                                <div className="custom-select-wrapper" ref={commentFilterDropdownRef}>
+                                <div className="select-wrapper" ref={commentFilterDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isCommentFilterDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsCommentFilterDropdownOpen(!isCommentFilterDropdownOpen)}
@@ -984,7 +993,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {/* Filter */}
-                                <div className="custom-select-wrapper" ref={userFilterDropdownRef}>
+                                <div className="select-wrapper" ref={userFilterDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isUserFilterDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsUserFilterDropdownOpen(!isUserFilterDropdownOpen)}

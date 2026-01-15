@@ -32,7 +32,7 @@
 @mixin input-base {
   width: 100%;
   padding: $space-sm;
-  background: var(--bg-card);
+  background: transparent;
   border: 1px solid var(--border);
   border-radius: $radius-sm;
   color: var(--text-main);
@@ -44,7 +44,7 @@
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
-    background: var(--bg-card);
+    background: transparent;
   }
 
   &::placeholder {

@@ -208,7 +208,7 @@ const Blogs = () => {
       </div>
 
       <div className="filters">
-        <div className="search-wrapper">
+        <div className="search-box">
             <FiSearch />
             <input 
                 type="text" 

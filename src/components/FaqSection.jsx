@@ -53,6 +53,8 @@ const FaqSection = () => {
                 className={`faq-item ${activeIndex === index ? 'active' : ''}`}
                 onClick={() => toggleAccordion(index)}
               >
+              <div className="glow-shape left"></div>
+            <div className="glow-shape right"></div>
                 <div className="faq-question">
                   <h3>{faq.question}</h3>
                   <span className="icon">

@@ -279,6 +279,8 @@ const Users = () => {
                   onClick={() => !isQrActive && navigate(`/user/${user.username}`)}
                   style={{ cursor: isQrActive ? 'default' : 'pointer' }}
                 >
+                <div className="glow-shape left"></div>
+            <div className="glow-shape right"></div>
                   <div className="card-header-actions">
                     <button 
                       className="more-btn"

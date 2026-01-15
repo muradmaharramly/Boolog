@@ -66,121 +66,6 @@
                 width: 100%;
                 flex-direction: column;
             }
-
-            .search-box {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-
-      svg {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-sub);
-      }
-
-      input {
-        @include input-base;
-        padding-left: 2.5rem;
-        border-radius: $radius-full;
-        height: 48px;
-        background: var(--bg-card);
-        color: var(--text-main);
-        
-        &::placeholder {
-            color: var(--text-sub);
-        }
-      }
-    }
-
-            .select-wrapper {
-                position: relative;
-                width: auto;
-                min-width: 220px;
-                z-index: 100;
-
-                @include mobile {
-                    width: 100%;
-                }
-        
-                .custom-select-trigger {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    width: 100%;
-                    height: 48px; // Match search input height if possible, or adjust
-                    padding: 0 1rem 0 2.5rem;
-                    background: var(--bg-card);
-                    border-radius: $radius-full;
-                    cursor: pointer;
-                    user-select: none;
-                    transition: all 0.2s;
-                    border: 1px solid var(--border);
-        
-                    &:hover {
-                        border-color: var(--text-sub);
-                    }
-        
-                    &.open {
-                        border-color: var(--accent);
-                        box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
-                    }
-        
-                    .select-icon {
-                        position: absolute;
-                        left: 12px; // Match search icon position
-                        color: var(--text-sub);
-                        font-size: 1rem;
-                    }
-        
-                    span {
-                        color: var(--text-main);
-                        font-weight: 500;
-                    }
-        
-                    .chevron-icon {
-                        color: var(--text-sub);
-                        transition: transform 0.2s;
-                    }
-        
-                    &.open .chevron-icon {
-                        transform: rotate(180deg);
-                    }
-                }
-        
-                .custom-select-options {
-                    position: absolute;
-                    top: calc(100% + 8px);
-                    left: 0;
-                    right: 0;
-                    background: var(--bg-card);
-                    border: 1px solid var(--border);
-                    border-radius: 8px;
-                    overflow: hidden;
-                    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
-                    z-index: 101;
-                    animation: fadeIn 0.2s ease-out;
-        
-                    .option {
-                        padding: 0.8rem 1rem;
-                        cursor: pointer;
-                        color: var(--text-sub);
-                        transition: all 0.2s;
-                        font-weight: 500;
-        
-                        &:hover {
-                            background: rgba(255, 255, 255, 0.05);
-                            color: var(--text-main);
-                        }
-        
-                        &.selected {
-                            background: var(--accent);
-                            color: white;
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -199,7 +84,40 @@
             display: flex;
             flex-direction: column;
             gap: $space-md;
+            overflow: hidden;
             animation: fadeIn 1s ease-out 0.2s backwards;
+
+            .glow-shape {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.2;
+            
+            &.left {
+                top: -150px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, var(--accent), transparent);
+                -webkit-transform: translateX(-50%);
+                -moz-transform: translateX(-50%);
+                -ms-transform: translateX(-50%);
+                -o-transform: translateX(-50%);
+}
+
+            &.right {
+                bottom: -150px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(-135deg, var(--accent), transparent);
+                -webkit-transform: translateX(-50%);
+                -moz-transform: translateX(-50%);
+                -ms-transform: translateX(-50%);
+                -o-transform: translateX(-50%);
+}
+        }
 
             &:hover {
                 transform: translateY(-5px);

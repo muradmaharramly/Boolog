@@ -99,6 +99,8 @@ const BlogCard = ({ blog, viewMode = 'grid' }) => {
         className={`blog-card ${viewMode === 'list' ? 'list' : 'grid'}`}
         onClick={() => navigate(`/blog/${blog.id}`)}
       >
+      <div className="glow-shape left"></div>
+            <div className="glow-shape right"></div>
         <div className="blog-image">
           <img src={imageUrl} alt={title} loading="lazy" />
           <span className="category-badge">{category}</span>

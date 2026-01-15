@@ -74,6 +74,8 @@ const Home = () => {
           <div className="bento-grid">
             {/* Item 1: Large Feature */}
             <div className="bento-item span-2">
+              <div className="glow-shape left"></div>
+              <div className="glow-shape right"></div>
               <h3>Engineering Excellence</h3>
               <p>Deep dives into scalable architecture, clean code practices, and modern stack choices.</p>
               <FiCode className="icon-bg" />
@@ -81,6 +83,8 @@ const Home = () => {
 
             {/* Item 2: Tall Feature */}
             <div className="bento-item tall">
+              <div className="glow-shape left"></div>
+              <div className="glow-shape right"></div>
               <h3>Peak Performance</h3>
               <p>Optimized for speed. Experience the lightning fast rendering and seamless transitions of our platform.</p>
 
@@ -115,6 +119,8 @@ const Home = () => {
 
             {/* Item 3: Standard Feature */}
             <div className="bento-item">
+              <div className="glow-shape left"></div>
+              <div className="glow-shape right"></div>
               <h3>Design Systems</h3>
               <p>Crafting beautiful, consistent user interfaces.</p>
               <FiLayout className="icon-bg" />
@@ -122,6 +128,8 @@ const Home = () => {
 
             {/* Item 4: Standard Feature */}
             <div className="bento-item">
+              <div className="glow-shape left"></div>
+              <div className="glow-shape right"></div>
               <h3>Community</h3>
               <p>Join a growing network of 10k+ developers.</p>
               <FiUsers className="icon-bg" />
