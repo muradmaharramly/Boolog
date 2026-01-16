@@ -14,7 +14,7 @@ const PublicProfile = () => {
   const { username } = useParams();
   const dispatch = useDispatch();
   const { items: blogs, loading: blogsLoading } = useSelector((state) => state.blogs);
-  
+
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,10 +36,10 @@ const PublicProfile = () => {
 
         if (error) throw error;
         setProfile(data);
-        
+
         // Ensure blogs are loaded
         if (blogs.length === 0) {
-            dispatch(fetchBlogs());
+          dispatch(fetchBlogs());
         }
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -54,7 +54,7 @@ const PublicProfile = () => {
 
   if (loading) {
     return (
-      <div className="loading-container" style={{height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      <div className="loading-container" style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <BeatLoader color="#58a6ff" />
       </div>
     );
@@ -72,63 +72,67 @@ const PublicProfile = () => {
 
   // Filter blogs by this user
   const userBlogs = blogs.filter(b => b.author_id === profile.id);
-  
+
   const joinDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric'
   }) : 'Unknown';
 
   // Stats
   const commentsCount = blogs.flatMap(b => b.comments || []).filter(c => c.user_id === profile.id).length;
-  const activityPoints = (commentsCount * 10) + 50; 
+  const activityPoints = (commentsCount * 10) + 50;
 
   return (
     <div className="user-profile-container">
       <div className="profile-card">
         <div className="profile-banner"></div>
-        
+
         <div className="profile-header">
           <div className="avatar-wrapper">
-             <Avatar 
-                url={profile.avatar_url} 
-                username={profile.username} 
-                size="110px"
-                className="profile-avatar"
-              />
+            <Avatar
+              url={profile.avatar_url}
+              username={profile.username}
+              size="110px"
+              className="profile-avatar"
+            />
           </div>
 
           <div className="profile-qr">
-             <div className="qr-box">
-                <QRCodeCanvas 
-                  value={window.location.href} 
-                  size={120}
-                  level={"M"}
-                  includeMargin={false}
-                />
-                <span className="scan-text">Scan to Share</span>
-             </div>
+            <div className="qr-box">
+              <QRCodeCanvas
+                value={window.location.href}
+                size={120}
+                level={"M"}
+                includeMargin={false}
+              />
+              <span className="scan-text">Scan to Share</span>
+            </div>
           </div>
-          
+
           <div className="user-identity">
             <h1>{profile.username}
-                <FiCheckCircle className="verified-badge" title="Verified User" />
+              <FiCheckCircle className="verified-badge" title="Verified User" />
             </h1>
             <p className="user-role">Community Member</p>
           </div>
         </div>
 
-        <div className="stats-grid">
+        <div className="user-stats-grid">
           <div className="stat-item">
-            <label><FiCalendar style={{marginRight: '5px', verticalAlign: 'text-bottom'}}/>Joined</label>
+            <label><FiCalendar style={{ marginRight: '5px', verticalAlign: 'text-bottom' }} />Joined</label>
             <span>{joinDate}</span>
           </div>
           <div className="stat-item">
-            <label><FiActivity style={{marginRight: '5px', verticalAlign: 'text-bottom'}}/>Activity Points</label>
-              <span>{activityPoints}</span>
+            <label><FiActivity style={{ marginRight: '5px', verticalAlign: 'text-bottom' }} />Activity Points</label>
+            <span>{activityPoints}</span>
+          </div>
+          <div className="stat-item">
+            <label><FiHeart style={{ marginRight: '5px', verticalAlign: 'text-bottom' }} />Reputation</label>
+            <span>Level {Math.floor(activityPoints / 100) + 1}</span>
           </div>
         </div>
       </div>
 
-     
+
     </div>
   );
 };

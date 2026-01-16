@@ -3,12 +3,12 @@
 
 .user-profile-container {
   max-width: 1180px;
-  margin: $space-xl auto;
+  margin: $space-sm auto;
   padding: $space-md;
 
   @include mobile {
     padding: $space-sm;
-    margin: $space-lg auto;
+    margin: 0 auto;
   }
 }
 
@@ -203,7 +203,7 @@
   }
 }
 
-.stats-grid {
+.user-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: $space-md;

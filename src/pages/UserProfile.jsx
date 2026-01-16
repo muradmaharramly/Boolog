@@ -128,7 +128,7 @@ const UserProfile = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="stats-grid">
+        <div className="user-stats-grid">
           <div className="stat-item">
             <label><FiCalendar style={{marginRight: '5px', verticalAlign: 'text-bottom'}}/>First seen</label>
             <span>{joinDate}</span>

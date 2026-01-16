@@ -48,11 +48,9 @@
   align-items: center;
   gap: $space-md;
   margin-bottom: $space-lg;
-  margin-left: -$space-xl;
 
   @include mobile {
     flex-wrap: wrap;
-    margin-left: 0;
   }
 
   .stat-card {
@@ -60,7 +58,7 @@
     padding: $space-md;
     flex-direction: row;
     align-items: center;
-    flex: 0 0 25%;
+    flex: 0 0 22%;
     gap: $space-md;
     @include mobile {
     flex:0 0 100%;

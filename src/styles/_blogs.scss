@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: $space-xl 0;
     @include mobile {
-             padding: $space-md $space-sm;
+             padding: $space-lg $space-sm;
         }
   &::before {
     content: '';

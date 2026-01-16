@@ -9,10 +9,9 @@
   padding: $space-xl;
   position: relative;
   overflow: hidden;
-  margin-top: -70px;
-  z-index: -1;
+  z-index: 0;
   @include mobile{
-    padding: $space-xl $space-sm;
+    padding: $space-lg $space-sm;
   }
   
   // Background glow
