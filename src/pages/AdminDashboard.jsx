@@ -356,15 +356,24 @@ const AdminDashboard = () => {
     }, []);
 
     useEffect(() => {
-        setBlogCurrentPage(1);
+        const id = setTimeout(() => {
+            setBlogCurrentPage(1);
+        }, 0);
+        return () => clearTimeout(id);
     }, [blogSearchQuery, blogFilterType]);
 
     useEffect(() => {
-        setCommentCurrentPage(1);
+        const id = setTimeout(() => {
+            setCommentCurrentPage(1);
+        }, 0);
+        return () => clearTimeout(id);
     }, [commentSearchQuery, commentFilterType]);
 
     useEffect(() => {
-        setUserCurrentPage(1);
+        const id = setTimeout(() => {
+            setUserCurrentPage(1);
+        }, 0);
+        return () => clearTimeout(id);
     }, [userSearchQuery, userFilterType]);
 
     const handleUpdateUser = async (formData) => {

@@ -53,8 +53,7 @@ export const addBlog = createAsyncThunk('blogs/addBlog', async (blogData, { reje
 
   if (error) return rejectWithValue(error.message);
 
-  // 2. Fetch Author Profile (to display immediately without refresh)
-  const { data: profile, error: profileError } = await supabase
+  const { data: profile } = await supabase
     .from('profiles')
     .select('username, avatar_url')
     .eq('id', blogData.author_id)
@@ -107,10 +106,7 @@ export const addComment = createAsyncThunk('blogs/addComment', async ({ blogId, 
 
   if (insertError) return rejectWithValue(insertError.message);
 
-  // 2. Fetch the user profile details for the UI
-  // We use the 'profiles' table directly since we might be in custom auth mode
-  // and the join might be failing if permissions/FKs are tricky.
-  const { data: profileData, error: profileError } = await supabase
+  const { data: profileData } = await supabase
     .from('profiles')
     .select('username, avatar_url')
     .eq('id', userId)
@@ -138,9 +134,8 @@ export const fetchComments = createAsyncThunk('blogs/fetchComments', async (blog
 
     if (!comments || comments.length === 0) return { blogId, comments: [] };
 
-    // 2. Fetch profiles for these comments
     const userIds = [...new Set(comments.map(c => c.user_id))];
-    const { data: profiles, error: profilesError } = await supabase
+    const { data: profiles } = await supabase
         .from('profiles')
         .select('id, username, avatar_url')
         .in('id', userIds);

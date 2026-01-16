@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { BeatLoader } from 'react-spinners';
@@ -8,16 +8,17 @@ import Avatar from '../components/Avatar';
 import BlogCard from '../components/BlogCard';
 import '../styles/_user-profile.scss'; // Reuse styles
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBlogs } from '../features/blogs/blogsSlice';
+import { fetchBlogs, fetchCategories } from '../features/blogs/blogsSlice';
 
 const PublicProfile = () => {
   const { username } = useParams();
   const dispatch = useDispatch();
-  const { items: blogs, loading: blogsLoading } = useSelector((state) => state.blogs);
+  const { items: blogs, categories } = useSelector((state) => state.blogs);
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const categoriesLength = categories ? categories.length : 0;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -27,7 +28,6 @@ const PublicProfile = () => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        // Fetch profile by username
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
@@ -37,7 +37,6 @@ const PublicProfile = () => {
         if (error) throw error;
         setProfile(data);
 
-        // Ensure blogs are loaded
         if (blogs.length === 0) {
           dispatch(fetchBlogs());
         }
@@ -51,6 +50,42 @@ const PublicProfile = () => {
 
     fetchProfile();
   }, [username, dispatch, blogs.length]);
+
+  useEffect(() => {
+    if (categoriesLength === 0) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categoriesLength]);
+
+  const interests = useMemo(() => {
+    if (!profile || !categories || categories.length === 0) return [];
+    const base = typeof profile.id === 'string' ? profile.id : String(profile.id || profile.username || '');
+    let hash = 0;
+    for (let i = 0; i < base.length; i += 1) {
+      hash = (hash * 31 + base.charCodeAt(i)) >>> 0;
+    }
+    let seed = hash || 1;
+    const picked = [];
+    const used = new Set();
+    const limit = Math.min(3, categories.length);
+    for (let i = 0; i < limit; i += 1) {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      const index = seed % categories.length;
+      if (used.has(index)) {
+        let j = 0;
+        while (used.has((index + j) % categories.length) && j < categories.length) {
+          j += 1;
+        }
+        const fallbackIndex = (index + j) % categories.length;
+        used.add(fallbackIndex);
+        picked.push(categories[fallbackIndex]);
+      } else {
+        used.add(index);
+        picked.push(categories[index]);
+      }
+    }
+    return picked;
+  }, [profile, categories]);
 
   if (loading) {
     return (
@@ -70,14 +105,10 @@ const PublicProfile = () => {
     );
   }
 
-  // Filter blogs by this user
-  const userBlogs = blogs.filter(b => b.author_id === profile.id);
-
   const joinDate = profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-GB', {
     day: 'numeric', month: 'short', year: 'numeric'
   }) : 'Unknown';
 
-  // Stats
   const commentsCount = blogs.flatMap(b => b.comments || []).filter(c => c.user_id === profile.id).length;
   const activityPoints = (commentsCount * 10) + 50;
 
@@ -130,6 +161,27 @@ const PublicProfile = () => {
             <span>Level {Math.floor(activityPoints / 100) + 1}</span>
           </div>
         </div>
+        {interests.length > 0 && (
+          <div className="profile-sections">
+            <div className="section-group">
+              <h3>Interests</h3>
+              <div className="section-content">
+                <div className="description">
+                  <p>{profile.username} is interested in these Boolog categories.</p>
+                </div>
+                <div className="fields">
+                  <div className="tags">
+                    {interests.map((category) => (
+                      <span key={category.id || category.name}>
+                        {category.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
 

@@ -10,6 +10,9 @@
     padding: $space-sm;
     margin: 0 auto;
   }
+  .tags{
+    border-bottom: none
+  }
 }
 
 .profile-card {
@@ -252,11 +255,30 @@
 
 .section-group {
   h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 1.1rem;
     margin-bottom: $space-md;
     color: var(--text-main);
     border-left: 3px solid var(--accent);
     padding-left: $space-sm;
+              .system-headline-message {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            .system-static-text {
+              font-size: 0.8rem;
+              color: var(--text-sub);
+              white-space: nowrap;
+              .bold-message{
+               @include text-gradient;
+                margin-left: 5px;
+              }
+            }
+          }
   }
 
   .section-content {
@@ -277,6 +299,10 @@
       .view-profile-btn {
         margin-top: $space-md;
         @include btn-ghost;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: $space-xs;
         font-size: 0.9rem;
         padding: 0.5rem 1rem;
       }
@@ -329,6 +355,59 @@
             }
         }
       }
+
+      .time-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-md;
+
+        .time-card {
+          flex: 1;
+          min-width: 200px;
+          display: flex;
+          align-items: center;
+          gap: $space-md;
+          padding: $space-md;
+          border-radius: $radius-lg;
+          background: var(--bg-body);
+          border: 1px solid var(--border);
+
+          .time-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--accent);
+            font-size: 1.2rem;
+          }
+
+          .time-card-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+
+            .time-label {
+              font-size: 0.8rem;
+              color: var(--text-sub);
+            }
+
+            .time-value {
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: var(--text-main);
+            }
+          }
+        }
+
+        @include mobile {
+          .time-card {
+            width: 100%;
+          }
+        }
+      }
     }
   }
 }
@@ -359,23 +438,23 @@
   }
 
   .logout-btn {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger);
-    border: 1px solid transparent;
-    padding: 0.75rem 1.5rem;
-    border-radius: $radius-full;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    &:hover {
-      background: var(--danger);
-      color: white;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
+    @include btn-ghost;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+        color: var(--danger);
+          border: 1px solid var(--danger);
+        &:hover {
+          color: var(--danger);
+          background-color: rgba(255, 0, 0, 0.126);
+          border: 1px solid var(--danger);
+        }
+        svg{
+          margin-bottom: -2px;
+        }
   }
 }
 

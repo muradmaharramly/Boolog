@@ -227,6 +227,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        gap: 2px;
         &:hover {
           color: var(--danger);
           border: 1px solid var(--danger);
@@ -234,6 +235,9 @@
 
         @include mobile {
           display: none;
+        }
+        svg{
+          margin-bottom: -2px;
         }
       }
     }
