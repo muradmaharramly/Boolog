@@ -629,7 +629,7 @@ const AdminDashboard = () => {
 
                             <div className="form-group">
                                 <label>Category</label>
-                                <div className="select-wrapper" ref={categoryDropdownRef}>
+                                <div className={`select-wrapper ${isCategoryDropdownOpen ? 'open' : ''}`} ref={categoryDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isCategoryDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
@@ -723,7 +723,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {/* Filter */}
-                                <div className="select-wrapper" ref={blogFilterDropdownRef}>
+                                <div className={`select-wrapper ${isBlogFilterDropdownOpen ? 'open' : ''}`} ref={blogFilterDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isBlogFilterDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsBlogFilterDropdownOpen(!isBlogFilterDropdownOpen)}
@@ -876,7 +876,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {/* Filter */}
-                                <div className="select-wrapper" ref={commentFilterDropdownRef}>
+                                <div className={`select-wrapper ${isCommentFilterDropdownOpen ? 'open' : ''}`} ref={commentFilterDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isCommentFilterDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsCommentFilterDropdownOpen(!isCommentFilterDropdownOpen)}
@@ -993,7 +993,7 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {/* Filter */}
-                                <div className="select-wrapper" ref={userFilterDropdownRef}>
+                                <div className={`select-wrapper ${isUserFilterDropdownOpen ? 'open' : ''}`} ref={userFilterDropdownRef}>
                                     <div
                                         className={`custom-select-trigger ${isUserFilterDropdownOpen ? 'open' : ''}`}
                                         onClick={() => setIsUserFilterDropdownOpen(!isUserFilterDropdownOpen)}

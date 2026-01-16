@@ -218,7 +218,7 @@ const Blogs = () => {
             />
         </div>
         
-        <div className="select-wrapper" ref={dropdownRef}>
+        <div className={`select-wrapper ${isDropdownOpen ? 'open' : ''}`} ref={dropdownRef}>
             <div 
                 className={`custom-select-trigger ${isDropdownOpen ? 'open' : ''}`} 
                 onClick={() => {
@@ -252,7 +252,7 @@ const Blogs = () => {
             )}
         </div>
 
-        <div className="select-wrapper" ref={sortDropdownRef}>
+        <div className={`select-wrapper ${isSortDropdownOpen ? 'open' : ''}`} ref={sortDropdownRef}>
             <div 
                 className={`custom-select-trigger ${isSortDropdownOpen ? 'open' : ''}`} 
                 onClick={() => {

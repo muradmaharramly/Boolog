@@ -227,7 +227,7 @@ const Users = () => {
               />
             </div>
             
-            <div className="select-wrapper" ref={filterDropdownRef}>
+            <div className={`select-wrapper ${isFilterDropdownOpen ? 'open' : ''}`} ref={filterDropdownRef}>
               <div 
                 className={`custom-select-trigger ${isFilterDropdownOpen ? 'open' : ''}`} 
                 onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
