@@ -145,7 +145,7 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-  z-index: 101;
+  z-index: 1001 !important;
   animation: fadeIn 0.2s ease-out;
 }
 

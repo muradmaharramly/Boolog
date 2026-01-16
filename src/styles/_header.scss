@@ -204,13 +204,13 @@
 
       .btn-login {
         @include btn-ghost;
-        padding: 0.5rem 1rem;
+        padding: 0.3rem 1rem;
         font-size: 0.9rem;
       }
 
       .btn-register {
         @include btn-primary;
-        padding: 0.5rem 1rem;
+        padding: 0.3rem 1rem;
         font-size: 0.9rem;
       }
     }

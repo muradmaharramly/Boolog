@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: $space-xl 0;
     @include mobile {
-             padding: $space-md 0;
+             padding: $space-md $space-sm;
         }
   &::before {
     content: '';
@@ -37,10 +37,6 @@
     .highlight {
       @include text-gradient;
     }
-  }
-
-  @include mobile {
-    padding: $space-lg $space-sm;
   }
 
   .header-section {
