@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { BeatLoader } from 'react-spinners';
 import { QRCodeCanvas } from 'qrcode.react';
-import { FiCalendar, FiActivity, FiMessageSquare, FiHeart, FiUser, FiSmartphone, FiCheckCircle } from 'react-icons/fi';
+import { FiCalendar, FiActivity, FiMessageSquare, FiHeart, FiUser, FiSmartphone, FiCheckCircle, FiClock, FiBookOpen } from 'react-icons/fi';
 import Avatar from '../components/Avatar';
 import BlogCard from '../components/BlogCard';
 import '../styles/_user-profile.scss'; // Reuse styles
@@ -57,7 +57,7 @@ const PublicProfile = () => {
     }
   }, [dispatch, categoriesLength]);
 
-  const interests = useMemo(() => {
+  const interests = (() => {
     if (!profile || !categories || categories.length === 0) return [];
     const base = typeof profile.id === 'string' ? profile.id : String(profile.id || profile.username || '');
     let hash = 0;
@@ -85,7 +85,7 @@ const PublicProfile = () => {
       }
     }
     return picked;
-  }, [profile, categories]);
+  })();
 
   if (loading) {
     return (
@@ -99,7 +99,7 @@ const PublicProfile = () => {
     return (
       <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>
         <h2>User not found</h2>
-        <p>The user "{username}" does not exist.</p>
+        <p>The user {username} does not exist.</p>
         <Link to="/" style={{ color: 'var(--accent)', marginTop: '1rem', display: 'inline-block' }}>Back to Home</Link>
       </div>
     );
@@ -111,6 +111,82 @@ const PublicProfile = () => {
 
   const commentsCount = blogs.flatMap(b => b.comments || []).filter(c => c.user_id === profile.id).length;
   const activityPoints = (commentsCount * 10) + 50;
+
+  const formatDuration = (minutes) => {
+    const rounded = Math.round(minutes);
+    if (rounded <= 0) return 'Less than 1 min';
+    if (rounded < 60) return `${rounded} min`;
+    const hours = Math.floor(rounded / 60);
+    const remaining = rounded % 60;
+    if (remaining === 0) return `${hours} h`;
+    return `${hours} h ${remaining} min`;
+  };
+
+  const profileSeed = (() => {
+    if (!profile) return 1;
+    const base = typeof profile.id === 'string' ? profile.id : String(profile.id || profile.username || '');
+    let hash = 0;
+    for (let i = 0; i < base.length; i += 1) {
+      hash = (hash * 31 + base.charCodeAt(i)) >>> 0;
+    }
+    return hash || 1;
+  })();
+
+  const randomFromSeed = (seed, min, max) => {
+    let s = seed >>> 0;
+    s = (s * 1664525 + 1013904223) >>> 0;
+    const span = max - min + 1;
+    return min + (s % span);
+  };
+
+  const readingMinutes = randomFromSeed(profileSeed, 10, 600);
+
+  const activityMinutes = randomFromSeed(profileSeed ^ 0x9e3779b9, 5, 300);
+
+  const maxReading = 600;
+  const maxActivity = 300;
+  const readingScore = Math.min(readingMinutes / maxReading, 1);
+  const activityScore = Math.min(activityMinutes / maxActivity, 1);
+  const combinedScore = (readingScore + activityScore) / 2;
+  const readingPercent = Math.round(20 + combinedScore * 75);
+
+  const readingTimeLabel = formatDuration(readingMinutes);
+  const activityTimeLabel = formatDuration(activityMinutes);
+
+  const INTEREST_MESSAGES = [
+    { prefix: '{username} seems', last: 'curious.' },
+    { prefix: '{username} likes to', last: 'explore.' },
+    { prefix: '{username} is into', last: 'ideas.' },
+    { prefix: '{username} enjoys', last: 'learning.' },
+    { prefix: '{username} thinks', last: 'deeply.' },
+    { prefix: '{username} questions', last: 'things.' },
+    { prefix: '{username} loves', last: 'discovering.' },
+    { prefix: '{username} is always', last: 'learning.' },
+    { prefix: '{username} enjoys', last: 'new perspectives.' },
+    { prefix: '{username} likes understanding how things', last: 'work.' },
+    { prefix: '{username} is driven by', last: 'curiosity.' },
+    { prefix: '{username} explores beyond the', last: 'surface.' },
+    { prefix: '{username} cares about', last: 'meaning.' },
+    { prefix: '{username} enjoys connecting', last: 'ideas.' },
+    { prefix: '{username} thinks before', last: 'acting.' },
+    { prefix: '{username} likes learning something new every', last: 'day.' },
+    { prefix: '{username} enjoys thoughtful', last: 'content.' },
+    { prefix: '{username} is curious by', last: 'nature.' },
+    { prefix: '{username} seeks', last: 'clarity.' },
+    { prefix: '{username} enjoys growing their', last: 'knowledge.' },
+  ];
+
+  const interestMessageIndex = randomFromSeed(
+    profileSeed ^ 0xabc123,
+    0,
+    INTEREST_MESSAGES.length - 1
+  );
+
+  const interestMessage = INTEREST_MESSAGES[interestMessageIndex];
+  const interestMessagePrefix = interestMessage.prefix.replace(
+    '{username}',
+    profile.username
+  );
 
   return (
     <div className="user-profile-container">
@@ -161,10 +237,18 @@ const PublicProfile = () => {
             <span>Level {Math.floor(activityPoints / 100) + 1}</span>
           </div>
         </div>
-        {interests.length > 0 && (
-          <div className="profile-sections">
+        <div className="profile-sections">
+          {interests.length > 0 && (
             <div className="section-group">
-              <h3>Interests</h3>
+              <h3>
+                Interests
+                <div className="system-headline-message">
+                  <span className="system-static-text">
+                    {interestMessagePrefix}{' '}
+                    <span className="bold-message">{interestMessage.last}</span>
+                  </span>
+                </div>
+              </h3>
               <div className="section-content">
                 <div className="description">
                   <p>{profile.username} is interested in these Boolog categories.</p>
@@ -180,8 +264,46 @@ const PublicProfile = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          <div className="section-group">
+            <h3>Time on Boolog                    <div className="system-headline-message">
+
+              <span className="system-static-text">
+                Better than
+                <span className='bold-message'>{readingPercent}%</span> people
+              </span>
+            </div></h3>
+            <div className="section-content">
+              <div className="description">
+                <p>Your estimated reading and activity time on Boolog.</p>
+              </div>
+              <div className="fields">
+                <div className="time-metrics">
+                  <div className="time-card">
+                    <div className="time-card-icon">
+                      <FiBookOpen />
+                    </div>
+                    <div className="time-card-main">
+                      <span className="time-label">Reading time</span>
+                      <span className="time-value">{readingTimeLabel}</span>
+                    </div>
+
+                  </div>
+                  <div className="time-card">
+                    <div className="time-card-icon">
+                      <FiClock />
+                    </div>
+                    <div className="time-card-main">
+                      <span className="time-label">Activity time</span>
+                      <span className="time-value">{activityTimeLabel}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
 

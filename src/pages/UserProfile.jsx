@@ -91,8 +91,13 @@ const UserProfile = () => {
   }, [profileSeed]);
 
   const readingPercent = useMemo(() => {
-    return randomFromSeed(profileSeed ^ 0x1234abcd, 20, 95);
-  }, [profileSeed]);
+    const maxReading = 600;
+    const maxActivity = 300;
+    const readingScore = Math.min(readingMinutes / maxReading, 1);
+    const activityScore = Math.min(activityMinutes / maxActivity, 1);
+    const combined = (readingScore + activityScore) / 2;
+    return Math.round(20 + combined * 75);
+  }, [readingMinutes, activityMinutes]);
 
   const readingTimeLabel = formatDuration(readingMinutes);
   const activityTimeLabel = formatDuration(activityMinutes);
@@ -121,6 +126,37 @@ const UserProfile = () => {
     }
     return picked;
   }, [categories, profileSeed]);
+
+  const INTEREST_MESSAGES = [
+    { prefix: 'You seem', last: 'curious.' },
+    { prefix: 'You like to', last: 'explore.' },
+    { prefix: "You're into", last: 'ideas.' },
+    { prefix: 'You enjoy', last: 'learning.' },
+    { prefix: 'You think', last: 'deeply.' },
+    { prefix: 'You question', last: 'things.' },
+    { prefix: 'You love', last: 'discovering.' },
+    { prefix: "You're always", last: 'learning.' },
+    { prefix: 'You enjoy', last: 'new perspectives.' },
+    { prefix: 'You like understanding how things', last: 'work.' },
+    { prefix: "You're driven by", last: 'curiosity.' },
+    { prefix: 'You explore beyond the', last: 'surface.' },
+    { prefix: 'You care about', last: 'meaning.' },
+    { prefix: 'You enjoy connecting', last: 'ideas.' },
+    { prefix: 'You think before you', last: 'act.' },
+    { prefix: 'You like learning something new every', last: 'day.' },
+    { prefix: 'You enjoy thoughtful', last: 'content.' },
+    { prefix: "You're curious by", last: 'nature.' },
+    { prefix: 'You seek', last: 'clarity.' },
+    { prefix: 'You enjoy growing your', last: 'knowledge.' },
+  ];
+
+  const interestMessageIndex = randomFromSeed(
+    profileSeed ^ 0xabc123,
+    0,
+    INTEREST_MESSAGES.length - 1
+  );
+
+  const interestMessage = INTEREST_MESSAGES[interestMessageIndex];
 
   const profileUrl = `${window.location.origin}/user/${profile.username}`; // Hypothetical public profile URL
 
@@ -223,7 +259,15 @@ const UserProfile = () => {
 
           {interests.length > 0 && (
             <div className="section-group">
-              <h3>Interests <div className="system-headline-message"><span className='system-static-text'>You like to <span className='bold-message'>explore!</span></span></div></h3>
+              <h3>
+                Interests
+                <div className="system-headline-message">
+                  <span className="system-static-text">
+                    {interestMessage.prefix}{' '}
+                    <span className="bold-message">{interestMessage.last}</span>
+                  </span>
+                </div>
+              </h3>
               <div className="section-content">
                 <div className="description">
                   <p>Based on your presence on Boolog, here are some categories you are into.</p>
