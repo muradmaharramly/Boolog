@@ -17,7 +17,7 @@ const CTASection = () => {
                 <span className="section-badge"><IoIosRocket /> Boolog Premium</span>
                 <h2>Start your journey today</h2>
                 <p>Unlock the full potential of your knowledge with our comprehensive blogging platform.</p>
-                <Link to="/register" className="cta-btn">
+                <Link to="/blogs" className="cta-btn">
                     Get Started <FiArrowRight />
                 </Link>
             </div>

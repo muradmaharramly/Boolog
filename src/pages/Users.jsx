@@ -23,7 +23,7 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const pageSize = 9;
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items: blogs } = useSelector((state) => state.blogs);
@@ -57,7 +57,7 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      
+
       // Simple fetch without complex joins to ensure stability
       const { data, error } = await supabase
         .from('profiles')
@@ -68,8 +68,8 @@ const Users = () => {
       // Transform data
       // We'll calculate points dynamically using Redux data, but set basic structure here
       const transformedUsers = data.map(user => ({
-          ...user,
-          points: 50 // Base points, will be overridden by real calculation
+        ...user,
+        points: 50 // Base points, will be overridden by real calculation
       }));
 
       setUsers(transformedUsers);
@@ -211,47 +211,47 @@ const Users = () => {
         {/* Header Section */}
         <div className="users-header">
           <div className="header-text">
-          <span className="section-badge"><RiEye2Line />Look at others</span>
+            <span className="section-badge"><RiEye2Line />Look at others</span>
             <h1>Discover <span className="highlight">People</span></h1>
             <p>Connect with authors, developers, and tech enthusiasts from around the world.</p>
           </div>
-          
+
           <div className="controls">
             <div className="search-box">
               <FiSearch className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Search by name or email..." 
+              <input
+                type="text"
+                placeholder="Search by name or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
+
             <div className={`select-wrapper ${isFilterDropdownOpen ? 'open' : ''}`} ref={filterDropdownRef}>
-              <div 
-                className={`custom-select-trigger ${isFilterDropdownOpen ? 'open' : ''}`} 
+              <div
+                className={`custom-select-trigger ${isFilterDropdownOpen ? 'open' : ''}`}
                 onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
               >
                 <FiFilter className="select-icon" />
                 <span>{getFilterLabel(filterType)}</span>
                 <FiChevronDown className="chevron-icon" />
               </div>
-              
+
               {isFilterDropdownOpen && (
                 <div className="custom-select-options">
-                  <div 
+                  <div
                     className={`option ${filterType === 'new' ? 'selected' : ''}`}
                     onClick={() => handleFilterSelect('new')}
                   >
                     Newest Members
                   </div>
-                  <div 
+                  <div
                     className={`option ${filterType === 'old' ? 'selected' : ''}`}
                     onClick={() => handleFilterSelect('old')}
                   >
                     Oldest Members
                   </div>
-                  <div 
+                  <div
                     className={`option ${filterType === 'popular' ? 'selected' : ''}`}
                     onClick={() => handleFilterSelect('popular')}
                   >
@@ -271,101 +271,101 @@ const Users = () => {
             {paginatedUsers.length > 0 ? (
               paginatedUsers.map(user => {
                 const isQrActive = activeQrUserId === user.id;
-                
+
                 return (
-                <div 
-                  key={user.id} 
-                  className={`user-card ${isQrActive ? 'qr-active' : ''}`} 
-                  onClick={() => !isQrActive && navigate(`/user/${user.username}`, { state: { from: 'users' } })}
-                  style={{ cursor: isQrActive ? 'default' : 'pointer' }}
-                >
-                <div className="glow-shape left"></div>
-            <div className="glow-shape right"></div>
-                  <div className="card-header-actions">
-                    <button 
-                      className="more-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveQrUserId(isQrActive ? null : user.id);
-                      }}
-                      title={isQrActive ? "Close" : "Share Profile"}
-                    >
-                      {isQrActive ? <FiX /> : <FiShare2 />}
-                    </button>
-                  </div>
-                  
-                  <div className="user-main-info">
-                    <div className="avatar-container">
-                        <Avatar 
-                            url={user.avatar_url} 
-                            username={user.username} 
-                            size="80px" 
-                            className="user-avatar"
+                  <div
+                    key={user.id}
+                    className={`user-card ${isQrActive ? 'qr-active' : ''}`}
+                    onClick={() => !isQrActive && navigate(`/user/${user.username}`, { state: { from: 'users' } })}
+                    style={{ cursor: isQrActive ? 'default' : 'pointer' }}
+                  >
+                    <div className="glow-shape left"></div>
+                    <div className="glow-shape right"></div>
+                    <div className="card-header-actions">
+                      <button
+                        className="more-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveQrUserId(isQrActive ? null : user.id);
+                        }}
+                        title={isQrActive ? "Close" : "Share Profile"}
+                      >
+                        {isQrActive ? <FiX /> : <FiShare2 />}
+                      </button>
+                    </div>
+
+                    <div className="user-main-info">
+                      <div className="avatar-container">
+                        <Avatar
+                          url={user.avatar_url}
+                          username={user.username}
+                          size="80px"
+                          className="user-avatar"
                         />
                         <span className={`status-dot ${Math.random() > 0.3 ? 'online' : 'offline'}`}></span>
-                    </div>
-                    
-                    <span className="user-name">
+                      </div>
+
+                      <span className="user-name">
                         {user.username}
                         <FiCheckCircle style={{ marginLeft: '6px', color: 'var(--accent)', fontSize: '0.9em' }} />
-                    </span>
-                    <span className="user-role">{user.role || 'Member'}</span>
-                  </div>
+                      </span>
+                      <span className="user-role">{user.role || 'Member'}</span>
+                    </div>
 
-                  <div className="user-details-grid">
-                    <div className="detail-item">
+                    <div className="user-details-grid">
+                      <div className="detail-item">
                         <span className="label">Reputation</span>
                         <span className="value">Level {Math.floor(user.points / 100) + 1}</span>
-                    </div>
-                    <div className="detail-item">
+                      </div>
+                      <div className="detail-item">
                         <span className="label">Joined Date</span>
                         <span className="value">{formatDate(user.created_at)}</span>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="contact-info">
-                    <div className="contact-row">
+                    <div className="contact-info">
+                      <div className="contact-row">
                         <FiMail />
                         <span>{user.email || 'No email provided'}</span>
-                    </div>
-                    <div className="contact-row">
+                      </div>
+                      <div className="contact-row">
                         <FiUser />
                         <span>{user.points} Activity Points</span>
+                      </div>
                     </div>
-                  </div>
 
-                  {isQrActive && (
-                    <div className="qr-overlay" onClick={(e) => e.stopPropagation()}>
+                    {isQrActive && (
+                      <div className="qr-overlay" onClick={(e) => e.stopPropagation()}>
                         <div className="qr-box">
-                            <QRCodeCanvas 
+                          <QRCodeCanvas
                             className='qr'
-                                value={`${window.location.origin}/user/${user.username}`}
-                                size={140}
-                                level={"M"}
-                                includeMargin={true}
-                                bgColor={"#ffffff"}
-                                fgColor={"#000000"}
-                            />
-                            <span className="scan-text">Scan to View Profile</span>
-                            
-                            <div className="qr-link-section">
-                                <div className="link-text">
-                                    {`${window.location.origin}/user/${user.username}`}
-                                </div>
-                                <button 
-                                    className="copy-btn"
-                                    onClick={() => handleCopyLink(user.username)}
-                                    title="Copy Link"
-                                >
-                                    {copiedId === user.username ? <FiCheck /> : <FiCopy />}
-                                </button>
+                            value={`${window.location.origin}/user/${user.username}`}
+                            size={140}
+                            level={"M"}
+                            includeMargin={true}
+                            bgColor={"#ffffff"}
+                            fgColor={"#000000"}
+                          />
+                          <span className="scan-text">Scan to View Profile</span>
+
+                          <div className="qr-link-section">
+                            <div className="link-text">
+                              {`${window.location.origin}/user/${user.username}`}
                             </div>
+                            <button
+                              className="copy-btn"
+                              onClick={() => handleCopyLink(user.username)}
+                              title="Copy Link"
+                            >
+                              {copiedId === user.username ? <FiCheck /> : <FiCopy />}
+                            </button>
+                          </div>
                         </div>
-                    </div>
-                  )}
-                </div>
-              );
-             })
+                      </div>
+                    )}
+                  </div>
+                );
+              })
             ) : (
               <div className="no-results">
                 <h3>No users found</h3>

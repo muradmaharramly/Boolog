@@ -81,14 +81,12 @@
         padding: 12px;
         padding-left: 2.5rem;
         border-radius: $radius-lg;
-        background: rgba(255, 255, 255, 0.03);
         color: var(--text-main);
         -webkit-border-radius: $radius-lg;
         -moz-border-radius: $radius-lg;
         -ms-border-radius: $radius-lg;
         -o-border-radius: $radius-lg;
         &:focus {
-          background: rgba(255, 255, 255, 0.08);
           border-color: var(--accent);
         }
       }

@@ -14,6 +14,7 @@ import FaqSection from '../components/FaqSection';
 const Home = () => {
   const dispatch = useDispatch();
   const { items: blogs, loading } = useSelector((state) => state.blogs);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (blogs.length === 0) {
@@ -54,9 +55,11 @@ const Home = () => {
             <Link to="/blogs" className="btn-primary">
               Start Reading <FiArrowRight />
             </Link>
-            <Link to="/register" className="btn-secondary">
-              Join Community
-            </Link>
+            {!user && (
+              <Link to="/register" className="btn-secondary">
+                Join Community
+              </Link>
+            )}
           </div>
         </div>
       </section>

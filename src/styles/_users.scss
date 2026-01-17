@@ -187,6 +187,9 @@
                     font-weight: 700;
                     color: var(--text-main);
                     text-decoration: none;
+                    svg{
+                        margin-bottom: -2px;
+                    }
                     
                     &:hover {
                         color: var(--accent);
