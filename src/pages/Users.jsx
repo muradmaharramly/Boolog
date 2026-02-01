@@ -279,6 +279,7 @@ const Users = () => {
                     onClick={() => !isQrActive && navigate(`/user/${user.username}`, { state: { from: 'users' } })}
                     style={{ cursor: isQrActive ? 'default' : 'pointer' }}
                   >
+                  <div className='user-banner'></div>
                     <div className="glow-shape left"></div>
                     <div className="glow-shape right"></div>
                     <div className="card-header-actions">
@@ -307,7 +308,7 @@ const Users = () => {
 
                       <span className="user-name">
                         {user.username}
-                        <FiCheckCircle style={{ marginLeft: '6px', color: 'var(--accent)', fontSize: '0.9em' }} />
+                        <FiCheckCircle />
                       </span>
                       <span className="user-role">{user.role || 'Member'}</span>
                     </div>

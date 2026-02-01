@@ -87,6 +87,40 @@
             overflow: hidden;
             animation: fadeIn 1s ease-out 0.2s backwards;
 
+            .user-banner{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100px;
+                overflow: hidden;
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+  
+  // Abstract shapes decoration
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+  }
+
+  &::before {
+    width: 200px;
+    height: 200px;
+    background: rgba(99, 102, 241, 0.4);
+    top: -50px;
+    left: -50px;
+  }
+
+  &::after {
+    width: 150px;
+    height: 150px;
+    background: rgba(236, 72, 153, 0.4);
+    bottom: -30px;
+    right: 10%;
+  }
+            }
+
             .glow-shape {
             position: absolute;
             width: 400px;
@@ -157,6 +191,8 @@
                 .avatar-container {
                     position: relative;
                     margin-bottom: 0.5rem;
+                    border: 5px solid var(--bg-app);
+                    border-radius: 50%;
 
                     .user-avatar {
                         border: 3px solid var(--bg-app);
@@ -188,7 +224,9 @@
                     color: var(--text-main);
                     text-decoration: none;
                     svg{
-                        margin-bottom: -2px;
+                        margin: 4px;
+                        margin-bottom: -4px;
+                        color: var(--accent);
                     }
                     
                     &:hover {
