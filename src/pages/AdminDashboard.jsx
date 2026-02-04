@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchStats, fetchUsers, addCategory, fetchRecentComments, deleteUser, updateUser } from '../features/admin/adminSlice';
 import { addBlog, fetchCategories, fetchBlogs, deleteBlog, updateBlog, deleteComment } from '../features/blogs/blogsSlice';
 import { toast } from 'react-toastify';
-import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash, FiMail, FiLink, FiCopy, FiSearch, FiFilter } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiBarChart2, FiUsers, FiFileText, FiActivity, FiPlus, FiX, FiTag, FiMessageSquare, FiClock, FiChevronDown, FiTrash, FiMail, FiLink, FiCopy, FiSearch, FiFilter, FiPlusCircle } from 'react-icons/fi';
 import ConfirmModal from '../components/ConfirmModal';
 import EditModal from '../components/EditModal';
 import UserEditModal from '../components/UserEditModal';
@@ -13,6 +13,7 @@ import '../styles/_admin-dashboard.scss';
 import { GoPlus } from 'react-icons/go';
 import { LuExternalLink } from 'react-icons/lu';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { BsLayoutTextWindow, BsSendPlus } from 'react-icons/bs';
 
 const AdminDashboard = () => {
     const dispatch = useDispatch();
@@ -597,7 +598,7 @@ const AdminDashboard = () => {
                 <div className="dashboard-row top-row">
                     {/* Add Category */}
                     <div className="dashboard-card small-card">
-                        <h2><FiPlus /> Add Category</h2>
+                        <h2><FiPlusCircle /> Add Category</h2>
                         <form onSubmit={handleAddCategory}>
                             <div className="form-group">
                                 <input
@@ -624,7 +625,7 @@ const AdminDashboard = () => {
 
                     {/* Publish Blog */}
                     <div className="dashboard-card large-card">
-                        <h2><FiEdit2 /> Publish Article</h2>
+                        <h2><BsSendPlus /> Publish Article</h2>
                         <form onSubmit={handleAddBlog}>
                             <div className="form-group">
                                 <label>Title</label>
@@ -717,7 +718,7 @@ const AdminDashboard = () => {
                 <div className="dashboard-row full-width">
                     <div className="dashboard-card">
                         <div className="card-header-actions">
-                            <h2><FiFileText /> Manage Articles</h2>
+                            <h2><BsLayoutTextWindow /> Manage Articles</h2>
 
                             <div className="controls">
                                 {/* Search */}

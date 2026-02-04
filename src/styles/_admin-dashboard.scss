@@ -316,8 +316,9 @@
       
       input { flex: 1; }
       button { 
-        @include btn-ghost; 
+        @include btn-primary; 
         padding: 0 1rem;
+        font-size: larger;
       }
     }
 
