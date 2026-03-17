@@ -332,7 +332,7 @@
                         display: flex;
                         align-items: center;
                         gap: 0.5rem;
-                        background: var(--bg-card);
+                        background: transparent;
                         padding: 0.5rem 0.8rem;
                         border-radius: 8px;
                         width: 100%;
@@ -351,7 +351,7 @@
                         .copy-btn {
                             background: none;
                             border: none;
-                            color: var(--accent);
+                            color: var(--text-sub);
                             cursor: pointer;
                             display: flex;
                             align-items: center;
